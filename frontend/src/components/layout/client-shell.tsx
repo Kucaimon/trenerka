@@ -8,6 +8,7 @@ import {
   type MobileTabItem,
 } from '@/components/mobile'
 import { Logo } from '@/components/shared/Logo'
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 
 const hideTabBarPaths = ['/client/workouts/session']
 
@@ -43,6 +44,7 @@ export function ClientShell() {
               <Logo size="sm" />
               <p className="text-xs text-[var(--text-muted)]">{t('cabinet')}</p>
             </div>
+            <LanguageSwitcher />
           </header>
         ) : null}
         <main

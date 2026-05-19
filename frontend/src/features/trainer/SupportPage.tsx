@@ -1,10 +1,13 @@
+import { useTranslation } from 'react-i18next'
 import { TrainerStubPage } from '@/components/shared/trainer-stub-page'
 
 export function SupportPage() {
+  const { t } = useTranslation('trainer')
+
   return (
     <TrainerStubPage
-      title="Поддержка"
-      description="База знаний, чат с командой Trenerka и статус обращений."
+      title={t('support.title')}
+      description={t('support.description')}
     />
   )
 }

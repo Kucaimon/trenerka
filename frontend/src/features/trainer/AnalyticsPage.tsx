@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import {
   Area,
@@ -31,6 +32,7 @@ import { CHART } from '@/lib/chart-theme'
 import { Activity, CalendarCheck2, Repeat2, Wallet } from 'lucide-react'
 
 export function AnalyticsPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const [period, setPeriod] = useState('6m')
   const { data: analytics } = useTrainerAnalytics()
   const { data: mockRevenueData = [] } = useQuery({ queryKey: ['revenue-chart'], queryFn: getRevenueChart })
@@ -42,41 +44,41 @@ export function AnalyticsPage() {
   return (
     <div className="page-container">
       <PageHeader
-        title="Аналитика"
-        description="Выручка, удержание, загрузка по дням недели и структура подписок."
+        title={t('analytics.title')}
+        description={t('analytics.description')}
         actions={
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="3m">3 мес.</SelectItem>
-              <SelectItem value="6m">6 мес.</SelectItem>
-              <SelectItem value="12m">12 мес.</SelectItem>
+              <SelectItem value="3m">{t('analytics.period.m3')}</SelectItem>
+              <SelectItem value="6m">{t('analytics.period.m6')}</SelectItem>
+              <SelectItem value="12m">{t('analytics.period.m12')}</SelectItem>
             </SelectContent>
           </Select>
         }
       />
 
       <div className="grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-4">
-        <StatCard label="MRR" value={formatRub(analytics?.monthlyRevenue ?? 0)} icon={Wallet} highlight />
-        <StatCard label="Клиенты" value={String(analytics?.activeClients ?? 0)} icon={Repeat2} />
-        <StatCard label="Сессии / нед." value={String(analytics?.weeklySessions ?? 0)} icon={CalendarCheck2} />
-        <StatCard label="Непрочитанные" value={String(analytics?.unreadMessages ?? 0)} icon={Activity} />
+        <StatCard label={t('analytics.stats.mrr')} value={formatRub(analytics?.monthlyRevenue ?? 0)} icon={Wallet} highlight />
+        <StatCard label={t('analytics.stats.clients')} value={String(analytics?.activeClients ?? 0)} icon={Repeat2} />
+        <StatCard label={t('analytics.stats.sessionsPerWeek')} value={String(analytics?.weeklySessions ?? 0)} icon={CalendarCheck2} />
+        <StatCard label={t('analytics.stats.unread')} value={String(analytics?.unreadMessages ?? 0)} icon={Activity} />
       </div>
 
       <div className="grid gap-4 overflow-x-hidden xl:grid-cols-2">
         <Card className="metric-grid">
           <CardHeader>
-            <CardTitle>Выручка по месяцам</CardTitle>
+            <CardTitle>{t('analytics.charts.revenueByMonth')}</CardTitle>
           </CardHeader>
           <CardContent className="chart-mobile h-64 min-h-[200px] pt-0 md:h-72">
             <ResponsiveContainer width="100%" height="100%" minHeight={200}>
               <BarChart data={mockRevenueData}>
                 <CartesianGrid stroke={CHART.grid} vertical={false} />
                 <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
-                <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}к`} />
-                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), 'Выручка']} />
+                <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
+                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), t('analytics.tooltip.revenue')]} />
                 <Bar dataKey="revenue" fill={CHART.accent} radius={[5, 5, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
@@ -85,7 +87,7 @@ export function AnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Удержание клиентов</CardTitle>
+            <CardTitle>{t('analytics.charts.retention')}</CardTitle>
           </CardHeader>
           <CardContent className="chart-mobile h-64 min-h-[200px] pt-0 md:h-72">
             <ResponsiveContainer width="100%" height="100%" minHeight={200}>
@@ -93,7 +95,7 @@ export function AnalyticsPage() {
                 <CartesianGrid stroke={CHART.grid} vertical={false} />
                 <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke={CHART.axis} fontSize={11} domain={[80, 100]} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [`${v}%`, 'Удержание']} />
+                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [`${v}%`, t('analytics.tooltip.retention')]} />
                 <Area type="monotone" dataKey="rate" stroke={CHART.emerald} fill="rgba(184,245,61,0.12)" strokeWidth={2} dot={false} isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
@@ -102,7 +104,7 @@ export function AnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Активность по дням недели</CardTitle>
+            <CardTitle>{t('analytics.charts.weekdayActivity')}</CardTitle>
           </CardHeader>
           <CardContent className="h-56 pt-0">
             <ResponsiveContainer width="100%" height="100%">
@@ -110,7 +112,7 @@ export function AnalyticsPage() {
                 <CartesianGrid stroke={CHART.grid} vertical={false} />
                 <XAxis dataKey="day" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [`${v}`, 'Сессии']} />
+                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [`${v}`, t('analytics.tooltip.sessions')]} />
                 <Bar dataKey="sessions" fill={CHART.line} radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
@@ -119,7 +121,7 @@ export function AnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Структура подписок</CardTitle>
+            <CardTitle>{t('analytics.charts.subscriptionMix')}</CardTitle>
           </CardHeader>
           <CardContent className="h-56 pt-0">
             <ResponsiveContainer width="100%" height="100%">
@@ -145,7 +147,7 @@ export function AnalyticsPage() {
 
         <Card className="xl:col-span-2">
           <CardHeader>
-            <CardTitle>Посещаемость по неделям</CardTitle>
+            <CardTitle>{t('analytics.charts.attendance')}</CardTitle>
           </CardHeader>
           <CardContent className="h-56 pt-0">
             <ResponsiveContainer width="100%" height="100%">
@@ -153,7 +155,7 @@ export function AnalyticsPage() {
                 <CartesianGrid stroke={CHART.grid} vertical={false} />
                 <XAxis dataKey="week" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [`${v}`, 'Сессии']} />
+                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [`${v}`, t('analytics.tooltip.sessions')]} />
                 <Bar dataKey="sessions" fill={CHART.accent} radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>

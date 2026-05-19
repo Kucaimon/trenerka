@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useNews, useSaveNews, useDeleteNews } from '@/features/api/hooks'
 import { Button } from '@/components/ui/button'
@@ -12,6 +13,7 @@ import { formatDate } from '@/lib/utils'
 import type { NewsItem } from '@/types'
 
 export function NewsAdminPage() {
+  const { t } = useTranslation(['admin', 'common'])
   const { data: news = [], isLoading } = useNews()
   const saveNews = useSaveNews()
   const deleteNews = useDeleteNews()
@@ -36,24 +38,24 @@ export function NewsAdminPage() {
         content,
         publishedAt: editing?.publishedAt ?? new Date().toISOString().slice(0, 10),
       })
-      toast.success('Сохранено')
+      toast.success(t('common:actions.saved'))
       setOpen(false)
     } catch {
-      toast.error('Ошибка')
+      toast.error(t('common:toast.error'))
     }
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Новости</h1>
+        <h1 className="text-2xl font-bold">{t('news.title')}</h1>
         <Button onClick={() => openForm()}>
           <Plus className="mr-2 h-4 w-4" />
-          Создать
+          {t('news.create')}
         </Button>
       </div>
       <div className="space-y-4">
-        {isLoading ? <p className="text-sm text-slate-500">Загрузка…</p> : null}
+        {isLoading ? <p className="text-sm text-slate-500">{t('common:actions.loading')}</p> : null}
         {news.map((n) => (
           <Card key={n.id}>
             <CardHeader className="flex flex-row items-center justify-between">
@@ -67,7 +69,7 @@ export function NewsAdminPage() {
                   variant="ghost"
                   size="icon"
                   className="text-red-400"
-                  onClick={() => deleteNews.mutate(n.id, { onSuccess: () => toast.success('Удалено') })}
+                  onClick={() => deleteNews.mutate(n.id, { onSuccess: () => toast.success(t('common:deleted')) })}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -83,19 +85,19 @@ export function NewsAdminPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editing ? 'Редактировать' : 'Новая новость'}</DialogTitle>
+            <DialogTitle>{editing ? t('news.edit') : t('news.new')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label>Заголовок</Label>
+              <Label>{t('news.field.title')}</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
             <div className="space-y-1.5">
-              <Label>Текст</Label>
+              <Label>{t('news.field.body')}</Label>
               <Textarea rows={5} value={content} onChange={(e) => setContent(e.target.value)} />
             </div>
             <Button className="w-full" onClick={onSave} disabled={saveNews.isPending}>
-              Сохранить
+              {t('common:actions.save')}
             </Button>
           </div>
         </DialogContent>

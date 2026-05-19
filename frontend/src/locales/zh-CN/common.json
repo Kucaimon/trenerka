@@ -15,7 +15,23 @@
     "loading": "加载中…",
     "createAccount": "创建账户",
     "startFree": "免费开始",
-    "demo": "演示"
+    "demo": "演示",
+    "send": "Send",
+    "back": "Back",
+    "backToList": "Back to list",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "create": "Create",
+    "assign": "Assign",
+    "assigning": "Assigning…",
+    "complete": "Complete",
+    "close": "Close",
+    "markRead": "Mark read",
+    "open": "Open",
+    "exportCsv": "Export CSV",
+    "addPayment": "Add payment",
+    "all": "All",
+    "viewAll": "View all"
   },
   "nav": {
     "product": "产品",
@@ -42,5 +58,74 @@
   "skills": "技能",
   "notFound": "未找到",
   "deleted": "已删除",
-  "saveError": "保存失败"
+  "saveError": "保存失败",
+  "status": {
+    "active": "Active",
+    "pause": "Pause",
+    "archive": "Archive"
+  },
+  "empty": {
+    "notFound": "Nothing found",
+    "noData": "No data"
+  },
+  "aria": {
+    "mainNav": "Main navigation",
+    "close": "Close",
+    "menu": "Menu",
+    "search": "Search"
+  },
+  "units": {
+    "kg": "kg",
+    "cm": "cm",
+    "min": "min",
+    "sec": "sec",
+    "weeksShort": "wk.",
+    "sessionsShort": "sess.",
+    "kcal": "kcal"
+  },
+  "validation": {
+    "nameMin2": "At least 2 characters"
+  },
+  "toast": {
+    "error": "Error",
+    "sent": "Sent"
+  },
+  "stub": {
+    "badge": "Coming soon",
+    "body": "This section is under development. Navigation is wired; content will ship in the next iteration."
+  },
+  "commandPalette": {
+    "searchPlaceholder": "Search sections…",
+    "empty": "Nothing found",
+    "group": {
+      "navigation": "Navigation"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "clients": "Clients",
+      "builder": "Builder",
+      "programs": "Programs",
+      "exercises": "Exercises",
+      "calendar": "Calendar",
+      "analytics": "Analytics",
+      "finance": "Finance",
+      "messages": "Chats",
+      "aiCoach": "AI coach",
+      "files": "Files",
+      "settings": "Settings"
+    }
+  },
+  "export": {
+    "clientsHeader": "Name,Email,Phone,Status,Balance,Goal",
+    "paymentsHeader": "Client,Amount,Date,Method,Note"
+  },
+  "days": {
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat",
+    "sun": "Sun"
+  }
 }

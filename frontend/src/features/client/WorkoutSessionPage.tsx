@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Check, Timer, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/shared/progress-bar'
@@ -8,6 +9,7 @@ import { completeClientWorkout } from '@/features/api/client-cabinet-service'
 import { toast } from 'sonner'
 
 export function WorkoutSessionPage() {
+  const { t } = useTranslation(['client', 'common'])
   const { data: workouts = [] } = useClientWorkouts()
   const workout = workouts[0]
   const [current, setCurrent] = useState(0)
@@ -15,7 +17,7 @@ export function WorkoutSessionPage() {
   const [rest, setRest] = useState(false)
 
   if (!workout) {
-    return <p className="p-6 text-sm text-[var(--text-muted)]">Нет назначенной тренировки</p>
+    return <p className="p-6 text-sm text-[var(--text-muted)]">{t('session.empty')}</p>
   }
 
   const exercise = workout.exercises[current]!
@@ -43,11 +45,17 @@ export function WorkoutSessionPage() {
 
   const finished = current === workout.exercises.length - 1 && completedSets >= exercise.sets
 
+  const nextButtonLabel = finished
+    ? t('session.completeWorkout')
+    : completedSets >= exercise.sets
+      ? t('session.nextExercise')
+      : t('session.nextSet')
+
   return (
     <div className="session-mode space-y-5 px-4 py-4">
       <div className="flex items-center justify-between">
         <Link to="/client/workouts" className="inline-flex min-h-[44px] items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
-          <ArrowLeft className="h-4 w-4" /> План
+          <ArrowLeft className="h-4 w-4" /> {t('session.backToPlan')}
         </Link>
         <span className="text-sm tabular-nums text-[var(--text-muted)]">
           {current + 1}/{workout.exercises.length}
@@ -63,19 +71,21 @@ export function WorkoutSessionPage() {
           <span className="rounded-md border border-[var(--border)] bg-black/20 px-2 py-1 text-xs text-[var(--text-muted)]">{exercise.muscle}</span>
         </div>
         <Progress value={progress} />
-        <p className="mt-2 text-xs text-[var(--text-muted)]">Общий прогресс тренировки · {Math.round(progress)}%</p>
+        <p className="mt-2 text-xs text-[var(--text-muted)]">
+          {t('session.overallProgress', { percent: Math.round(progress) })}
+        </p>
       </section>
 
       <section className="session-hero">
-        <p className="text-xs font-semibold uppercase text-[var(--text-muted)]">Рабочий блок</p>
+        <p className="text-xs font-semibold uppercase text-[var(--text-muted)]">{t('session.workBlock')}</p>
         <div className="mt-5 grid grid-cols-3 gap-2">
-          <SessionMetric label="Сеты" value={`${completedSets}/${exercise.sets}`} />
-          <SessionMetric label="Повт." value={exercise.reps} />
-          <SessionMetric label="Отдых" value={`${exercise.rest}с`} />
+          <SessionMetric label={t('session.metrics.sets')} value={`${completedSets}/${exercise.sets}`} />
+          <SessionMetric label={t('session.metrics.reps')} value={exercise.reps} />
+          <SessionMetric label={t('session.metrics.rest')} value={`${exercise.rest}${t('common:units.sec')}`} />
         </div>
         <p className="mt-5 text-sm leading-6 text-[var(--text-secondary)]">{exercise.technique}</p>
         <Button variant="secondary" className="mt-5 w-full">
-          <Video className="h-4 w-4" /> Видео техники
+          <Video className="h-4 w-4" /> {t('session.videoTechnique')}
         </Button>
 
         {rest ? (
@@ -84,28 +94,28 @@ export function WorkoutSessionPage() {
             <p className="mt-3 tabular-nums text-4xl font-semibold">
               {exercise.rest ? `1:${String(exercise.rest % 60).padStart(2, '0')}` : '0:00'}
             </p>
-            <p className="mt-1 text-xs text-[var(--text-muted)]">Отдых между подходами</p>
+            <p className="mt-1 text-xs text-[var(--text-muted)]">{t('session.restBetweenSets')}</p>
             <Button
               className="mt-5 w-full"
               onClick={async () => {
                 if (finished) {
                   try {
                     await completeClientWorkout(workout.id)
-                    toast.success('Тренировка отмечена выполненной')
+                    toast.success(t('session.toast.completed'))
                   } catch {
-                    toast.error('Ошибка сохранения')
+                    toast.error(t('common:saveError'))
                   }
                   return
                 }
                 nextStep()
               }}
             >
-              <Check className="h-4 w-4" /> {finished ? 'Завершить тренировку' : completedSets >= exercise.sets ? 'Следующее упражнение' : 'Следующий подход'}
+              <Check className="h-4 w-4" /> {nextButtonLabel}
             </Button>
           </div>
         ) : (
           <Button className="mt-6 w-full" onClick={completeSet}>
-            Подход выполнен
+            {t('session.setDone')}
           </Button>
         )}
       </section>

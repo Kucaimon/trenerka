@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useClients } from '@/features/api/hooks'
 
-const demoFiles = [
-  { id: 'f1', name: 'Анкета_Анна.pdf', client: 'Анна Смирнова', size: '240 КБ', type: 'pdf' as const },
-  { id: 'f2', name: 'Прогресс_май.jpg', client: 'Анна Смирнова', size: '1.2 МБ', type: 'image' as const },
-  { id: 'f3', name: 'Договор_Иван.pdf', client: 'Иван Петров', size: '180 КБ', type: 'pdf' as const },
+const DEMO_FILE_KEYS = [
+  { id: 'f1', nameKey: 'filesPage.demo.name1', client: 'Анна Смирнова', sizeKey: 'filesPage.demo.size1', type: 'pdf' as const },
+  { id: 'f2', nameKey: 'filesPage.demo.name2', client: 'Анна Смирнова', sizeKey: 'filesPage.demo.size2', type: 'image' as const },
+  { id: 'f3', nameKey: 'filesPage.demo.name3', client: 'Иван Петров', sizeKey: 'filesPage.demo.size3', type: 'pdf' as const },
 ]
 
 export function FilesPage() {
@@ -31,7 +31,7 @@ export function FilesPage() {
 
       <div className="flex flex-wrap gap-2">
         <Badge variant="secondary">{t('filesPage.clientsCount', { count: clients.length })}</Badge>
-        <Badge variant="accent">{t('filesPage.filesCount', { count: demoFiles.length })}</Badge>
+        <Badge variant="accent">{t('filesPage.filesCount', { count: DEMO_FILE_KEYS.length })}</Badge>
       </div>
 
       <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
@@ -41,7 +41,7 @@ export function FilesPage() {
       </section>
 
       <div className="gap-grid">
-        {demoFiles.map((file) => {
+        {DEMO_FILE_KEYS.map((file) => {
           const Icon = file.type === 'image' ? Image : FileText
           return (
             <div
@@ -52,12 +52,12 @@ export function FilesPage() {
                 <Icon className="h-5 w-5" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{file.name}</p>
+                <p className="truncate text-sm font-semibold">{t(file.nameKey)}</p>
                 <p className="text-xs text-[var(--text-muted)]">
-                  {file.client} · {file.size}
+                  {file.client} · {t(file.sizeKey)}
                 </p>
               </div>
-              <Badge variant="secondary">{t('filesPage.demo')}</Badge>
+              <Badge variant="secondary">{t('common:actions.demo')}</Badge>
             </div>
           )
         })}

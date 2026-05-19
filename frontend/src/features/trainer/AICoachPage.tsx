@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { AlertTriangle, Bot, Calendar, CreditCard, MessageSquare, Sparkles } from 'lucide-react'
 import { PageHeader } from '@/components/shared/page-header'
@@ -14,6 +16,7 @@ type InsightCard = {
 }
 
 export function AICoachPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const { data: clients = [] } = useClients()
   const { data: analytics } = useTrainerAnalytics()
 
@@ -26,50 +29,53 @@ export function AICoachPage() {
   const unread = analytics?.unreadMessages ?? 0
   const sessions = analytics?.weeklySessions ?? 0
 
-  const cards: InsightCard[] = [
-    {
-      icon: AlertTriangle,
-      title: 'Риск оттока',
-      text: atRisk.length
-        ? `${atRisk.join(', ')} — низкий баланс пакета или давно не было сессии.`
-        : 'Критичных клиентов не обнаружено.',
-      action: { label: 'Открыть CRM', to: '/trainer/clients' },
-    },
-    {
-      icon: CreditCard,
-      title: 'Оплаты',
-      text:
-        revenue > 0
-          ? `Выручка за месяц ${formatRub(revenue)}. Проверьте клиентов с просроченными пакетами.`
-          : 'Запишите первый платёж, чтобы видеть финансовую картину.',
-      action: { label: 'Финансы', to: '/trainer/finance' },
-    },
-    {
-      icon: MessageSquare,
-      title: 'Коммуникация',
-      text:
-        unread > 0
-          ? `${unread} непрочитанных сообщений от клиентов.`
-          : 'Все чаты прочитаны — хороший момент для check-in.',
-      action: { label: 'Чаты', to: '/trainer/messages' },
-    },
-    {
-      icon: Calendar,
-      title: 'Расписание',
-      text:
-        sessions > 0
-          ? `На неделе ${sessions} событий в календаре. Проверьте напоминания.`
-          : 'Календарь пуст — добавьте первые сессии.',
-      action: { label: 'Календарь', to: '/trainer/calendar' },
-    },
-  ]
+  const cards: InsightCard[] = useMemo(
+    () => [
+      {
+        icon: AlertTriangle,
+        title: t('aiCoach.cards.churn.title'),
+        text: atRisk.length
+          ? t('aiCoach.cards.churn.atRisk', { names: atRisk.join(', ') })
+          : t('aiCoach.cards.churn.ok'),
+        action: { label: t('aiCoach.cards.churn.action'), to: '/trainer/clients' },
+      },
+      {
+        icon: CreditCard,
+        title: t('aiCoach.cards.payments.title'),
+        text:
+          revenue > 0
+            ? t('aiCoach.cards.payments.hasRevenue', { amount: formatRub(revenue) })
+            : t('aiCoach.cards.payments.empty'),
+        action: { label: t('aiCoach.cards.payments.action'), to: '/trainer/finance' },
+      },
+      {
+        icon: MessageSquare,
+        title: t('aiCoach.cards.comms.title'),
+        text:
+          unread > 0
+            ? t('aiCoach.cards.comms.unread', { count: unread })
+            : t('aiCoach.cards.comms.allRead'),
+        action: { label: t('aiCoach.cards.comms.action'), to: '/trainer/messages' },
+      },
+      {
+        icon: Calendar,
+        title: t('aiCoach.cards.schedule.title'),
+        text:
+          sessions > 0
+            ? t('aiCoach.cards.schedule.hasEvents', { count: sessions })
+            : t('aiCoach.cards.schedule.empty'),
+        action: { label: t('aiCoach.cards.schedule.action'), to: '/trainer/calendar' },
+      },
+    ],
+    [atRisk, revenue, unread, sessions, t],
+  )
 
   return (
     <div className="page-container">
       <PageHeader
-        title="AI-коуч"
-        description="Операционные сигналы по клиентам, оплатам и расписанию — с конкретным следующим шагом."
-        actions={<Badge variant="accent">Beta</Badge>}
+        title={t('aiCoach.title')}
+        description={t('aiCoach.description')}
+        actions={<Badge variant="accent">{t('aiCoach.badgeBeta')}</Badge>}
       />
 
       <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
@@ -78,10 +84,13 @@ export function AICoachPage() {
             <Bot className="h-5 w-5" />
           </div>
           <div>
-            <p className="font-display text-lg font-bold">Сводка практики</p>
+            <p className="font-display text-lg font-bold">{t('aiCoach.summary.title')}</p>
             <p className="mt-1 text-sm text-[var(--text-secondary)]">
-              {analytics?.activeClients ?? 0} активных клиентов · {unread} непрочитанных ·{' '}
-              {formatRub(revenue)} за месяц
+              {t('aiCoach.summary.line', {
+                clients: analytics?.activeClients ?? 0,
+                unread,
+                revenue: formatRub(revenue),
+              })}
             </p>
           </div>
         </div>

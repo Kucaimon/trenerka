@@ -1,3 +1,4 @@
+import i18n from '@/i18n'
 import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
 import { wpFetch, setAuthToken } from '@/lib/wordpress/client'
@@ -29,7 +30,7 @@ export async function login(
     await apiDelay(600)
     const entry = mockUsers[email.toLowerCase()]
     if (!entry || entry.password !== password || entry.user.role !== role) {
-      throw new Error('Неверный email или пароль')
+      throw new Error(i18n.t('auth:errors.invalidCredentials'))
     }
     const token = `mock-jwt-${entry.user.id}`
     setAuthToken(token)
@@ -46,7 +47,7 @@ export async function login(
   })
 
   if (me.role !== role) {
-    throw new Error('Неверная роль для этого входа')
+    throw new Error(i18n.t('auth:errors.wrongRole'))
   }
 
   setAuthToken(data.token)

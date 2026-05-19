@@ -1,24 +1,27 @@
 import { useEffect } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { LayoutDashboard, Dumbbell, Users, Newspaper, LogOut, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/auth-store'
 import { useUiStore } from '@/store/ui-store'
 import { Button } from '@/components/ui/button'
-
-const nav = [
-  { to: '/admin', icon: LayoutDashboard, label: 'Дашборд', end: true },
-  { to: '/admin/exercises', icon: Dumbbell, label: 'Упражнения' },
-  { to: '/admin/users', icon: Users, label: 'Пользователи' },
-  { to: '/admin/news', icon: Newspaper, label: 'Новости' },
-]
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 
 export function AdminLayout() {
+  const { t } = useTranslation(['admin', 'common'])
   const logout = useAuthStore((s) => s.logout)
   const navigate = useNavigate()
   const location = useLocation()
   const drawerOpen = useUiStore((s) => s.trainerDrawerOpen)
   const setDrawerOpen = useUiStore((s) => s.setTrainerDrawerOpen)
+
+  const nav = [
+    { to: '/admin', icon: LayoutDashboard, label: t('nav.dashboard'), end: true },
+    { to: '/admin/exercises', icon: Dumbbell, label: t('nav.exercises') },
+    { to: '/admin/users', icon: Users, label: t('nav.users') },
+    { to: '/admin/news', icon: Newspaper, label: t('nav.news') },
+  ]
 
   useEffect(() => {
     setDrawerOpen(false)
@@ -30,7 +33,7 @@ export function AdminLayout() {
         <button
           type="button"
           className="trainer-drawer-backdrop md:hidden"
-          aria-label="Закрыть меню"
+          aria-label={t('aria.closeMenu')}
           onClick={() => setDrawerOpen(false)}
         />
       ) : null}
@@ -42,7 +45,7 @@ export function AdminLayout() {
         )}
       >
         <div className="flex h-14 items-center border-b border-[var(--border)] px-4">
-          <span className="text-sm font-semibold">Admin</span>
+          <span className="text-sm font-semibold">{t('brand')}</span>
         </div>
         <nav className="space-y-0.5 p-2">
           {nav.map((item) => (
@@ -72,7 +75,7 @@ export function AdminLayout() {
               navigate('/')
             }}
           >
-            <LogOut className="mr-2 h-4 w-4" /> Выйти
+            <LogOut className="mr-2 h-4 w-4" /> {t('common:actions.logout')}
           </Button>
         </div>
       </aside>
@@ -84,12 +87,26 @@ export function AdminLayout() {
             variant="ghost"
             size="icon"
             className="touch-target"
-            aria-label="Открыть меню"
+            aria-label={t('aria.openMenu')}
             onClick={() => setDrawerOpen(true)}
           >
             <Menu className="h-4 w-4" />
           </Button>
-          <span className="text-sm font-semibold">Admin</span>
+          <span className="flex-1 text-sm font-semibold">{t('brand')}</span>
+          <LanguageSwitcher />
+        </header>
+        <header className="hidden h-14 items-center justify-end gap-2 border-b border-[var(--border)] px-6 md:flex">
+          <LanguageSwitcher />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              logout()
+              navigate('/')
+            }}
+          >
+            <LogOut className="mr-2 h-4 w-4" /> {t('common:actions.logout')}
+          </Button>
         </header>
         <main className="flex-1 overflow-x-hidden px-4 py-6 sm:px-6 md:py-8 lg:px-8">
           <Outlet />

@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -24,6 +25,7 @@ type MobileTabBarProps = {
     active?: boolean
     onClick: () => void
   }>
+  ariaLabel?: string
 }
 
 function isTabActive(pathname: string, to: string, end?: boolean) {
@@ -37,10 +39,13 @@ export function MobileTabBar({
   variant = 'client',
   emphasizedIndex,
   extraTabs,
+  ariaLabel,
 }: MobileTabBarProps) {
+  const { t } = useTranslation('common')
   const location = useLocation()
   const cols = items.length + (extraTabs?.length ?? 0)
   const centerIndex = emphasizedIndex ?? Math.floor(items.length / 2)
+  const navAriaLabel = ariaLabel ?? t('aria.mainNav')
 
   function renderTabLink(item: MobileTabItem, index: number) {
     const active = isTabActive(location.pathname, item.to, item.end)
@@ -111,7 +116,7 @@ export function MobileTabBar({
     >
       <nav
         className={cn('app-tab-bar pill-tab-bar grid gap-0.5')}
-        aria-label="Основная навигация"
+        aria-label={navAriaLabel}
         style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
       >
         {items.map((item, index) => renderTabLink(item, index))}

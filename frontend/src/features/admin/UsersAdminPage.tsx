@@ -1,15 +1,17 @@
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useAdminUsers, useSetUserBlocked } from '@/features/api/hooks'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 export function UsersAdminPage() {
+  const { t } = useTranslation('admin')
   const { data: users = [] } = useAdminUsers()
   const blockMut = useSetUserBlocked()
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Пользователи</h1>
+      <h1 className="text-2xl font-bold">{t('users.title')}</h1>
       <div className="admin-card-list">
         {users.map((u) => (
           <div key={u.id} className="flex flex-col gap-3 rounded-lg bg-[#111827] p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -27,11 +29,11 @@ export function UsersAdminPage() {
                   onClick={() =>
                     blockMut.mutate(
                       { id: u.id, blocked: false },
-                      { onSuccess: () => toast.success('Пользователь разблокирован') },
+                      { onSuccess: () => toast.success(t('users.toast.unblocked')) },
                     )
                   }
                 >
-                  Разблокировать
+                  {t('users.unblock')}
                 </Button>
               ) : (
                 <Button
@@ -41,11 +43,11 @@ export function UsersAdminPage() {
                   onClick={() =>
                     blockMut.mutate(
                       { id: u.id, blocked: true },
-                      { onSuccess: () => toast.success('Пользователь заблокирован') },
+                      { onSuccess: () => toast.success(t('users.toast.blocked')) },
                     )
                   }
                 >
-                  Заблокировать
+                  {t('users.block')}
                 </Button>
               )}
             </div>

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@/components/mobile'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -14,9 +15,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { PageHeader } from '@/components/shared/page-header'
 import { useEvents, useSaveEvent } from '@/features/api/hooks'
 import { completeEvent, copyRecurringEvent } from '@/features/api/calendar-service'
+import { formatDateTime } from '@/lib/i18n-format'
 import type { CalendarEvent } from '@/types'
 
 export function CalendarPage() {
+  const { t, i18n } = useTranslation(['trainer', 'common'])
   const isMobile = useIsMobile()
   const { data: apiEvents = [], isLoading } = useEvents()
   const saveEvent = useSaveEvent()
@@ -25,6 +28,8 @@ export function CalendarPage() {
   const [title, setTitle] = useState('')
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
+
+  const fcLocale = i18n.language === 'ru' ? 'ru' : i18n.language.startsWith('zh') ? 'zh-cn' : i18n.language.split('-')[0]
 
   const events: EventInput[] = useMemo(
     () =>
@@ -49,10 +54,10 @@ export function CalendarPage() {
     }
     try {
       await saveEvent.mutateAsync(updated)
-      toast.success('Расписание обновлено')
+      toast.success(t('calendar.toast.updated'))
     } catch {
       info.revert()
-      toast.error('Не удалось сохранить')
+      toast.error(t('calendar.toast.saveFailed'))
     }
   }
 
@@ -79,24 +84,24 @@ export function CalendarPage() {
         end,
         type: 'training',
       })
-      toast.success('Событие создано')
+      toast.success(t('calendar.toast.created'))
       setCreateOpen(false)
     } catch {
-      toast.error('Ошибка создания')
+      toast.error(t('calendar.toast.createError'))
     }
   }
 
   return (
     <div className="page-container">
       <PageHeader
-        title="Календарь"
-        description="Перетаскивайте события или выделите слот для нового."
-        actions={<span className="text-sm text-[var(--text-muted)]">{apiEvents.length} событий</span>}
+        title={t('calendar.title')}
+        description={t('calendar.description')}
+        actions={<span className="text-sm text-[var(--text-muted)]">{t('calendar.eventCount', { count: apiEvents.length })}</span>}
       />
       <Card className="premium-panel calendar-mobile-wrap">
         <CardContent className="p-3 md:p-4 [&_.fc]:text-[var(--text-primary)]">
           {isLoading ? (
-            <p className="py-12 text-center text-sm text-[var(--text-muted)]">Загрузка…</p>
+            <p className="py-12 text-center text-sm text-[var(--text-muted)]">{t('common:actions.loading')}</p>
           ) : (
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -112,7 +117,7 @@ export function CalendarPage() {
               select={onDateSelect}
               eventClick={onEventClick}
               eventDrop={handleDrop}
-              locale="ru"
+              locale={fcLocale}
               height={isMobile ? 'auto' : 640}
               contentHeight={isMobile ? 480 : undefined}
               slotMinTime="07:00:00"
@@ -127,7 +132,7 @@ export function CalendarPage() {
         <Card className="mt-4 p-4">
           <p className="font-medium">{selectedEvent.title}</p>
           <p className="mt-1 text-sm text-[var(--text-muted)]">
-            {new Date(selectedEvent.start).toLocaleString('ru')} — {new Date(selectedEvent.end).toLocaleString('ru')}
+            {formatDateTime(selectedEvent.start, i18n.language)} — {formatDateTime(selectedEvent.end, i18n.language)}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Button
@@ -135,25 +140,25 @@ export function CalendarPage() {
               variant="secondary"
               onClick={async () => {
                 await completeEvent(selectedEvent.id)
-                toast.success('Отмечено выполненным')
+                toast.success(t('calendar.toast.completed'))
                 setSelectedEvent(null)
               }}
             >
-              Выполнено
+              {t('calendar.detail.complete')}
             </Button>
             <Button
               size="sm"
               variant="secondary"
               onClick={async () => {
                 await copyRecurringEvent(selectedEvent.id)
-                toast.success('Копия на следующую неделю')
+                toast.success(t('calendar.toast.copied'))
                 setSelectedEvent(null)
               }}
             >
-              Копировать +7 дней
+              {t('calendar.detail.copyWeek')}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setSelectedEvent(null)}>
-              Закрыть
+              {t('common:actions.close')}
             </Button>
           </div>
         </Card>
@@ -162,15 +167,15 @@ export function CalendarPage() {
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Новое событие</DialogTitle>
+            <DialogTitle>{t('calendar.create.title')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label>Название</Label>
+              <Label>{t('calendar.create.name')}</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
             <Button className="w-full" onClick={submitNew}>
-              Создать
+              {t('common:actions.create')}
             </Button>
           </div>
         </DialogContent>

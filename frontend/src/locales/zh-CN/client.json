@@ -13,5 +13,141 @@
     "filesTitle": "文件与资源",
     "filesHint": "教练文档和学习资料。",
     "premium": "高级客户"
+  },
+  "home": {
+    "greeting": "Hi, {{name}}!",
+    "defaultName": "Client",
+    "searchPlaceholder": "Search workouts and exercises…",
+    "progress": {
+      "title": "Your progress"
+    },
+    "cards": {
+      "currentProgram": "Current program",
+      "weekCompletion": "86% of week",
+      "weekCompletionSubtitle": "Plan completion",
+      "packageBalance": "{{count}} sessions",
+      "packageBalanceSubtitle": "Package balance",
+      "today": "Today"
+    },
+    "recent": {
+      "title": "Recent workouts"
+    },
+    "fallback": {
+      "program": "Strength A",
+      "exercise": "Bench press",
+      "dateSample": "Dec 20, Thu"
+    }
+  },
+  "workouts": {
+    "label": "Program",
+    "trainer": "Coach: {{name}}",
+    "weekProgress": "Weekly completion",
+    "exerciseCount": "{{count}} exercises"
+  },
+  "session": {
+    "empty": "No assigned workout",
+    "backToPlan": "Plan",
+    "overallProgress": "Overall workout progress · {{percent}}%",
+    "workBlock": "Working block",
+    "metrics": {
+      "sets": "Sets",
+      "reps": "Reps",
+      "rest": "Rest"
+    },
+    "videoTechnique": "Technique video",
+    "restBetweenSets": "Rest between sets",
+    "completeWorkout": "Finish workout",
+    "nextExercise": "Next exercise",
+    "nextSet": "Next set",
+    "setDone": "Set complete",
+    "toast": {
+      "completed": "Workout marked complete"
+    }
+  },
+  "progress": {
+    "eyebrow": "Progress journal",
+    "title": "Body composition",
+    "subtitle": "Measurements, trends, and reports to your coach.",
+    "donut": {
+      "activity": "Activity log",
+      "done": "Completed",
+      "remaining": "Remaining"
+    },
+    "cheer": {
+      "title": "Great job!",
+      "delta": "−{{kg}} kg since program start",
+      "empty": "Add your first measurement to track progress"
+    },
+    "stats": {
+      "startWeight": "Starting weight",
+      "target": "Target",
+      "current": "Current"
+    },
+    "chart": {
+      "weight": "Weight, kg",
+      "waist": "Waist, cm"
+    },
+    "form": {
+      "newMeasurement": "New measurement",
+      "weight": "Weight",
+      "waist": "Waist",
+      "hips": "Hips",
+      "chest": "Chest",
+      "wellbeing": "How you feel",
+      "wellbeingPlaceholder": "How was your week…",
+      "photoUrl": "Photo URL (optional)",
+      "save": "Save measurement"
+    },
+    "toast": {
+      "saved": "Measurement saved"
+    },
+    "photos": {
+      "title": "Progress photos",
+      "before": "Before",
+      "week2": "Week 2",
+      "after": "After"
+    },
+    "defaultClient": "Client"
+  },
+  "chat": {
+    "label": "Chat",
+    "defaultTrainer": "Coach",
+    "placeholder": "Message…",
+    "toast": {
+      "sendError": "Could not send"
+    }
+  },
+  "achievements": {
+    "eyebrow": "Awards",
+    "title": "Achievements",
+    "subtitle": "Streaks, goals, and unlocked badges.",
+    "streak": "days in a row without missing",
+    "unlockedCount": "{{unlocked}} of {{total}} awards unlocked",
+    "status": {
+      "unlocked": "Unlocked",
+      "inProgress": "In progress"
+    }
+  },
+  "nutrition": {
+    "eyebrow": "Nutrition",
+    "title": "Today's plan",
+    "subtitle": "MVP: meal plan, calories, and notes for your coach.",
+    "calories": "Calories",
+    "goalProgress": "74% of daily goal · 1,820 kcal",
+    "protein": "protein",
+    "proteinAmount": "128 g",
+    "water": "water",
+    "waterAmount": "1.8 L",
+    "addMeal": "Add meal",
+    "meals": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "oatmeal": "Oatmeal with berries",
+      "chickenRice": "Chicken breast with rice",
+      "fishVeg": "Fish with vegetables",
+      "omelette": "Omelette with avocado",
+      "turkeyBuckwheat": "Turkey with buckwheat",
+      "cottageCheese": "Cottage cheese with nuts"
+    }
   }
 }

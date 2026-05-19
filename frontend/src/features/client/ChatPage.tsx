@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { MobileListItem, MobileListStagger } from '@/components/mobile'
 
 export function ChatPage() {
+  const { t } = useTranslation(['client', 'common'])
   const { data: dashboard } = useClientDashboard()
   const { data: messages = [] } = useQuery({
     queryKey: ['client-messages', 'c1'],
@@ -23,7 +25,7 @@ export function ChatPage() {
       await sendMessage.mutateAsync({ clientId: 'c1', sender: 'client', text })
       setText('')
     } catch {
-      toast.error('Не удалось отправить')
+      toast.error(t('chat.toast.sendError'))
     }
   }
 
@@ -31,9 +33,9 @@ export function ChatPage() {
     <MobileListStagger className="flex min-h-[calc(100dvh-var(--tab-bar-height)-var(--safe-area-bottom)-8rem)] flex-col">
       <MobileListItem>
         <header className="mobile-card !py-4">
-          <p className="label-caps">Чат</p>
+          <p className="label-caps">{t('chat.label')}</p>
           <h1 className="mt-1 font-display text-xl font-extrabold tracking-tight">
-            {dashboard?.profile.trainer ?? 'Тренер'}
+            {dashboard?.profile.trainer ?? t('chat.defaultTrainer')}
           </h1>
         </header>
       </MobileListItem>
@@ -63,14 +65,14 @@ export function ChatPage() {
           <Input
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Сообщение…"
+            placeholder={t('chat.placeholder')}
             className="h-12 flex-1 rounded-full border-[var(--border-strong)] bg-[var(--surface2)]"
             onKeyDown={(e) => {
               if (e.key === 'Enter') void handleSend()
             }}
           />
           <Button className="h-12 rounded-full px-5" onClick={() => void handleSend()}>
-            Отправить
+            {t('common:actions.send')}
           </Button>
         </div>
       </MobileListItem>

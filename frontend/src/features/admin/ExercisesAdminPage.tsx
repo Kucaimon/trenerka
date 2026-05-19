@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -21,6 +22,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>
 
 export function ExercisesAdminPage() {
+  const { t } = useTranslation(['admin', 'common'])
   const { data: exercises = [] } = useExercises()
   const createEx = useCreateExercise()
   const updateEx = useUpdateExercise()
@@ -48,30 +50,30 @@ export function ExercisesAdminPage() {
       } else {
         await createEx.mutateAsync({ ...data, isPublic: true })
       }
-      toast.success('Сохранено')
+      toast.success(t('common:actions.saved'))
       setOpen(false)
     } catch {
-      toast.error('Ошибка')
+      toast.error(t('common:toast.error'))
     }
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Каталог упражнений</h1>
+        <h1 className="text-2xl font-bold">{t('exercises.title')}</h1>
         <Button onClick={() => openForm()}>
           <Plus className="mr-2 h-4 w-4" />
-          Добавить
+          {t('exercises.add')}
         </Button>
       </div>
       <div className="table-scroll overflow-hidden rounded-xl border border-white/10">
         <table className="w-full text-sm">
           <thead className="bg-[#111827] text-slate-400">
             <tr>
-              <th className="p-3 text-left">Название</th>
-              <th className="p-3">Группа</th>
-              <th className="p-3">Оборудование</th>
-              <th className="p-3">Уровень</th>
+              <th className="p-3 text-left">{t('exercises.table.name')}</th>
+              <th className="p-3">{t('exercises.table.group')}</th>
+              <th className="p-3">{t('exercises.table.equipment')}</th>
+              <th className="p-3">{t('exercises.table.level')}</th>
               <th className="p-3" />
             </tr>
           </thead>
@@ -90,7 +92,7 @@ export function ExercisesAdminPage() {
                     variant="ghost"
                     size="icon"
                     className="text-red-400"
-                    onClick={() => deleteEx.mutate(ex.id, { onSuccess: () => toast.success('Удалено') })}
+                    onClick={() => deleteEx.mutate(ex.id, { onSuccess: () => toast.success(t('common:deleted')) })}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -104,23 +106,23 @@ export function ExercisesAdminPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editing ? 'Редактировать' : 'Новое упражнение'}</DialogTitle>
+            <DialogTitle>{editing ? t('common:actions.edit') : t('exercises.dialog.new')}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
             <div className="space-y-1.5">
-              <Label>Название</Label>
+              <Label>{t('exercises.table.name')}</Label>
               <Input {...register('name')} />
             </div>
             <div className="space-y-1.5">
-              <Label>Группа мышц</Label>
+              <Label>{t('exercises.field.muscleGroup')}</Label>
               <Input {...register('muscleGroup')} />
             </div>
             <div className="space-y-1.5">
-              <Label>Оборудование</Label>
+              <Label>{t('exercises.table.equipment')}</Label>
               <Input {...register('equipment')} />
             </div>
             <Button type="submit" className="w-full">
-              Сохранить
+              {t('common:actions.save')}
             </Button>
           </form>
         </DialogContent>

@@ -20,6 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { PageHeader } from '@/components/shared/page-header'
 import type { Exercise } from '@/types'
 import { cn } from '@/lib/utils'
+import { translateMuscle } from '@/lib/exercise-i18n'
 
 const muscleTone: Record<string, string> = {
   Грудь: 'text-[var(--danger)] bg-[rgba(255,77,77,0.1)]',
@@ -142,7 +143,7 @@ export function ExercisesPage() {
                       </p>
                     </div>
                     <Badge variant="secondary" className={cn('shrink-0 text-[10px] uppercase', muscleTone[ex.muscleGroup])}>
-                      {ex.muscleGroup}
+                      {translateMuscle(ex.muscleGroup, t)}
                     </Badge>
                   </div>
                 </div>

@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -10,17 +11,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import type { Client, ClientStatus } from '@/types'
 
-const schema = z.object({
-  name: z.string().min(2, 'Минимум 2 символа'),
-  email: z.string().email(),
-  phone: z.string().min(5),
-  status: z.enum(['active', 'pause', 'archive']),
-  goal: z.string().optional(),
-  notes: z.string().optional(),
-  packageBalance: z.number().min(0),
-})
-
-export type ClientFormValues = z.infer<typeof schema>
+export type ClientFormValues = {
+  name: string
+  email: string
+  phone: string
+  status: ClientStatus
+  goal?: string
+  notes?: string
+  packageBalance: number
+}
 
 export function ClientFormDialog({
   open,
@@ -37,6 +36,22 @@ export function ClientFormDialog({
   onSubmit: (data: ClientFormValues) => void | Promise<void>
   loading?: boolean
 }) {
+  const { t } = useTranslation(['trainer', 'common'])
+
+  const schema = useMemo(
+    () =>
+      z.object({
+        name: z.string().min(2, t('common:validation.nameMin2')),
+        email: z.string().email(),
+        phone: z.string().min(5),
+        status: z.enum(['active', 'pause', 'archive']),
+        goal: z.string().optional(),
+        notes: z.string().optional(),
+        packageBalance: z.number().min(0),
+      }),
+    [t],
+  )
+
   const { register, handleSubmit, reset, setValue, watch, formState: { errors } } = useForm<ClientFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -65,6 +80,7 @@ export function ClientFormDialog({
   }, [open, initial, reset])
 
   const status = watch('status')
+  const statuses: ClientStatus[] = ['active', 'pause', 'archive']
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -74,7 +90,7 @@ export function ClientFormDialog({
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
           <div className="space-y-1.5">
-            <Label>Имя</Label>
+            <Label>{t('clientForm.fields.name')}</Label>
             <Input {...register('name')} />
             {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
           </div>
@@ -85,39 +101,41 @@ export function ClientFormDialog({
               {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
             </div>
             <div className="space-y-1.5">
-              <Label>Телефон</Label>
+              <Label>{t('clientForm.fields.phone')}</Label>
               <Input {...register('phone')} />
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label>Статус</Label>
+              <Label>{t('clientForm.fields.status')}</Label>
               <Select value={status} onValueChange={(v) => setValue('status', v as ClientStatus)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">Активен</SelectItem>
-                  <SelectItem value="pause">Пауза</SelectItem>
-                  <SelectItem value="archive">Архив</SelectItem>
+                  {statuses.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {t(`common:status.${s}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>Баланс занятий</Label>
+              <Label>{t('clientForm.fields.packageBalance')}</Label>
               <Input type="number" {...register('packageBalance', { valueAsNumber: true })} />
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label>Цель</Label>
+            <Label>{t('clientForm.fields.goal')}</Label>
             <Input {...register('goal')} />
           </div>
           <div className="space-y-1.5">
-            <Label>Заметки</Label>
+            <Label>{t('clientForm.fields.notes')}</Label>
             <Textarea rows={3} {...register('notes')} />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Сохранение…' : 'Сохранить'}
+            {loading ? t('common:actions.saving') : t('common:actions.save')}
           </Button>
         </form>
       </DialogContent>

@@ -1,3 +1,76 @@
 {
-  "dashboard": "لوحة المسؤول"
+  "dashboard": {
+    "0": "ل",
+    "1": "و",
+    "2": "ح",
+    "3": "ة",
+    "4": " ",
+    "5": "ا",
+    "6": "ل",
+    "7": "م",
+    "8": "س",
+    "9": "ؤ",
+    "10": "و",
+    "11": "ل",
+    "12": "и",
+    "13": "с",
+    "14": "т",
+    "15": "р",
+    "16": "а",
+    "17": "т",
+    "18": "о",
+    "19": "р",
+    "20": "а",
+    "title": "Admin panel",
+    "trainers": "Trainers",
+    "clients": "Clients",
+    "exercises": "Exercises",
+    "payments": "Payments"
+  },
+  "brand": "Admin",
+  "nav": {
+    "dashboard": "Dashboard",
+    "exercises": "Exercises",
+    "users": "Users",
+    "news": "News"
+  },
+  "aria": {
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu"
+  },
+  "news": {
+    "title": "News",
+    "create": "Create",
+    "edit": "Edit",
+    "new": "New post",
+    "field": {
+      "title": "Title",
+      "body": "Body"
+    }
+  },
+  "exercises": {
+    "title": "Exercise catalog",
+    "add": "Add",
+    "table": {
+      "name": "Name",
+      "group": "Group",
+      "equipment": "Equipment",
+      "level": "Level"
+    },
+    "dialog": {
+      "new": "New exercise"
+    },
+    "field": {
+      "muscleGroup": "Muscle group"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "unblock": "Unblock",
+    "block": "Block",
+    "toast": {
+      "unblocked": "User unblocked",
+      "blocked": "User blocked"
+    }
+  }
 }

@@ -132,6 +132,8 @@ void i18n
     ns: [...namespaces],
     defaultNS: 'common',
     interpolation: { escapeValue: false },
+    debug: import.meta.env.DEV,
+    saveMissing: import.meta.env.DEV,
     detection: {
       order: ['localStorage', 'navigator'],
       lookupLocalStorage: LANG_STORAGE_KEY,

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Bell, Check } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { PageHeader } from '@/components/shared/page-header'
@@ -9,6 +10,7 @@ import { formatDate } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
 export function NotificationsPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const { data: notifications = [], isLoading } = useNotifications()
   const qc = useQueryClient()
   const unread = notifications.filter((n) => !n.read).length
@@ -21,17 +23,17 @@ export function NotificationsPage() {
   return (
     <div className="page-container">
       <PageHeader
-        title="Уведомления"
-        description="Сессии, оплаты, сообщения и системные события."
-        actions={unread > 0 ? <Badge variant="accent">{unread} новых</Badge> : undefined}
+        title={t('notifications.title')}
+        description={t('notifications.description')}
+        actions={unread > 0 ? <Badge variant="accent">{t('notifications.badgeNew', { count: unread })}</Badge> : undefined}
       />
 
       {isLoading ? (
-        <p className="text-sm text-[var(--text-muted)]">Загрузка…</p>
+        <p className="text-sm text-[var(--text-muted)]">{t('common:actions.loading')}</p>
       ) : notifications.length === 0 ? (
         <div className="glass-panel flex flex-col items-center justify-center px-6 py-16 text-center">
           <Bell className="h-8 w-8 text-[var(--text-muted)]" />
-          <p className="mt-4 text-sm text-[var(--text-secondary)]">Нет уведомлений</p>
+          <p className="mt-4 text-sm text-[var(--text-secondary)]">{t('notifications.empty')}</p>
         </div>
       ) : (
         <NotificationsList notifications={notifications} onMarkRead={(id) => markRead.mutate(id)} />
@@ -47,6 +49,8 @@ function NotificationsList({
   notifications: { id: string; title: string; body: string; createdAt: string; read: boolean }[]
   onMarkRead: (id: string) => void
 }) {
+  const { t } = useTranslation(['trainer', 'common'])
+
   return (
     <div className="divide-y divide-[var(--border)] overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]">
       {notifications.map((n) => (
@@ -70,7 +74,7 @@ function NotificationsList({
           </div>
           {!n.read && (
             <Button variant="ghost" size="sm" className="shrink-0 gap-1 text-xs" onClick={() => onMarkRead(n.id)}>
-              <Check className="h-3.5 w-3.5" /> Прочитано
+              <Check className="h-3.5 w-3.5" /> {t('common:actions.markRead')}
             </Button>
           )}
         </div>

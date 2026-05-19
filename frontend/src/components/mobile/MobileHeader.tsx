@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -18,12 +19,14 @@ export function MobileHeader({
   title,
   subtitle,
   backTo,
-  backLabel = 'Назад',
+  backLabel,
   onBack,
   trailing,
   className,
   large = true,
 }: MobileHeaderProps) {
+  const { t } = useTranslation('common')
+  const resolvedBackLabel = backLabel ?? t('actions.back')
   const showBack = Boolean(backTo || onBack)
 
   return (
@@ -44,7 +47,7 @@ export function MobileHeader({
                 className="mb-2 inline-flex min-h-[44px] items-center gap-1 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               >
                 <ChevronLeft className="h-4 w-4" />
-                {backLabel}
+                {resolvedBackLabel}
               </Link>
             ) : (
               <button
@@ -53,7 +56,7 @@ export function MobileHeader({
                 className="mb-2 inline-flex min-h-[44px] items-center gap-1 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               >
                 <ChevronLeft className="h-4 w-4" />
-                {backLabel}
+                {resolvedBackLabel}
               </button>
             )
           ) : null}

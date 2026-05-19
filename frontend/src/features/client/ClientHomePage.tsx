@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import {
   ChevronRight,
@@ -15,37 +16,38 @@ import { getClientPayments } from '@/features/api/client-cabinet-service'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { MobileListItem, MobileListStagger } from '@/components/mobile'
 
-const recentDates = ['20 дек, чт', '18 дек, вт', '15 дек, сб']
-
 export function ClientHomePage() {
+  const { t } = useTranslation(['client', 'common'])
   const { data: dashboard } = useClientDashboard()
   const { data: workouts = [] } = useClientWorkouts()
   useQuery({ queryKey: ['client-payments'], queryFn: getClientPayments })
   const profile = dashboard?.profile
-  const firstName = profile?.name?.split(' ')[0] ?? 'Клиент'
+  const firstName = profile?.name?.split(' ')[0] ?? t('home.defaultName')
 
   const progressCards = [
     {
-      title: dashboard?.currentProgram ?? 'Силовая A',
-      subtitle: 'Текущая программа',
+      title: dashboard?.currentProgram ?? t('home.fallback.program'),
+      subtitle: t('home.cards.currentProgram'),
       icon: Dumbbell,
       to: '/client/workouts',
     },
     {
-      title: '86% недели',
-      subtitle: 'Выполнение плана',
+      title: t('home.cards.weekCompletion'),
+      subtitle: t('home.cards.weekCompletionSubtitle'),
       icon: TrendingUp,
       to: '/client/progress',
     },
     {
-      title: `${profile?.packageBalance ?? 0} занятий`,
-      subtitle: 'Баланс пакета',
+      title: t('home.cards.packageBalance', { count: profile?.packageBalance ?? 0 }),
+      subtitle: t('home.cards.packageBalanceSubtitle'),
       icon: Target,
       to: '/client/profile',
     },
     {
-      title: workouts[0]?.title ?? 'Силовая A',
-      subtitle: workouts[0]?.duration ? `${workouts[0].duration} мин` : 'Сегодня',
+      title: workouts[0]?.title ?? t('home.fallback.program'),
+      subtitle: workouts[0]?.duration
+        ? `${workouts[0].duration} ${t('common:units.min')}`
+        : t('home.cards.today'),
       icon: Flame,
       to: '/client/workouts/session',
     },
@@ -62,13 +64,13 @@ export function ClientHomePage() {
           </Avatar>
           <div className="min-w-0 flex-1">
             <h1 className="font-display text-[1.625rem] font-extrabold leading-tight tracking-tight">
-              Привет, {firstName}!
+              {t('home.greeting', { name: firstName })}
             </h1>
           </div>
           <button
             type="button"
             className="touch-target flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface2)] text-[var(--text-secondary)]"
-            aria-label="Меню"
+            aria-label={t('common:aria.menu')}
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -78,19 +80,23 @@ export function ClientHomePage() {
       <MobileListItem>
         <label className="mobile-search-bar">
           <Search className="h-5 w-5 shrink-0" aria-hidden />
-          <input type="search" placeholder="Поиск тренировок и упражнений…" aria-label="Поиск" />
+          <input
+            type="search"
+            placeholder={t('home.searchPlaceholder')}
+            aria-label={t('common:aria.search')}
+          />
         </label>
       </MobileListItem>
 
       <MobileListItem>
         <section className="mobile-section">
           <div className="mb-3 flex items-end justify-between gap-3">
-            <h2 className="font-display text-xl font-bold tracking-tight">Ваш прогресс</h2>
+            <h2 className="font-display text-xl font-bold tracking-tight">{t('home.progress.title')}</h2>
             <Link
               to="/client/progress"
               className="inline-flex items-center gap-0.5 text-sm font-semibold text-[var(--accent)]"
             >
-              Все
+              {t('common:actions.viewAll')}
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
@@ -121,17 +127,17 @@ export function ClientHomePage() {
       <MobileListItem>
         <section className="mobile-section">
           <div className="mb-3 flex items-end justify-between gap-3">
-            <h2 className="font-display text-xl font-bold tracking-tight">Последние тренировки</h2>
+            <h2 className="font-display text-xl font-bold tracking-tight">{t('home.recent.title')}</h2>
             <Link
               to="/client/workouts"
               className="inline-flex items-center gap-0.5 text-sm font-semibold text-[var(--accent)]"
             >
-              Все
+              {t('common:actions.viewAll')}
               <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
           <div className="mobile-recent-list">
-            {(workouts.length ? workouts : [{ id: 'w1', title: 'Силовая A', day: 'Пн', exercises: [] }]).map(
+            {(workouts.length ? workouts : [{ id: 'w1', title: t('home.fallback.program'), day: t('common:days.mon'), exercises: [] }]).map(
               (workout, index) => (
                 <Link
                   key={workout.id}
@@ -144,11 +150,12 @@ export function ClientHomePage() {
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">{workout.title}</p>
                     <p className="text-xs text-[var(--text-muted)]">
-                      {workout.exercises?.[0]?.name ?? 'Жим лёжа'} · {workout.duration ?? 45} мин
+                      {workout.exercises?.[0]?.name ?? t('home.fallback.exercise')} · {workout.duration ?? 45}{' '}
+                      {t('common:units.min')}
                     </p>
                   </div>
                   <span className="mobile-recent-row__date">
-                    {recentDates[index] ?? `${workout.day}, сегодня`}
+                    {index === 0 ? t('home.fallback.dateSample') : `${workout.day}`}
                   </span>
                 </Link>
               ),

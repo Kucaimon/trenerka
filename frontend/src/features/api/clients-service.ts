@@ -1,3 +1,4 @@
+import i18n from '@/i18n'
 import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
 import { mockApi } from '@/lib/mock-api/store'
@@ -68,7 +69,7 @@ export async function getClientAssignedProgram(
 }
 
 export function exportClientsCsv(clients: Client[]): void {
-  const header = 'Имя,Email,Телефон,Статус,Баланс,Цель'
+  const header = i18n.t('common:export.clientsHeader')
   const rows = clients.map(
     (c) => `"${c.name}","${c.email}","${c.phone}",${c.status},${c.packageBalance},"${c.goal ?? ''}"`,
   )

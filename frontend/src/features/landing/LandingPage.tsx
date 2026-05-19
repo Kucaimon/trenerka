@@ -413,7 +413,7 @@ function MobileSection() {
         <SectionIntro eyebrow={t('mobile.eyebrow')} title={t('mobile.title')} text={t('mobile.text')} />
         <motion.div {...fade} className="flex flex-col items-center justify-center gap-6 sm:flex-row">
           <PhoneMock title={t('mobile.today')} primary={t('mobile.workoutA')} meta={t('mobile.workoutMeta')} progress="68%" blocks={blocks} />
-          <PhoneMock title={t('mobile.progress')} primary="67.4 кг" meta={t('mobile.progressMeta')} progress="82%" blocks={blocks} secondary />
+          <PhoneMock title={t('mobile.progress')} primary={t('mobile.mockWeight')} meta={t('mobile.progressMeta')} progress="82%" blocks={blocks} secondary />
         </motion.div>
       </div>
     </section>

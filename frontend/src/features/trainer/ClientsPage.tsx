@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@/components/mobile'
 import { ArrowLeft } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
@@ -19,18 +20,11 @@ import type { Client, ClientStatus } from '@/types'
 import { formatRub, formatDate } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
-const statusMap: Record<ClientStatus, { label: string; variant: 'success' | 'warning' | 'secondary' }> = {
-  active: { label: 'Активен', variant: 'success' },
-  pause: { label: 'Пауза', variant: 'warning' },
-  archive: { label: 'Архив', variant: 'secondary' },
+const STATUS_VARIANTS: Record<ClientStatus, 'success' | 'warning' | 'secondary'> = {
+  active: 'success',
+  pause: 'warning',
+  archive: 'secondary',
 }
-
-const filters = [
-  { id: 'all', label: 'Все' },
-  { id: 'active', label: 'Активные' },
-  { id: 'pause', label: 'Пауза' },
-  { id: 'archive', label: 'Архив' },
-] as const
 
 function avatarGradient(name: string) {
   const hues = [
@@ -43,6 +37,16 @@ function avatarGradient(name: string) {
 
 
 export function ClientsPage() {
+  const { t } = useTranslation(['trainer', 'common'])
+  const filters = useMemo(
+    () => [
+      { id: 'all', label: t('clients.filters.all') },
+      { id: 'active', label: t('clients.filters.active') },
+      { id: 'pause', label: t('common:status.pause') },
+      { id: 'archive', label: t('common:status.archive') },
+    ],
+    [t],
+  )
   const { data: clients = [] } = useQuery({ queryKey: ['clients'], queryFn: getClients })
   const createClient = useCreateClient()
   const updateClient = useUpdateClient()
@@ -73,11 +77,11 @@ export function ClientsPage() {
         <aside className="crm-list">
           <div className="flex items-center justify-between border-b border-[var(--border)] px-[18px] py-4">
             <div>
-              <h1 className="font-display text-base font-extrabold">Клиенты</h1>
-              <p className="text-[11px] text-[var(--text-muted)]">{filtered.length} в базе</p>
+              <h1 className="font-display text-base font-extrabold">{t('clients.title')}</h1>
+              <p className="text-[11px] text-[var(--text-muted)]">{t('clients.inDatabase', { count: filtered.length })}</p>
             </div>
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8" title="Экспорт CSV" onClick={() => exportClientsSpreadsheet(filtered)}>
+              <Button variant="ghost" size="icon" className="h-8 w-8" title={t('common:actions.exportCsv')} onClick={() => exportClientsSpreadsheet(filtered)}>
                 <Download className="h-4 w-4" />
               </Button>
               <Button size="icon" className="h-8 w-8" onClick={() => setCreateOpen(true)}>
@@ -91,7 +95,7 @@ export function ClientsPage() {
               <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
               <Input
                 className="h-9 border-[var(--border)] bg-[var(--surface2)] pl-9 text-[13px]"
-                placeholder="Поиск по имени…"
+                placeholder={t('clients.searchPlaceholder')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -114,7 +118,7 @@ export function ClientsPage() {
 
           <div className="flex-1 overflow-y-auto">
             {filtered.length === 0 ? (
-              <p className="px-5 py-10 text-center text-sm text-[var(--text-muted)]">Клиенты не найдены</p>
+              <p className="px-5 py-10 text-center text-sm text-[var(--text-muted)]">{t('clients.empty')}</p>
             ) : (
               filtered.map((c) => (
                 <ClientListItem
@@ -142,7 +146,7 @@ export function ClientsPage() {
                 onClick={() => setShowDetail(false)}
               >
                 <ArrowLeft className="h-4 w-4" />
-                К списку
+                {t('common:actions.backToList')}
               </Button>
             </div>
           ) : null}
@@ -153,7 +157,7 @@ export function ClientsPage() {
             />
           ) : (
             <div className="flex h-full items-center justify-center p-10 text-sm text-[var(--text-muted)]">
-              Выберите клиента из списка
+              {t('clients.selectPrompt')}
             </div>
           )}
         </main>
@@ -161,11 +165,11 @@ export function ClientsPage() {
       <ClientFormDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
-        title="Новый клиент"
+        title={t('clients.create.title')}
         onSubmit={async (data: ClientFormValues) => {
           const { client, temporaryPassword } = await createClient.mutateAsync(data)
-          toast.success('Клиент создан', {
-            description: temporaryPassword ? `Временный пароль: ${temporaryPassword}` : undefined,
+          toast.success(t('clients.toast.created'), {
+            description: temporaryPassword ? t('clients.toast.tempPassword', { password: temporaryPassword }) : undefined,
           })
           setCreateOpen(false)
           setSelectedId(client.id)
@@ -176,11 +180,11 @@ export function ClientsPage() {
         <ClientFormDialog
           open={editOpen}
           onOpenChange={setEditOpen}
-          title="Редактировать клиента"
+          title={t('clients.edit.title')}
           initial={clients.find((c) => c.id === activeId)}
           onSubmit={async (data) => {
             await updateClient.mutateAsync({ id: activeId, data })
-            toast.success('Сохранено')
+            toast.success(t('common:actions.saved'))
             setEditOpen(false)
           }}
           loading={updateClient.isPending}
@@ -199,7 +203,8 @@ function ClientListItem({
   active: boolean
   onSelect: () => void
 }) {
-  const st = statusMap[client.status]
+  const { t } = useTranslation(['trainer', 'common'])
+  const variant = STATUS_VARIANTS[client.status]
   return (
     <button
       type="button"
@@ -217,20 +222,21 @@ function ClientListItem({
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold">{client.name}</p>
-          <p className="text-[11px] text-[var(--text-muted)]">{client.goal ?? 'Индивидуальная программа'}</p>
+          <p className="text-[11px] text-[var(--text-muted)]">{client.goal ?? t('clients.fallback.program')}</p>
         </div>
       </div>
       <div className="flex items-center gap-2 pl-[46px]">
-        <Badge variant={st.variant} className="text-[10px]">
-          {st.label}
+        <Badge variant={variant} className="text-[10px]">
+          {t(`common:status.${client.status}`)}
         </Badge>
-        <span className="text-[11px] text-[var(--text-muted)]">{client.packageBalance} зан.</span>
+        <span className="text-[11px] text-[var(--text-muted)]">{client.packageBalance} {t('common:units.sessionsShort')}</span>
       </div>
     </button>
   )
 }
 
 function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: () => void }) {
+  const { t } = useTranslation(['trainer', 'common'])
   const { data: client } = useQuery({ queryKey: ['client', clientId], queryFn: () => getClient(clientId) })
   const { data: allPayments = [] } = usePayments()
   const updateClient = useUpdateClient()
@@ -242,9 +248,9 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
     if (client?.notes !== undefined) setNotes(client.notes)
   }, [clientId, client?.notes])
 
-  if (!client) return <p className="p-8 text-[var(--text-muted)]">Загрузка…</p>
+  if (!client) return <p className="p-8 text-[var(--text-muted)]">{t('common:actions.loading')}</p>
 
-  const status = statusMap[client.status] ?? { label: client.status, variant: 'secondary' as const }
+  const statusVariant = STATUS_VARIANTS[client.status] ?? 'secondary'
 
   return (
     <div>
@@ -264,9 +270,9 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
               {client.email} · {client.phone}
             </p>
             <div className="mt-2.5 flex flex-wrap gap-1.5">
-              <Badge variant={status.variant}>{status.label}</Badge>
+              <Badge variant={statusVariant}>{t(`common:status.${client.status}`)}</Badge>
               <span className="rounded-md border border-[var(--border)] bg-[var(--surface3)] px-2.5 py-0.5 text-[11px] text-[var(--text-secondary)]">
-                {client.goal ?? 'Индивидуальная цель'}
+                {client.goal ?? t('clients.fallback.goal')}
               </span>
             </div>
           </div>
@@ -276,12 +282,12 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
             </Button>
             <Button variant="secondary" size="sm" asChild>
               <Link to="/trainer/messages">
-                <MessageSquare className="h-4 w-4" /> Сообщение
+                <MessageSquare className="h-4 w-4" /> {t('clients.actions.message')}
               </Link>
             </Button>
             <AssignProgramDialog
               clientId={clientId}
-              trigger={<Button size="sm">Назначить программу</Button>}
+              trigger={<Button size="sm">{t('clients.actions.assignProgram')}</Button>}
             />
           </div>
         </div>
@@ -290,17 +296,17 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
       <div className="space-y-6 p-4 sm:p-8">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4">
-            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">Баланс</p>
+            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.balance')}</p>
             <p className="font-display mt-1.5 text-2xl font-extrabold tabular-nums">{client.packageBalance}</p>
-            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">занятий в пакете</p>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">{t('clients.stats.sessionsInPackage')}</p>
           </div>
           <div className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4">
-            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">Последняя сессия</p>
+            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.lastSession')}</p>
             <p className="font-display mt-1.5 text-lg font-extrabold">{client.lastSession ?? '—'}</p>
             <CalendarCheck2 className="mt-2 h-4 w-4 text-[var(--accent)]" />
           </div>
           <div className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4">
-            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">Фокус</p>
+            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.focus')}</p>
             <p className="font-display mt-1.5 text-lg font-extrabold">{client.goal ?? '—'}</p>
             <Dumbbell className="mt-2 h-4 w-4 text-[var(--text-muted)]" />
           </div>
@@ -308,11 +314,11 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
 
         <Card>
           <CardHeader>
-            <CardTitle>История оплат</CardTitle>
+            <CardTitle>{t('clients.payments.title')}</CardTitle>
           </CardHeader>
           <CardContent className="divide-y divide-[var(--border)] p-0">
             {payments.length === 0 ? (
-              <p className="px-5 py-6 text-center text-sm text-[var(--text-muted)]">Нет оплат</p>
+              <p className="px-5 py-6 text-center text-sm text-[var(--text-muted)]">{t('clients.payments.empty')}</p>
             ) : (
               payments.map((p) => (
                 <div key={p.id} className="flex items-center justify-between px-5 py-3 text-sm">
@@ -331,13 +337,13 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
 
         <Card>
           <CardHeader>
-            <CardTitle>Заметки тренера</CardTitle>
+            <CardTitle>{t('clients.notes.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <Textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Заметки о клиенте…"
+              placeholder={t('clients.notes.placeholder')}
               rows={4}
               className="bg-[var(--surface3)]"
             />
@@ -348,7 +354,7 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
               disabled={updateClient.isPending}
               onClick={() => updateClient.mutate({ id: clientId, data: { notes } })}
             >
-              Сохранить заметки
+              {t('clients.notes.save')}
             </Button>
           </CardContent>
         </Card>

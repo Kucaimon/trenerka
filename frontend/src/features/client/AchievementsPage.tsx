@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Flame, Medal, Sun, Trophy } from 'lucide-react'
 import { Progress } from '@/components/shared/progress-bar'
 import { mockAchievements } from '@/lib/mock-data'
@@ -12,23 +13,26 @@ const icons: Record<string, ComponentType<{ className?: string }>> = {
 }
 
 export function AchievementsPage() {
+  const { t } = useTranslation('client')
   const unlocked = mockAchievements.filter((item) => item.unlockedAt).length
 
   return (
     <div className="space-y-5">
       <div>
-        <p className="label-caps">Награды</p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight">Достижения</h1>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">Мотивация клиента: серия, цели и открытые бейджи.</p>
+        <p className="label-caps">{t('achievements.eyebrow')}</p>
+        <h1 className="mt-1 text-2xl font-semibold tracking-tight">{t('achievements.title')}</h1>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('achievements.subtitle')}</p>
       </div>
 
       <section className="rounded-2xl border border-[var(--border)] bg-[linear-gradient(135deg,rgba(184,245,61,0.12),rgba(22,22,22,0.85)_42%,rgba(8,8,8,0.95))] p-5">
         <Flame className="h-7 w-7 text-[var(--accent)]" />
         <p className="mt-4 text-4xl font-semibold tracking-tight tabular-nums">12</p>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">дней подряд без пропусков</p>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('achievements.streak')}</p>
         <div className="mt-4">
           <Progress value={(unlocked / mockAchievements.length) * 100} />
-          <p className="mt-2 text-xs text-[var(--text-muted)]">{unlocked} из {mockAchievements.length} наград открыто</p>
+          <p className="mt-2 text-xs text-[var(--text-muted)]">
+            {t('achievements.unlockedCount', { unlocked, total: mockAchievements.length })}
+          </p>
         </div>
       </section>
 
@@ -44,7 +48,7 @@ export function AchievementsPage() {
               <p className="mt-3 text-sm font-semibold">{achievement.title}</p>
               <p className="mt-1 text-xs text-[var(--text-muted)]">{achievement.description}</p>
               <p className="mt-2 text-[10px] font-semibold uppercase text-[var(--text-muted)]">
-                {achievement.unlockedAt ? 'Открыто' : 'В процессе'}
+                {achievement.unlockedAt ? t('achievements.status.unlocked') : t('achievements.status.inProgress')}
               </p>
             </section>
           )

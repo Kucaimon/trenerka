@@ -4,6 +4,7 @@ import { ArrowLeft, Wind } from 'lucide-react'
 import { useExercise } from '@/features/api/hooks'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
+import { displayExercise } from '@/lib/exercise-i18n'
 
 const muscleTone: Record<string, string> = {
   Грудь: 'text-[var(--danger)] bg-[rgba(255,77,77,0.1)]',
@@ -33,13 +34,7 @@ export function ExerciseDetailPage() {
     )
   }
 
-  const steps = exercise.steps?.length
-    ? exercise.steps
-    : exercise.technique
-      ? [exercise.technique]
-      : exercise.description
-        ? [exercise.description]
-        : []
+  const displayed = displayExercise(exercise, t)
 
   return (
     <div className="page-container">
@@ -53,11 +48,11 @@ export function ExerciseDetailPage() {
       <article className="exercise-detail">
         <div className="exercise-detail__media">
           {exercise.imageUrl ? (
-            <img src={exercise.imageUrl} alt={exercise.name} className="exercise-detail__image" />
+            <img src={exercise.imageUrl} alt={displayed.name} className="exercise-detail__image" />
           ) : (
             <div className="exercise-detail__image-placeholder">
               <span className="font-display text-4xl font-extrabold text-[var(--text-muted)]">
-                {exercise.name.slice(0, 1)}
+                {displayed.name.slice(0, 1)}
               </span>
             </div>
           )}
@@ -66,27 +61,27 @@ export function ExerciseDetailPage() {
         <div className="exercise-detail__body">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary" className={cn('text-[10px] uppercase', muscleTone[exercise.muscleGroup])}>
-              {exercise.muscleGroup}
+              {displayed.muscleGroup}
             </Badge>
             <Badge variant="secondary" className="text-[10px]">
-              {exercise.equipment}
+              {displayed.equipment}
             </Badge>
             <Badge variant="secondary" className="text-[10px]">
               {t(`exercisesPage.difficulty.${exercise.difficulty}`)}
             </Badge>
           </div>
 
-          <h1 className="exercise-detail__title">{exercise.name}</h1>
+          <h1 className="exercise-detail__title">{displayed.name}</h1>
 
           {exercise.trainerName ? (
             <p className="exercise-detail__trainer">{t('exerciseDetail.trainer', { name: exercise.trainerName })}</p>
           ) : null}
 
-          {exercise.level ? <p className="exercise-detail__level">{exercise.level}</p> : null}
+          {displayed.level ? <p className="exercise-detail__level">{displayed.level}</p> : null}
 
-          {steps.length > 0 ? (
+          {displayed.steps.length > 0 ? (
             <ol className="exercise-detail__steps">
-              {steps.map((step, index) => (
+              {displayed.steps.map((step, index) => (
                 <li key={index} className="exercise-detail__step">
                   <span className="exercise-detail__step-num">{index + 1}</span>
                   <span>{step}</span>
@@ -95,12 +90,12 @@ export function ExerciseDetailPage() {
             </ol>
           ) : null}
 
-          {exercise.breathingTip ? (
+          {displayed.breathingTip ? (
             <div className="exercise-detail__breathing">
               <Wind className="h-5 w-5 shrink-0 text-[var(--accent)]" aria-hidden />
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent)]">{t('exerciseDetail.breathing')}</p>
-                <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">{exercise.breathingTip}</p>
+                <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">{displayed.breathingTip}</p>
               </div>
             </div>
           ) : null}

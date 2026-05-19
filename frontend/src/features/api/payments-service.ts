@@ -1,3 +1,4 @@
+import i18n from '@/i18n'
 import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
 import { mockApi } from '@/lib/mock-api/store'
@@ -39,7 +40,7 @@ export async function getPaymentReport(from: string, to: string): Promise<{ tota
 }
 
 export function exportPaymentsCsv(payments: Payment[], clientNames: Map<string, string>): void {
-  const header = 'Клиент,Сумма,Дата,Способ,Комментарий'
+  const header = i18n.t('common:export.paymentsHeader')
   const rows = payments.map(
     (p) => `"${clientNames.get(p.clientId) ?? p.clientId}",${p.amount},${p.date},${p.method},"${p.note ?? ''}"`,
   )

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -14,15 +15,19 @@ import { Download } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export function FinancePage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const { data: payments = [] } = usePayments()
   const { data: clients = [] } = useClients()
   const qc = useQueryClient()
   const [clientId, setClientId] = useState('')
   const [amount, setAmount] = useState('')
-  const [method, setMethod] = useState('Карта')
+  const [method, setMethod] = useState('')
   const [sessions, setSessions] = useState('8')
   const [reportFrom, setReportFrom] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().slice(0, 10))
   const [reportTo, setReportTo] = useState(new Date().toISOString().slice(0, 10))
+
+  const defaultMethod = t('finance.defaultMethod')
+  const paymentMethod = method || defaultMethod
 
   const { data: periodReport } = useQuery({
     queryKey: ['payment-report', reportFrom, reportTo],
@@ -39,10 +44,10 @@ export function FinancePage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.payments })
       qc.invalidateQueries({ queryKey: queryKeys.clients })
-      toast.success('Оплата сохранена, баланс обновлён')
+      toast.success(t('finance.toast.saved'))
       setAmount('')
     },
-    onError: () => toast.error('Ошибка сохранения'),
+    onError: () => toast.error(t('common:saveError')),
   })
 
   const clientMap = new Map(clients.map((c) => [c.id, c.name]))
@@ -50,54 +55,58 @@ export function FinancePage() {
   return (
     <div className="page-container">
       <PageHeader
-        title="Финансы"
-        description={provider.enabled ? `Провайдер: ${provider.provider}` : 'Интеграция оплаты: заглушка (Stripe/YooKassa)'}
+        title={t('finance.title')}
+        description={
+          provider.enabled
+            ? t('finance.provider', { name: provider.provider })
+            : t('finance.integrationStub')
+        }
         actions={
           <Button
             variant="secondary"
             size="sm"
             onClick={() => exportPaymentsCsv(payments, clientMap)}
           >
-            <Download className="h-4 w-4" /> Экспорт CSV
+            <Download className="h-4 w-4" /> {t('common:actions.exportCsv')}
           </Button>
         }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <StatCard label="Всего получено" value={formatRub(total)} />
-        <StatCard label="Текущий месяц" value={formatRub(thisMonth)} highlight />
-        <StatCard label="За период" value={formatRub(periodReport?.total ?? 0)} />
+        <StatCard label={t('finance.stats.total')} value={formatRub(total)} />
+        <StatCard label={t('finance.stats.currentMonth')} value={formatRub(thisMonth)} highlight />
+        <StatCard label={t('finance.stats.period')} value={formatRub(periodReport?.total ?? 0)} />
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Отчёт за период</CardTitle>
+          <CardTitle>{t('finance.report.title')}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-wrap items-end gap-3">
           <div className="space-y-1.5">
-            <Label>С</Label>
+            <Label>{t('finance.report.from')}</Label>
             <Input type="date" value={reportFrom} onChange={(e) => setReportFrom(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>По</Label>
+            <Label>{t('finance.report.to')}</Label>
             <Input type="date" value={reportTo} onChange={(e) => setReportTo(e.target.value)} />
           </div>
           <p className="text-sm text-[var(--text-secondary)]">
-            Итого: <strong className="text-[var(--accent)]">{formatRub(periodReport?.total ?? 0)}</strong>
+            {t('finance.report.total')} <strong className="text-[var(--accent)]">{formatRub(periodReport?.total ?? 0)}</strong>
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Добавить оплату</CardTitle>
+          <CardTitle>{t('common:actions.addPayment')}</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <div className="space-y-1.5 lg:col-span-2">
-            <Label>Клиент</Label>
+            <Label>{t('finance.fields.client')}</Label>
             <Select value={clientId} onValueChange={setClientId}>
               <SelectTrigger>
-                <SelectValue placeholder="Выберите клиента" />
+                <SelectValue placeholder={t('finance.fields.clientPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
                 {clients.map((c) => (
@@ -107,15 +116,15 @@ export function FinancePage() {
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label>Сумма</Label>
+            <Label>{t('finance.fields.amount')}</Label>
             <Input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Метод</Label>
-            <Input value={method} onChange={(e) => setMethod(e.target.value)} />
+            <Label>{t('finance.fields.method')}</Label>
+            <Input value={method} placeholder={defaultMethod} onChange={(e) => setMethod(e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Занятий в пакет</Label>
+            <Label>{t('finance.fields.sessionsInPackage')}</Label>
             <Input type="number" value={sessions} onChange={(e) => setSessions(e.target.value)} />
           </div>
           <div className="flex items-end">
@@ -127,12 +136,12 @@ export function FinancePage() {
                   clientId,
                   amount: Number(amount),
                   date: new Date().toISOString().slice(0, 10),
-                  method,
+                  method: paymentMethod,
                   sessionsAdded: Number(sessions) || 0,
                 })
               }
             >
-              Сохранить
+              {t('common:actions.save')}
             </Button>
           </div>
         </CardContent>
@@ -155,11 +164,11 @@ export function FinancePage() {
         <table className="w-full text-sm">
           <thead className="border-b border-[var(--border)] bg-[var(--surface2)]">
             <tr className="text-left text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
-              <th className="px-5 py-3.5">Клиент</th>
-              <th className="px-5 py-3.5">Сумма</th>
-              <th className="px-5 py-3.5">Дата</th>
-              <th className="px-5 py-3.5">Метод</th>
-              <th className="px-5 py-3.5">Примечание</th>
+              <th className="px-5 py-3.5">{t('finance.table.client')}</th>
+              <th className="px-5 py-3.5">{t('finance.table.amount')}</th>
+              <th className="px-5 py-3.5">{t('finance.table.date')}</th>
+              <th className="px-5 py-3.5">{t('finance.table.method')}</th>
+              <th className="px-5 py-3.5">{t('finance.table.note')}</th>
             </tr>
           </thead>
           <tbody>

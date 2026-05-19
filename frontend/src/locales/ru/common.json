@@ -15,7 +15,23 @@
     "loading": "Загрузка…",
     "createAccount": "Создать аккаунт",
     "startFree": "Начать бесплатно",
-    "demo": "Демо"
+    "demo": "Демо",
+    "send": "Отправить",
+    "back": "Назад",
+    "backToList": "К списку",
+    "saving": "Сохранение…",
+    "saved": "Сохранено",
+    "create": "Создать",
+    "assign": "Назначить",
+    "assigning": "Назначение…",
+    "complete": "Выполнено",
+    "close": "Закрыть",
+    "markRead": "Прочитано",
+    "open": "Открыть",
+    "exportCsv": "Экспорт CSV",
+    "addPayment": "Добавить оплату",
+    "all": "Все",
+    "viewAll": "Все"
   },
   "nav": {
     "product": "Продукт",
@@ -42,5 +58,74 @@
   "skills": "Навыки",
   "notFound": "Не найдено",
   "deleted": "Удалено",
-  "saveError": "Ошибка сохранения"
+  "saveError": "Ошибка сохранения",
+  "status": {
+    "active": "Активен",
+    "pause": "Пауза",
+    "archive": "Архив"
+  },
+  "empty": {
+    "notFound": "Ничего не найдено",
+    "noData": "Нет данных"
+  },
+  "aria": {
+    "mainNav": "Основная навигация",
+    "close": "Закрыть",
+    "menu": "Меню",
+    "search": "Поиск"
+  },
+  "units": {
+    "kg": "кг",
+    "cm": "см",
+    "min": "мин",
+    "sec": "сек",
+    "weeksShort": "нед.",
+    "sessionsShort": "зан.",
+    "kcal": "ккал"
+  },
+  "validation": {
+    "nameMin2": "Минимум 2 символа"
+  },
+  "toast": {
+    "error": "Ошибка",
+    "sent": "Отправлено"
+  },
+  "stub": {
+    "badge": "Скоро",
+    "body": "Раздел в разработке. Интерфейс и навигация уже подключены — контент появится в следующей итерации."
+  },
+  "commandPalette": {
+    "searchPlaceholder": "Поиск разделов…",
+    "empty": "Ничего не найдено",
+    "group": {
+      "navigation": "Навигация"
+    },
+    "items": {
+      "dashboard": "Дашборд",
+      "clients": "Клиенты",
+      "builder": "Конструктор",
+      "programs": "Программы",
+      "exercises": "Упражнения",
+      "calendar": "Календарь",
+      "analytics": "Аналитика",
+      "finance": "Финансы",
+      "messages": "Чаты",
+      "aiCoach": "AI-коуч",
+      "files": "Файлы",
+      "settings": "Настройки"
+    }
+  },
+  "export": {
+    "clientsHeader": "Имя,Email,Телефон,Статус,Баланс,Цель",
+    "paymentsHeader": "Клиент,Сумма,Дата,Способ,Комментарий"
+  },
+  "days": {
+    "mon": "Пн",
+    "tue": "Вт",
+    "wed": "Ср",
+    "thu": "Чт",
+    "fri": "Пт",
+    "sat": "Сб",
+    "sun": "Вс"
+  }
 }

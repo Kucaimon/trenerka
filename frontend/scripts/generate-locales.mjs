@@ -5,6 +5,7 @@
 import { writeFileSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { extensions, deepMerge } from './locale-extensions.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const localesDir = join(__dirname, '../src/locales')
@@ -1075,6 +1076,22 @@ for (const lang of ['de', 'pt', 'ja', 'it', 'es', 'fr', 'ar', 'zh-CN']) {
   }
   if (lang === 'it') {
     Object.assign(T.landing[lang].hero, { title1: 'Gestisci allenamenti', title2: 'e clienti', titleAccent: 'in un unico posto', ctaPrimary: 'Inizia gratis →' })
+  }
+}
+
+// Merge extended keys into ru/en
+for (const ns of namespaces) {
+  for (const lang of ['ru', 'en']) {
+    if (extensions[ns]?.[lang]) {
+      T[ns][lang] = deepMerge(T[ns][lang] ?? {}, extensions[ns][lang])
+    }
+  }
+  const enExt = extensions[ns]?.en
+  if (enExt) {
+    for (const lang of langs) {
+      if (lang === 'ru' || lang === 'en') continue
+      T[ns][lang] = deepMerge(T[ns][lang] ?? fillFromEn(ns, lang) ?? {}, enExt)
+    }
   }
 }
 

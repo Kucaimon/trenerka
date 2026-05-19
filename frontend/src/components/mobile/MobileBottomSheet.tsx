@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -12,6 +13,9 @@ type MobileBottomSheetProps = {
 }
 
 export function MobileBottomSheet({ open, onClose, title, children, className }: MobileBottomSheetProps) {
+  const { t } = useTranslation('common')
+  const closeLabel = t('aria.close')
+
   return (
     <AnimatePresence>
       {open ? (
@@ -19,7 +23,7 @@ export function MobileBottomSheet({ open, onClose, title, children, className }:
           <motion.button
             type="button"
             className="bottom-sheet-backdrop"
-            aria-label="Закрыть"
+            aria-label={closeLabel}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -41,7 +45,7 @@ export function MobileBottomSheet({ open, onClose, title, children, className }:
                 <button
                   type="button"
                   className="touch-target flex h-9 w-9 items-center justify-center rounded-lg text-[var(--text-muted)] hover:bg-white/5"
-                  aria-label="Закрыть"
+                  aria-label={closeLabel}
                   onClick={onClose}
                 >
                   <X className="h-4 w-4" />

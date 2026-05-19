@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, CalendarCheck2, CreditCard, Dumbbell, MessageSquare, Pencil } from 'lucide-react'
 import { toast } from 'sonner'
@@ -17,14 +18,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AssignProgramDialog } from '@/components/trainer/AssignProgramDialog'
 import { ClientFormDialog, type ClientFormValues } from '@/components/trainer/ClientFormDialog'
 import { formatRub, formatDate } from '@/lib/utils'
+import type { ClientStatus } from '@/types'
 
-const statusLabels: Record<string, { label: string; variant: 'success' | 'warning' | 'secondary' }> = {
-  active: { label: 'Активен', variant: 'success' },
-  pause: { label: 'Пауза', variant: 'warning' },
-  archive: { label: 'Архив', variant: 'secondary' },
+const STATUS_VARIANTS: Record<ClientStatus, 'success' | 'warning' | 'secondary'> = {
+  active: 'success',
+  pause: 'warning',
+  archive: 'secondary',
 }
 
 export function ClientDetailPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const { id } = useParams<{ id: string }>()
   const { data: client } = useClient(id!)
   const { data: allPayments = [] } = usePayments()
@@ -40,9 +43,9 @@ export function ClientDetailPage() {
     if (client?.notes !== undefined) setNotes(client.notes)
   }, [client?.id, client?.notes])
 
-  if (!client) return <p className="text-[var(--text-muted)]">Загрузка…</p>
+  if (!client) return <p className="text-[var(--text-muted)]">{t('common:actions.loading')}</p>
 
-  const status = statusLabels[client.status] ?? { label: client.status, variant: 'secondary' as const }
+  const statusVariant = STATUS_VARIANTS[client.status] ?? 'secondary'
   const program = assigned?.program
 
   return (
@@ -51,7 +54,7 @@ export function ClientDetailPage() {
         to="/trainer/clients"
         className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
       >
-        <ArrowLeft className="h-4 w-4" /> Клиенты
+        <ArrowLeft className="h-4 w-4" /> {t('clients.back')}
       </Link>
 
       <div className="rounded-xl border border-[var(--border)] bg-[linear-gradient(135deg,rgba(184,245,61,0.08),rgba(22,22,22,0.85)_35%,rgba(8,8,8,0.95))] p-5 shadow-[var(--shadow-soft)]">
@@ -61,8 +64,8 @@ export function ClientDetailPage() {
             <p className="mt-1 text-sm text-[var(--text-secondary)]">
               {client.email} · {client.phone}
             </p>
-            <Badge variant={status.variant} className="mt-2">
-              {status.label}
+            <Badge variant={statusVariant} className="mt-2">
+              {t(`common:status.${client.status}`)}
             </Badge>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -71,12 +74,12 @@ export function ClientDetailPage() {
             </Button>
             <Button variant="secondary" size="sm" asChild>
               <Link to="/trainer/messages">
-                <MessageSquare className="h-4 w-4" /> Сообщение
+                <MessageSquare className="h-4 w-4" /> {t('clients.actions.message')}
               </Link>
             </Button>
             <AssignProgramDialog
               clientId={client.id}
-              trigger={<Button size="sm">Назначить программу</Button>}
+              trigger={<Button size="sm">{t('clients.actions.assignProgram')}</Button>}
             />
           </div>
         </div>
@@ -84,53 +87,55 @@ export function ClientDetailPage() {
           <div className="rounded-lg border border-[var(--border)] bg-black/15 p-3">
             <CreditCard className="h-4 w-4 text-[var(--accent)]" />
             <p className="mt-2 text-2xl font-semibold tabular-nums">{client.packageBalance}</p>
-            <p className="text-xs text-[var(--text-muted)]">занятий в пакете</p>
+            <p className="text-xs text-[var(--text-muted)]">{t('clients.stats.sessionsInPackage')}</p>
           </div>
           <div className="rounded-lg border border-[var(--border)] bg-black/15 p-3">
             <CalendarCheck2 className="h-4 w-4 text-emerald-400" />
-            <p className="mt-2 text-sm font-semibold">{client.lastSession ?? 'Нет данных'}</p>
-            <p className="text-xs text-[var(--text-muted)]">последняя сессия</p>
+            <p className="mt-2 text-sm font-semibold">{client.lastSession ?? '—'}</p>
+            <p className="text-xs text-[var(--text-muted)]">{t('clients.statsDetail.lastSessionLower')}</p>
           </div>
           <div className="rounded-lg border border-[var(--border)] bg-black/15 p-3">
             <Dumbbell className="h-4 w-4 text-[var(--text-secondary)]" />
-            <p className="mt-2 text-sm font-semibold">{client.goal ?? 'Индивидуальная цель'}</p>
-            <p className="text-xs text-[var(--text-muted)]">фокус программы</p>
+            <p className="mt-2 text-sm font-semibold">{client.goal ?? t('clients.fallback.goal')}</p>
+            <p className="text-xs text-[var(--text-muted)]">{t('clients.statsDetail.programFocus')}</p>
           </div>
         </div>
       </div>
 
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger value="overview">Обзор</TabsTrigger>
-          <TabsTrigger value="programs">Программы</TabsTrigger>
-          <TabsTrigger value="progress">Прогресс</TabsTrigger>
-          <TabsTrigger value="payments">Оплаты</TabsTrigger>
-          <TabsTrigger value="notes">Заметки</TabsTrigger>
+          <TabsTrigger value="overview">{t('clients.tabs.overview')}</TabsTrigger>
+          <TabsTrigger value="programs">{t('clients.tabs.programs')}</TabsTrigger>
+          <TabsTrigger value="progress">{t('clients.tabs.progress')}</TabsTrigger>
+          <TabsTrigger value="payments">{t('clients.tabs.payments')}</TabsTrigger>
+          <TabsTrigger value="notes">{t('clients.tabs.notes')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="grid gap-4 lg:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Профиль работы</CardTitle>
+              <CardTitle>{t('clients.overview.workProfile')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm">{client.goal ?? '—'}</p>
               <p className="mt-3 text-sm text-[var(--text-secondary)]">
-                Программа: {program?.name ?? 'не назначена'}
+                {t('clients.overview.program', {
+                  name: program?.name ?? t('clients.overview.programUnassigned'),
+                })}
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Последний замер</CardTitle>
+              <CardTitle>{t('clients.overview.lastMeasurement')}</CardTitle>
             </CardHeader>
             <CardContent>
               {progress.length ? (
                 <p className="text-sm">
-                  {progress[progress.length - 1]!.date}: {progress[progress.length - 1]!.weight} кг
+                  {progress[progress.length - 1]!.date}: {progress[progress.length - 1]!.weight} {t('common:units.kg')}
                 </p>
               ) : (
-                <p className="text-sm text-[var(--text-muted)]">Нет замеров</p>
+                <p className="text-sm text-[var(--text-muted)]">{t('clients.measurements.empty')}</p>
               )}
             </CardContent>
           </Card>
@@ -143,14 +148,17 @@ export function ClientDetailPage() {
                 <>
                   <p className="font-semibold">{program.name}</p>
                   <p className="mt-1 text-[var(--text-muted)]">
-                    {program.weeks} нед. · с {assigned?.startDate ?? '—'}
+                    {t('clients.program.weeksFrom', {
+                      weeks: program.weeks,
+                      date: assigned?.startDate ?? '—',
+                    })}
                   </p>
                   <Button className="mt-4" variant="secondary" size="sm" asChild>
-                    <Link to={`/trainer/workouts/builder?id=${program.id}`}>Открыть в конструкторе</Link>
+                    <Link to={`/trainer/workouts/builder?id=${program.id}`}>{t('clients.program.openBuilder')}</Link>
                   </Button>
                 </>
               ) : (
-                <p className="text-[var(--text-muted)]">Программа не назначена</p>
+                <p className="text-[var(--text-muted)]">{t('clients.program.unassigned')}</p>
               )}
             </CardContent>
           </Card>
@@ -160,12 +168,12 @@ export function ClientDetailPage() {
           <Card>
             <CardContent className="divide-y divide-[var(--border)] p-0">
               {progress.length === 0 ? (
-                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">Нет замеров</p>
+                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.measurements.empty')}</p>
               ) : (
                 progress.map((m) => (
                   <div key={m.date} className="flex justify-between px-5 py-3 text-sm">
                     <span>{formatDate(m.date)}</span>
-                    <span className="tabular-nums font-medium">{m.weight} кг</span>
+                    <span className="tabular-nums font-medium">{m.weight} {t('common:units.kg')}</span>
                   </div>
                 ))
               )}
@@ -176,11 +184,11 @@ export function ClientDetailPage() {
         <TabsContent value="payments">
           <Card>
             <CardHeader>
-              <CardTitle>История оплат</CardTitle>
+              <CardTitle>{t('clients.payments.title')}</CardTitle>
             </CardHeader>
             <CardContent className="divide-y divide-[var(--border)] p-0">
               {payments.length === 0 ? (
-                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">Нет оплат</p>
+                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.payments.empty')}</p>
               ) : (
                 payments.map((p) => (
                   <div key={p.id} className="flex justify-between px-5 py-3 text-sm">
@@ -198,13 +206,13 @@ export function ClientDetailPage() {
         <TabsContent value="notes">
           <Card>
             <CardHeader>
-              <CardTitle>Заметки тренера</CardTitle>
+              <CardTitle>{t('clients.notes.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               <Textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Заметки о клиенте…"
+                placeholder={t('clients.notes.placeholder')}
                 rows={6}
               />
               <Button
@@ -213,10 +221,10 @@ export function ClientDetailPage() {
                 disabled={updateClient.isPending}
                 onClick={async () => {
                   await updateClient.mutateAsync({ id: client.id, data: { notes } })
-                  toast.success('Заметки сохранены')
+                  toast.success(t('clients.notes.saved'))
                 }}
               >
-                Сохранить
+                {t('common:actions.save')}
               </Button>
             </CardContent>
           </Card>
@@ -226,11 +234,11 @@ export function ClientDetailPage() {
       <ClientFormDialog
         open={editOpen}
         onOpenChange={setEditOpen}
-        title="Редактировать клиента"
+        title={t('clients.edit.title')}
         initial={client}
         onSubmit={async (data: ClientFormValues) => {
           await updateClient.mutateAsync({ id: client.id, data })
-          toast.success('Сохранено')
+          toast.success(t('common:actions.saved'))
           setEditOpen(false)
         }}
         loading={updateClient.isPending}

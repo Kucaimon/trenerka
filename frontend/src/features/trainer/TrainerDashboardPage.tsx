@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { Clock3 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,24 +9,20 @@ import { generateRevenueSeries } from '@/lib/mock-data'
 import { formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
 import { cn } from '@/lib/utils'
+import { intlLocale } from '@/lib/i18n-format'
 import type { ClientStatus } from '@/types'
 
-const statusLabels: Record<ClientStatus, string> = {
-  active: 'Активен',
-  pause: 'Пауза',
-  archive: 'Архив',
-}
-
 const chartPeriods = [
-  { id: '7d', label: '7д', days: 7 },
-  { id: '30d', label: '30д', days: 30 },
-  { id: '90d', label: '90д', days: 90 },
-  { id: 'year', label: 'Год', days: 365 },
+  { id: '7d', labelKey: 'dashboard.period.d7', days: 7 },
+  { id: '30d', labelKey: 'dashboard.period.d30', days: 30 },
+  { id: '90d', labelKey: 'dashboard.period.d90', days: 90 },
+  { id: 'year', labelKey: 'dashboard.period.year', days: 365 },
 ] as const
 
 type ChartPeriodId = (typeof chartPeriods)[number]['id']
 
 export function TrainerDashboardPage() {
+  const { t, i18n } = useTranslation(['trainer', 'common'])
   const { data: clients = [], isLoading: clientsLoading } = useClients()
   const { data: analytics } = useTrainerAnalytics()
   const { data: events = [] } = useEvents()
@@ -34,11 +31,13 @@ export function TrainerDashboardPage() {
   const revenueData = useMemo(() => generateRevenueSeries(periodDays), [periodDays])
   const periodTotal = useMemo(() => revenueData.reduce((s, p) => s + p.revenue, 0), [revenueData])
 
+  const statusLabel = (status: ClientStatus) => t(`common:status.${status}`)
+
   const activeCount = analytics?.activeClients ?? clients.filter((c) => c.status === 'active').length
   const upcoming = [...events].sort((a, b) => a.start.localeCompare(b.start)).slice(0, 6)
   const activeClients = clients.filter((c) => c.status === 'active').slice(0, 5)
 
-  const today = new Date().toLocaleDateString('ru-RU', {
+  const today = new Date().toLocaleDateString(intlLocale(i18n.language), {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -46,18 +45,18 @@ export function TrainerDashboardPage() {
   })
 
   const stats = [
-    { label: 'Клиенты', value: clientsLoading ? '…' : String(activeCount), change: '↑ +3 за неделю', accent: true },
-    { label: 'Доход (май)', value: formatRub(analytics?.monthlyRevenue ?? 0), change: '↑ +18%' },
-    { label: 'Тренировок', value: String(analytics?.weeklySessions ?? 0), change: 'за эту неделю' },
-    { label: 'Выполнение', value: '91%', change: '↑ +4%' },
+    { label: t('dashboard.stats.clients'), value: clientsLoading ? '…' : String(activeCount), change: t('dashboard.change.weekClients'), accent: true },
+    { label: t('dashboard.stats.revenueMay'), value: formatRub(analytics?.monthlyRevenue ?? 0), change: t('dashboard.change.revenue') },
+    { label: t('dashboard.stats.workouts'), value: String(analytics?.weeklySessions ?? 0), change: t('dashboard.change.thisWeek') },
+    { label: t('dashboard.stats.completion'), value: '91%', change: t('dashboard.change.completion') },
   ]
 
   return (
     <div className="page-container overflow-x-hidden">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-4 md:mb-7">
         <div className="min-w-0">
-          <h1 className="page-title text-xl md:text-2xl">Дашборд</h1>
-          <p className="page-sub max-w-full truncate capitalize md:whitespace-normal">{today} · Отличный день!</p>
+          <h1 className="page-title text-xl md:text-2xl">{t('dashboard.title')}</h1>
+          <p className="page-sub max-w-full truncate capitalize md:whitespace-normal">{today} · {t('dashboard.greeting')}</p>
         </div>
       </div>
 
@@ -75,31 +74,31 @@ export function TrainerDashboardPage() {
 
       <div className="dash-grid trainer-desktop-stat-grid mb-5 w-full">
         <div className="dash-grid-cell">
-          <p className="stat-label">Клиенты</p>
+          <p className="stat-label">{t('dashboard.stats.clients')}</p>
           <p className="stat-value text-[var(--accent)]">{clientsLoading ? '…' : String(activeCount)}</p>
-          <p className="stat-change">↑ +3 за неделю</p>
+          <p className="stat-change">{t('dashboard.change.weekClients')}</p>
         </div>
         <div className="dash-grid-cell">
-          <p className="stat-label">Доход (май)</p>
+          <p className="stat-label">{t('dashboard.stats.revenueMay')}</p>
           <p className="stat-value">{formatRub(analytics?.monthlyRevenue ?? 0)}</p>
-          <p className="stat-change">↑ +18%</p>
+          <p className="stat-change">{t('dashboard.change.revenue')}</p>
         </div>
         <div className="dash-grid-cell">
-          <p className="stat-label">Тренировок</p>
+          <p className="stat-label">{t('dashboard.stats.workouts')}</p>
           <p className="stat-value">{String(analytics?.weeklySessions ?? 0)}</p>
-          <p className="stat-change">за эту неделю</p>
+          <p className="stat-change">{t('dashboard.change.thisWeek')}</p>
         </div>
         <div className="dash-grid-cell">
-          <p className="stat-label">Выполнение</p>
+          <p className="stat-label">{t('dashboard.stats.completion')}</p>
           <p className="stat-value">91%</p>
-          <p className="stat-change">↑ +4%</p>
+          <p className="stat-change">{t('dashboard.change.completion')}</p>
         </div>
       </div>
 
       <Card>
         <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
           <div>
-            <CardTitle>Выручка</CardTitle>
+            <CardTitle>{t('dashboard.revenue.title')}</CardTitle>
             <p className="font-display mt-1 text-2xl font-extrabold text-[var(--accent)] md:text-[28px]">
               {formatRub(periodTotal)}
             </p>
@@ -117,7 +116,7 @@ export function TrainerDashboardPage() {
                     : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
                 )}
               >
-                {p.label}
+                {t(p.labelKey)}
               </button>
             ))}
           </div>
@@ -128,7 +127,7 @@ export function TrainerDashboardPage() {
               <CartesianGrid stroke={CHART.grid} vertical={false} />
               <XAxis dataKey="label" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} interval="preserveStartEnd" />
               <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
-              <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), 'Выручка']} />
+              <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), t('dashboard.revenue.chart')]} />
               <Line type="monotone" dataKey="revenue" stroke={CHART.accent} strokeWidth={2.4} dot={false} isAnimationActive={false} />
             </LineChart>
           </ResponsiveContainer>
@@ -139,14 +138,14 @@ export function TrainerDashboardPage() {
         <Card>
           <CardHeader className="flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle>Активные клиенты</CardTitle>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">Последняя активность</p>
+              <CardTitle>{t('dashboard.activeClients.title')}</CardTitle>
+              <p className="mt-1 text-xs text-[var(--text-muted)]">{t('dashboard.activeClients.subtitle')}</p>
             </div>
             <Badge variant="secondary">{activeClients.length}</Badge>
           </CardHeader>
           <CardContent className="space-y-0 divide-y divide-[var(--border)] p-0 pt-0">
             {activeClients.length === 0 ? (
-              <p className="px-5 py-4 text-sm text-[var(--text-muted)]">Нет активных клиентов</p>
+              <p className="px-5 py-4 text-sm text-[var(--text-muted)]">{t('dashboard.activeClients.empty')}</p>
             ) : (
               activeClients.map((c) => (
                 <div key={c.id} className="flex items-center gap-3 px-5 py-3 hover:bg-[var(--surface3)]/50">
@@ -155,10 +154,10 @@ export function TrainerDashboardPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium">{c.name}</p>
-                    <p className="text-[11px] text-[var(--text-muted)]">{c.lastSession ?? 'Нет сессий'}</p>
+                    <p className="text-[11px] text-[var(--text-muted)]">{c.lastSession ?? t('dashboard.activeClients.noSessions')}</p>
                   </div>
                   <span className="rounded-full bg-[var(--accent-dim)] px-2 py-0.5 text-[10px] font-semibold text-[var(--accent)]">
-                    {statusLabels[c.status]}
+                    {statusLabel(c.status)}
                   </span>
                 </div>
               ))
@@ -169,24 +168,24 @@ export function TrainerDashboardPage() {
         <Card>
           <CardHeader className="flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle>Расписание на сегодня</CardTitle>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">Ближайшие сессии</p>
+              <CardTitle>{t('dashboard.schedule.title')}</CardTitle>
+              <p className="mt-1 text-xs text-[var(--text-muted)]">{t('dashboard.schedule.subtitle')}</p>
             </div>
             <Clock3 className="h-4 w-4 text-[var(--text-muted)]" />
           </CardHeader>
           <CardContent className="space-y-0 divide-y divide-[var(--border)] p-0 pt-0">
             {upcoming.length === 0 ? (
-              <p className="px-5 py-4 text-sm text-[var(--text-muted)]">Нет событий</p>
+              <p className="px-5 py-4 text-sm text-[var(--text-muted)]">{t('dashboard.schedule.empty')}</p>
             ) : (
               upcoming.slice(0, 5).map((e) => (
                 <div key={e.id} className="flex gap-3 px-5 py-3 hover:bg-[var(--surface3)]/50">
                   <span className="min-w-[40px] pt-0.5 text-[11px] text-[var(--text-muted)]">
-                    {new Date(e.start).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                    {new Date(e.start).toLocaleTimeString(intlLocale(i18n.language), { hour: '2-digit', minute: '2-digit' })}
                   </span>
                   <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--accent)]" />
                   <div className="min-w-0">
                     <p className="truncate text-[13px] font-medium">{e.title}</p>
-                    <p className="text-[11px] text-[var(--text-muted)]">{e.type ?? 'тренировка'}</p>
+                    <p className="text-[11px] text-[var(--text-muted)]">{e.type ?? t('dashboard.eventTypeDefault')}</p>
                   </div>
                 </div>
               ))

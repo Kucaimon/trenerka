@@ -56,11 +56,390 @@
     "filesCount": "{{count}} Dateien",
     "training": "Schulung",
     "trainingHint": "Fitness Academy Kurse",
-    "demo": "Demo"
+    "demo": {
+      "0": "D",
+      "1": "e",
+      "2": "m",
+      "3": "o",
+      "name1": "Questionnaire_Anna.pdf",
+      "name2": "Progress_May.jpg",
+      "name3": "Contract_Ivan.pdf",
+      "size1": "240 KB",
+      "size2": "1.2 MB",
+      "size3": "180 KB"
+    }
   },
   "settings": {
     "title": "Einstellungen",
     "profile": "Trainerprofil",
     "name": "Name"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Great day!",
+    "stats": {
+      "clients": "Clients",
+      "revenueMay": "Revenue (May)",
+      "workouts": "Workouts",
+      "completion": "Completion"
+    },
+    "change": {
+      "weekClients": "↑ +3 this week",
+      "revenue": "↑ +18%",
+      "thisWeek": "this week",
+      "completion": "↑ +4%"
+    },
+    "period": {
+      "d7": "7d",
+      "d30": "30d",
+      "d90": "90d",
+      "year": "Year"
+    },
+    "revenue": {
+      "title": "Revenue",
+      "chart": "Revenue"
+    },
+    "activeClients": {
+      "title": "Active clients",
+      "subtitle": "Recent activity",
+      "empty": "No active clients",
+      "noSessions": "No sessions"
+    },
+    "schedule": {
+      "title": "Today's schedule",
+      "subtitle": "Upcoming sessions",
+      "empty": "No events"
+    },
+    "eventTypeDefault": "training"
+  },
+  "clients": {
+    "title": "Clients",
+    "inDatabase": "{{count}} in database",
+    "searchPlaceholder": "Search by name…",
+    "filters": {
+      "all": "All",
+      "active": "Active"
+    },
+    "empty": "No clients found",
+    "selectPrompt": "Select a client from the list",
+    "create": {
+      "title": "New client"
+    },
+    "edit": {
+      "title": "Edit client"
+    },
+    "toast": {
+      "created": "Client created",
+      "tempPassword": "Temporary password: {{password}}"
+    },
+    "fallback": {
+      "program": "Custom program",
+      "goal": "Custom goal"
+    },
+    "actions": {
+      "message": "Message",
+      "assignProgram": "Assign program"
+    },
+    "stats": {
+      "balance": "Balance",
+      "sessionsInPackage": "sessions in package",
+      "lastSession": "Last session",
+      "focus": "Focus"
+    },
+    "payments": {
+      "title": "Payment history",
+      "empty": "No payments"
+    },
+    "notes": {
+      "title": "Trainer notes",
+      "placeholder": "Notes about the client…",
+      "save": "Save notes",
+      "saved": "Notes saved"
+    },
+    "back": "Clients",
+    "tabs": {
+      "overview": "Overview",
+      "programs": "Programs",
+      "progress": "Progress",
+      "payments": "Payments",
+      "notes": "Notes"
+    },
+    "overview": {
+      "workProfile": "Work profile",
+      "program": "Program: {{name}}",
+      "programUnassigned": "not assigned",
+      "lastMeasurement": "Latest measurement"
+    },
+    "measurements": {
+      "empty": "No measurements"
+    },
+    "program": {
+      "weeksFrom": "{{weeks}} wk · from {{date}}",
+      "openBuilder": "Open in builder",
+      "unassigned": "No program assigned"
+    },
+    "statsDetail": {
+      "lastSessionLower": "last session",
+      "programFocus": "program focus"
+    }
+  },
+  "clientForm": {
+    "fields": {
+      "name": "Name",
+      "phone": "Phone",
+      "status": "Status",
+      "packageBalance": "Session balance",
+      "goal": "Goal",
+      "notes": "Notes"
+    }
+  },
+  "assignProgram": {
+    "title": "Assign program",
+    "field": {
+      "program": "Program"
+    },
+    "placeholder": "Select a program",
+    "toast": {
+      "success": "Program assigned",
+      "error": "Could not assign program"
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "description": "Drag events or select a slot to create one.",
+    "eventCount": "{{count}} events",
+    "toast": {
+      "updated": "Schedule updated",
+      "saveFailed": "Could not save",
+      "created": "Event created",
+      "createError": "Create failed",
+      "completed": "Marked complete",
+      "copied": "Copied to next week"
+    },
+    "detail": {
+      "complete": "Complete",
+      "copyWeek": "Copy +7 days"
+    },
+    "create": {
+      "title": "New event",
+      "name": "Title"
+    }
+  },
+  "finance": {
+    "title": "Finance",
+    "provider": "Provider: {{name}}",
+    "integrationStub": "Payments integration: stub (Stripe/YooKassa)",
+    "stats": {
+      "total": "Total received",
+      "currentMonth": "Current month",
+      "period": "For period"
+    },
+    "report": {
+      "title": "Period report",
+      "from": "From",
+      "to": "To",
+      "total": "Total:"
+    },
+    "fields": {
+      "client": "Client",
+      "clientPlaceholder": "Select client",
+      "amount": "Amount",
+      "method": "Method",
+      "sessionsInPackage": "Sessions in package"
+    },
+    "defaultMethod": "Card",
+    "toast": {
+      "saved": "Payment saved, balance updated"
+    },
+    "table": {
+      "client": "Client",
+      "amount": "Amount",
+      "date": "Date",
+      "method": "Method",
+      "note": "Note"
+    }
+  },
+  "programs": {
+    "title": "Programs",
+    "description": "Workout program library and cycle templates.",
+    "builderLink": "Builder",
+    "empty": "No programs yet",
+    "createInBuilder": "Create in builder"
+  },
+  "builder": {
+    "defaultProgramName": "New program",
+    "catalog": {
+      "mobile": "Exercise catalog",
+      "desktop": "Catalog"
+    },
+    "searchPlaceholder": "Search…",
+    "aria": {
+      "programName": "Program name"
+    },
+    "metrics": {
+      "sets": "Sets",
+      "reps": "Reps",
+      "rest": "Rest",
+      "restValue": "90 sec"
+    },
+    "empty": {
+      "title": "Add exercises from the catalog",
+      "hint": "Drag blocks to reorder"
+    },
+    "summary": {
+      "title": "Summary",
+      "exercises": "Exercises",
+      "estimatedTime": "Estimated time",
+      "day": "Day",
+      "volume": "Volume",
+      "volumeSets": "{{count}} sets"
+    },
+    "ai": {
+      "hint": "Add a core exercise — the plan covers chest and legs but lacks stabilization.",
+      "suggest": "Suggest exercises"
+    },
+    "save": "Save program",
+    "toast": {
+      "saved": "Program saved"
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "selectClient": "Select a client",
+    "attachment": "Attachment: {{url}}",
+    "placeholder": "Message…",
+    "toast": {
+      "sent": "Sent",
+      "sendError": "Send failed",
+      "fileAttached": "File attached",
+      "uploadError": "Upload failed"
+    },
+    "templates": {
+      "workoutReminder": "Workout reminder tomorrow at {{time}}",
+      "greatSession": "Great work in today's session!",
+      "hydration": "Remember to drink enough water",
+      "programUpdated": "Program updated — check the app"
+    },
+    "errors": {
+      "fileTooLarge": "File exceeds 10 MB",
+      "uploadFailed": "File upload failed"
+    }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "description": "Revenue, retention, weekday load, and subscription mix.",
+    "period": {
+      "m3": "3 mo.",
+      "m6": "6 mo.",
+      "m12": "12 mo."
+    },
+    "stats": {
+      "mrr": "MRR",
+      "clients": "Clients",
+      "sessionsPerWeek": "Sessions / wk.",
+      "unread": "Unread"
+    },
+    "charts": {
+      "revenueByMonth": "Revenue by month",
+      "retention": "Client retention",
+      "weekdayActivity": "Activity by weekday",
+      "subscriptionMix": "Subscription mix",
+      "attendance": "Weekly attendance"
+    },
+    "tooltip": {
+      "revenue": "Revenue",
+      "retention": "Retention",
+      "sessions": "Sessions"
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Trainer account and display name in CRM and chats.",
+    "badgePro": "Pro",
+    "defaultName": "Trainer",
+    "fields": {
+      "name": "Name",
+      "specialization": "Specialization"
+    },
+    "specializationPlaceholder": "Strength training, weight loss…"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "Sessions, payments, messages, and system events.",
+    "badgeNew": "{{count}} new",
+    "empty": "No notifications"
+  },
+  "aiCoach": {
+    "title": "AI coach",
+    "description": "Operational signals on clients, payments, and schedule — with a clear next step.",
+    "badgeBeta": "Beta",
+    "summary": {
+      "title": "Practice summary",
+      "line": "{{clients}} active clients · {{unread}} unread · {{revenue}} this month"
+    },
+    "cards": {
+      "churn": {
+        "title": "Churn risk",
+        "atRisk": "{{names}} — low package balance or no recent session.",
+        "ok": "No critical clients detected.",
+        "action": "Open CRM"
+      },
+      "payments": {
+        "title": "Payments",
+        "hasRevenue": "Monthly revenue {{amount}}. Review clients with expired packages.",
+        "empty": "Record the first payment to see your finances.",
+        "action": "Finance"
+      },
+      "comms": {
+        "title": "Communication",
+        "unread": "{{count}} unread messages from clients.",
+        "allRead": "All chats read — good time for a check-in.",
+        "action": "Chats"
+      },
+      "schedule": {
+        "title": "Schedule",
+        "hasEvents": "{{count}} events this week. Check reminders.",
+        "empty": "Calendar is empty — add your first sessions.",
+        "action": "Calendar"
+      }
+    }
+  },
+  "support": {
+    "title": "Support",
+    "description": "Knowledge base, team chat, and ticket status."
+  },
+  "catalog": {
+    "muscles": {
+      "chest": "Chest",
+      "back": "Back",
+      "legs": "Legs",
+      "shoulders": "Shoulders",
+      "arms": "Arms",
+      "core": "Core",
+      "cardio": "Cardio"
+    },
+    "equipment": {
+      "barbell": "Barbell",
+      "dumbbells": "Dumbbells",
+      "machine": "Machine",
+      "bodyweight": "Bodyweight",
+      "cable": "Cable",
+      "band": "Band"
+    },
+    "exercises": {
+      "ex-rdl": {
+        "name": "Romanian deadlift",
+        "level": "Proper technique for beginners",
+        "description": "Fundamental exercise for hamstrings and glutes.",
+        "technique": "Keep your back straight throughout the range.",
+        "breathingTip": "Exhale on effort (when lifting), inhale when lowering. Start with light weight!",
+        "steps": [
+          "Starting position: stand with feet shoulder-width apart, barbell in lowered hands. Back straight, shoulders back.",
+          "Movement: push hips back, hinging at the hips. Knees slightly bent.",
+          "Lowering: lower the bar to mid-shin, feeling a stretch in the hamstrings. Back always straight!",
+          "Lift: return to start by extending hips and squeezing glutes."
+        ]
+      }
+    }
   }
 }

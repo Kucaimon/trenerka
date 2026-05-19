@@ -13,5 +13,141 @@
     "filesTitle": "Файлы и ресурсы",
     "filesHint": "Документы тренера и обучающие материалы.",
     "premium": "Premium client"
+  },
+  "home": {
+    "greeting": "Привет, {{name}}!",
+    "defaultName": "Клиент",
+    "searchPlaceholder": "Поиск тренировок и упражнений…",
+    "progress": {
+      "title": "Ваш прогресс"
+    },
+    "cards": {
+      "currentProgram": "Текущая программа",
+      "weekCompletion": "86% недели",
+      "weekCompletionSubtitle": "Выполнение плана",
+      "packageBalance": "{{count}} занятий",
+      "packageBalanceSubtitle": "Баланс пакета",
+      "today": "Сегодня"
+    },
+    "recent": {
+      "title": "Последние тренировки"
+    },
+    "fallback": {
+      "program": "Силовая A",
+      "exercise": "Жим лёжа",
+      "dateSample": "20 дек, чт"
+    }
+  },
+  "workouts": {
+    "label": "Программа",
+    "trainer": "Тренер: {{name}}",
+    "weekProgress": "Выполнение недели",
+    "exerciseCount": "{{count}} упражнений"
+  },
+  "session": {
+    "empty": "Нет назначенной тренировки",
+    "backToPlan": "План",
+    "overallProgress": "Общий прогресс тренировки · {{percent}}%",
+    "workBlock": "Рабочий блок",
+    "metrics": {
+      "sets": "Сеты",
+      "reps": "Повт.",
+      "rest": "Отдых"
+    },
+    "videoTechnique": "Видео техники",
+    "restBetweenSets": "Отдых между подходами",
+    "completeWorkout": "Завершить тренировку",
+    "nextExercise": "Следующее упражнение",
+    "nextSet": "Следующий подход",
+    "setDone": "Подход выполнен",
+    "toast": {
+      "completed": "Тренировка отмечена выполненной"
+    }
+  },
+  "progress": {
+    "eyebrow": "Дневник прогресса",
+    "title": "Состав тела",
+    "subtitle": "Замеры, динамика и отчёт тренеру.",
+    "donut": {
+      "activity": "Запись активности",
+      "done": "Выполнено",
+      "remaining": "Осталось"
+    },
+    "cheer": {
+      "title": "Отличная работа!",
+      "delta": "−{{kg}} кг с начала программы",
+      "empty": "Добавьте первый замер, чтобы отслеживать прогресс"
+    },
+    "stats": {
+      "startWeight": "Стартовый вес",
+      "target": "Цель",
+      "current": "Текущий"
+    },
+    "chart": {
+      "weight": "Вес, кг",
+      "waist": "Талия, см"
+    },
+    "form": {
+      "newMeasurement": "Новый замер",
+      "weight": "Вес",
+      "waist": "Талия",
+      "hips": "Бёдра",
+      "chest": "Грудь",
+      "wellbeing": "Самочувствие",
+      "wellbeingPlaceholder": "Как прошла неделя…",
+      "photoUrl": "URL фото (опционально)",
+      "save": "Сохранить замер"
+    },
+    "toast": {
+      "saved": "Замер сохранён"
+    },
+    "photos": {
+      "title": "Фото прогресса",
+      "before": "До",
+      "week2": "Неделя 2",
+      "after": "После"
+    },
+    "defaultClient": "Клиент"
+  },
+  "chat": {
+    "label": "Чат",
+    "defaultTrainer": "Тренер",
+    "placeholder": "Сообщение…",
+    "toast": {
+      "sendError": "Не удалось отправить"
+    }
+  },
+  "achievements": {
+    "eyebrow": "Награды",
+    "title": "Достижения",
+    "subtitle": "Мотивация клиента: серия, цели и открытые бейджи.",
+    "streak": "дней подряд без пропусков",
+    "unlockedCount": "{{unlocked}} из {{total}} наград открыто",
+    "status": {
+      "unlocked": "Открыто",
+      "inProgress": "В процессе"
+    }
+  },
+  "nutrition": {
+    "eyebrow": "Питание",
+    "title": "План на сегодня",
+    "subtitle": "Базовый MVP: план питания, калории и заметки для тренера.",
+    "calories": "Калории",
+    "goalProgress": "74% от дневной цели · 1 820 ккал",
+    "protein": "белок",
+    "proteinAmount": "128 г",
+    "water": "вода",
+    "waterAmount": "1.8 л",
+    "addMeal": "Добавить приём пищи",
+    "meals": {
+      "monday": "Понедельник",
+      "tuesday": "Вторник",
+      "oatmeal": "Овсянка с ягодами",
+      "chickenRice": "Куриная грудка с рисом",
+      "fishVeg": "Рыба с овощами",
+      "omelette": "Омлет с авокадо",
+      "turkeyBuckwheat": "Индейка с гречкой",
+      "cottageCheese": "Творог с орехами"
+    }
   }
 }

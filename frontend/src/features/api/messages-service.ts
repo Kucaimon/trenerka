@@ -1,3 +1,4 @@
+import i18n from '@/i18n'
 import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
 import { mockApi } from '@/lib/mock-api/store'
@@ -5,12 +6,22 @@ import { wpFetch, getAuthToken } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
 import type { Message } from '@/types'
 
-export const messageTemplates = [
-  'Напоминание о тренировке завтра в {time}',
-  'Отличная работа на сегодняшней сессии!',
-  'Не забудьте выпить достаточно воды',
-  'Программа обновлена — проверьте приложение',
-]
+export function getMessageTemplates(): string[] {
+  return [
+    i18n.t('trainer:messages.templates.workoutReminder', { time: '10:00' }),
+    i18n.t('trainer:messages.templates.greatSession'),
+    i18n.t('trainer:messages.templates.hydration'),
+    i18n.t('trainer:messages.templates.programUpdated'),
+  ]
+}
+
+export const messageTemplates: string[] = new Proxy([] as string[], {
+  get(_target, prop) {
+    const templates = getMessageTemplates()
+    const value = Reflect.get(templates, prop, templates)
+    return typeof value === 'function' ? (value as (...args: unknown[]) => unknown).bind(templates) : value
+  },
+})
 
 export async function getMessages(clientId: string): Promise<Message[]> {
   await apiDelay()
@@ -47,7 +58,9 @@ export async function markMessageRead(id: string): Promise<void> {
 }
 
 export async function uploadAttachment(file: File): Promise<string> {
-  if (file.size > 10 * 1024 * 1024) throw new Error('Файл больше 10 МБ')
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error(i18n.t('trainer:messages.errors.fileTooLarge'))
+  }
   if (config.useMockData) {
     await apiDelay(500)
     return URL.createObjectURL(file)
@@ -60,7 +73,7 @@ export async function uploadAttachment(file: File): Promise<string> {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: form,
   })
-  if (!res.ok) throw new Error('Ошибка загрузки файла')
+  if (!res.ok) throw new Error(i18n.t('trainer:messages.errors.uploadFailed'))
   const data = (await res.json()) as { url: string }
   return data.url
 }

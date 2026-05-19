@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -13,8 +14,27 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import type { Exercise } from '@/types'
 import { cn } from '@/lib/utils'
+import { displayExercise } from '@/lib/exercise-i18n'
 
-function SortableExercise({ ex, onRemove }: { ex: Exercise; onRemove: () => void }) {
+const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const
+
+function SortableExercise({
+  ex,
+  onRemove,
+  setsLabel,
+  repsLabel,
+  restLabel,
+  restValue,
+}: {
+  ex: Exercise
+  onRemove: () => void
+  setsLabel: string
+  repsLabel: string
+  restLabel: string
+  restValue: string
+}) {
+  const { t } = useTranslation('trainer')
+  const displayed = displayExercise(ex, t)
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: ex.id })
   const style = { transform: CSS.Transform.toString(transform), transition }
 
@@ -37,9 +57,9 @@ function SortableExercise({ ex, onRemove }: { ex: Exercise; onRemove: () => void
           #
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold">{ex.name}</p>
+          <p className="text-sm font-semibold">{displayed.name}</p>
           <p className="text-[11px] text-[var(--text-muted)]">
-            {ex.muscleGroup} · {ex.equipment}
+            {displayed.muscleGroup} · {displayed.equipment}
           </p>
         </div>
         <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100" onClick={onRemove}>
@@ -48,9 +68,9 @@ function SortableExercise({ ex, onRemove }: { ex: Exercise; onRemove: () => void
       </div>
       <div className="flex flex-wrap gap-2 border-t border-[var(--border)] px-4 py-3">
         {[
-          ['Сеты', '4'],
-          ['Повт.', '8'],
-          ['Отдых', '90 сек'],
+          [setsLabel, '4'],
+          [repsLabel, '8'],
+          [restLabel, restValue],
         ].map(([label, val]) => (
           <div key={label} className="min-w-[70px] flex-1 rounded-lg bg-[var(--surface2)] px-3 py-2">
             <p className="text-[10px] uppercase tracking-[0.05em] text-[var(--text-muted)]">{label}</p>
@@ -62,20 +82,20 @@ function SortableExercise({ ex, onRemove }: { ex: Exercise; onRemove: () => void
   )
 }
 
-const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-const dayLabels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-
 export function WorkoutBuilderPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const [params] = useSearchParams()
   const programId = params.get('id')
   const { data: library = [] } = useQuery({ queryKey: ['exercises'], queryFn: getExercises })
-  const [programName, setProgramName] = useState('Новая программа')
+  const [programName, setProgramName] = useState(() => t('builder.defaultProgramName'))
   const [programDbId, setProgramDbId] = useState<string | undefined>(programId ?? undefined)
   const [selected, setSelected] = useState<Exercise[]>([])
-  const [week, setWeek] = useState('mon')
+  const [week, setWeek] = useState<(typeof DAYS)[number]>('mon')
   const [libSearch, setLibSearch] = useState('')
   const [catalogOpen, setCatalogOpen] = useState(false)
   const [saving, setSaving] = useState(false)
+
+  const dayLabels = DAYS.map((d) => t(`common:days.${d}`))
 
   useEffect(() => {
     if (!programId) return
@@ -98,7 +118,10 @@ export function WorkoutBuilderPage() {
     })
   }, [programId])
 
-  const filteredLib = library.filter((ex) => ex.name.toLowerCase().includes(libSearch.toLowerCase()))
+  const filteredLib = library.filter((ex) => {
+    const label = displayExercise(ex, t).name
+    return label.toLowerCase().includes(libSearch.toLowerCase())
+  })
 
   const add = (ex: Exercise) => {
     if (!selected.find((s) => s.id === ex.id)) setSelected([...selected, ex])
@@ -114,11 +137,11 @@ export function WorkoutBuilderPage() {
   }
 
   const duration = selected.length ? selected.length * 9 + 12 : 0
+  const weekIdx = DAYS.indexOf(week)
 
   const handleSave = async () => {
     setSaving(true)
     try {
-      const dayIdx = days.indexOf(week)
       const workoutExercises: WorkoutExerciseItem[] = selected.map((ex, i) => ({
         id: `we-${i}`,
         exerciseId: ex.id,
@@ -132,7 +155,7 @@ export function WorkoutBuilderPage() {
       const workout: ProgramWorkout = {
         id: 'w1',
         weekNumber: 1,
-        dayLabel: dayLabels[dayIdx] ?? 'Пн',
+        dayLabel: dayLabels[weekIdx] ?? dayLabels[0],
         title: programName,
         exercises: workoutExercises,
       }
@@ -145,12 +168,30 @@ export function WorkoutBuilderPage() {
       }
       const saved = await saveProgram(program)
       setProgramDbId(saved.id)
-      toast.success('Программа сохранена')
+      toast.success(t('builder.toast.saved'))
     } catch {
-      toast.error('Ошибка сохранения')
+      toast.error(t('common:saveError'))
     } finally {
       setSaving(false)
     }
+  }
+
+  const renderCatalogItem = (ex: Exercise) => {
+    const displayed = displayExercise(ex, t)
+    return (
+      <button
+        key={ex.id}
+        type="button"
+        onClick={() => add(ex)}
+        className="mb-0.5 flex w-full min-h-[44px] items-center gap-2.5 rounded-lg px-3 py-2.5 text-left hover:bg-[var(--surface2)]"
+      >
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[13px] font-medium">{displayed.name}</p>
+          <p className="truncate text-[11px] text-[var(--text-muted)]">{displayed.muscleGroup}</p>
+        </div>
+        <Plus className="h-3.5 w-3.5 shrink-0 text-[var(--accent)]" />
+      </button>
+    )
   }
 
   return (
@@ -161,7 +202,7 @@ export function WorkoutBuilderPage() {
           className="flex w-full min-h-[48px] items-center justify-between px-4 py-3 text-sm font-semibold"
           onClick={() => setCatalogOpen((o) => !o)}
         >
-          Каталог упражнений
+          {t('builder.catalog.mobile')}
           <Plus className={cn('h-4 w-4 text-[var(--accent)] transition-transform', catalogOpen && 'rotate-45')} />
         </button>
         {catalogOpen ? (
@@ -171,80 +212,49 @@ export function WorkoutBuilderPage() {
                 <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
                 <Input
                   className="h-9 border-[var(--border)] bg-[var(--surface2)] pl-9 text-[13px]"
-                  placeholder="Поиск…"
+                  placeholder={t('builder.searchPlaceholder')}
                   value={libSearch}
                   onChange={(e) => setLibSearch(e.target.value)}
                 />
               </div>
             </div>
-            <div className="max-h-[36dvh] overflow-y-auto p-2">
-              {filteredLib.map((ex) => (
-                <button
-                  key={ex.id}
-                  type="button"
-                  onClick={() => add(ex)}
-                  className="mb-0.5 flex w-full min-h-[44px] items-center gap-2.5 rounded-lg px-3 py-2.5 text-left hover:bg-[var(--surface2)]"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium">{ex.name}</p>
-                    <p className="truncate text-[11px] text-[var(--text-muted)]">{ex.muscleGroup}</p>
-                  </div>
-                  <Plus className="h-3.5 w-3.5 shrink-0 text-[var(--accent)]" />
-                </button>
-              ))}
-            </div>
+            <div className="max-h-[36dvh] overflow-y-auto p-2">{filteredLib.map(renderCatalogItem)}</div>
           </>
         ) : null}
       </div>
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <aside className="builder-catalog-desktop hidden w-[260px] shrink-0 flex-col border-r border-[var(--border)] bg-[var(--surface)] lg:flex">
-          <div className="border-b border-[var(--border)] px-[18px] py-4 text-[13px] font-semibold">Каталог</div>
+          <div className="border-b border-[var(--border)] px-[18px] py-4 text-[13px] font-semibold">{t('builder.catalog.desktop')}</div>
           <div className="border-b border-[var(--border)] px-3.5 py-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
               <Input
                 className="h-9 border-[var(--border)] bg-[var(--surface2)] pl-9 text-[13px]"
-                placeholder="Поиск…"
+                placeholder={t('builder.searchPlaceholder')}
                 value={libSearch}
                 onChange={(e) => setLibSearch(e.target.value)}
               />
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto p-2">
-            {filteredLib.map((ex) => (
-              <button
-                key={ex.id}
-                type="button"
-                onClick={() => add(ex)}
-                className="mb-0.5 flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-[var(--surface2)]"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-[13px] font-medium">{ex.name}</p>
-                  <p className="truncate text-[11px] text-[var(--text-muted)]">{ex.muscleGroup}</p>
-                </div>
-                <Plus className="h-3.5 w-3.5 shrink-0 text-[var(--accent)]" />
-              </button>
-            ))}
-          </div>
+          <div className="flex-1 overflow-y-auto p-2">{filteredLib.map(renderCatalogItem)}</div>
         </aside>
 
-        {/* Canvas */}
         <main className="min-w-0 flex-1 overflow-y-auto bg-[var(--bg-base)] p-4 md:p-6">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <input
               value={programName}
               onChange={(e) => setProgramName(e.target.value)}
               className="font-display w-full max-w-md border-none bg-transparent text-[22px] font-extrabold tracking-tight outline-none"
-              aria-label="Название программы"
+              aria-label={t('builder.aria.programName')}
             />
             <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
               <Timer className="h-4 w-4" />
-              {duration ? `${duration} мин` : '0 мин'}
+              {duration ? `${duration} ${t('common:units.min')}` : `0 ${t('common:units.min')}`}
             </div>
           </div>
 
           <div className="mb-5 flex gap-1 overflow-x-auto">
-            {days.map((d, i) => (
+            {DAYS.map((d, i) => (
               <button
                 key={d}
                 type="button"
@@ -265,7 +275,15 @@ export function WorkoutBuilderPage() {
             <SortableContext items={selected.map((s) => s.id)} strategy={verticalListSortingStrategy}>
               <div className="space-y-2.5">
                 {selected.map((ex) => (
-                  <SortableExercise key={ex.id} ex={ex} onRemove={() => setSelected(selected.filter((s) => s.id !== ex.id))} />
+                  <SortableExercise
+                    key={ex.id}
+                    ex={ex}
+                    onRemove={() => setSelected(selected.filter((s) => s.id !== ex.id))}
+                    setsLabel={t('builder.metrics.sets')}
+                    repsLabel={t('builder.metrics.reps')}
+                    restLabel={t('builder.metrics.rest')}
+                    restValue={t('builder.metrics.restValue')}
+                  />
                 ))}
               </div>
             </SortableContext>
@@ -273,34 +291,34 @@ export function WorkoutBuilderPage() {
 
           {!selected.length && (
             <div className="rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface)] py-16 text-center">
-              <p className="text-sm font-medium text-[var(--text-secondary)]">Добавьте упражнения из каталога</p>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">Перетаскивайте блоки для изменения порядка</p>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">{t('builder.empty.title')}</p>
+              <p className="mt-1 text-xs text-[var(--text-muted)]">{t('builder.empty.hint')}</p>
             </div>
           )}
         </main>
 
-        {/* AI / Summary panel */}
         <aside className="hidden w-[280px] shrink-0 flex-col border-l border-[var(--border)] bg-[var(--surface)] xl:flex">
-          <div className="border-b border-[var(--border)] px-5 py-4 text-[13px] font-semibold">Сводка</div>
+          <div className="border-b border-[var(--border)] px-5 py-4 text-[13px] font-semibold">{t('builder.summary.title')}</div>
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
             <div className="rounded-xl border border-[var(--border)] bg-gradient-to-br from-[var(--accent-glow)] to-[rgba(77,158,255,0.04)] p-4">
               <p className="mb-3 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-[var(--accent)]">
-                <Sparkles className="h-3 w-3" /> AI-подсказка
+                <Sparkles className="h-3 w-3" /> AI
               </p>
-              <p className="text-[13px] leading-relaxed text-[var(--text-secondary)]">
-                Добавьте упражнение на кор — план покрывает грудь и ноги, но мало стабилизации.
-              </p>
+              <p className="text-[13px] leading-relaxed text-[var(--text-secondary)]">{t('builder.ai.hint')}</p>
               <Button variant="secondary" size="sm" className="mt-3 w-full border-[rgba(184,245,61,0.2)] text-[var(--accent)]">
-                Предложить упражнения
+                {t('builder.ai.suggest')}
               </Button>
             </div>
 
             <div className="rounded-[10px] bg-[var(--surface2)] p-3.5">
               {[
-                ['Упражнений', String(selected.length)],
-                ['Примерное время', duration ? `${duration} мин` : '—'],
-                ['День', dayLabels[days.indexOf(week)]],
-                ['Объём', selected.length ? `${selected.length * 4} подходов` : '—'],
+                [t('builder.summary.exercises'), String(selected.length)],
+                [t('builder.summary.estimatedTime'), duration ? `${duration} ${t('common:units.min')}` : '—'],
+                [t('builder.summary.day'), dayLabels[weekIdx]],
+                [
+                  t('builder.summary.volume'),
+                  selected.length ? t('builder.summary.volumeSets', { count: selected.length * 4 }) : '—',
+                ],
               ].map(([label, value]) => (
                 <div key={label} className="flex items-center justify-between border-b border-[var(--border)] py-2 last:border-0">
                   <span className="text-xs text-[var(--text-muted)]">{label}</span>
@@ -310,7 +328,7 @@ export function WorkoutBuilderPage() {
             </div>
 
             <Button className="w-full" onClick={handleSave} disabled={saving}>
-              <Sparkles className="h-4 w-4" /> {saving ? 'Сохранение…' : 'Сохранить программу'}
+              <Sparkles className="h-4 w-4" /> {saving ? t('common:actions.saving') : t('builder.save')}
             </Button>
           </div>
         </aside>
