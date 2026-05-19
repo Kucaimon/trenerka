@@ -142,14 +142,6 @@ export const extensions = {
         activeClients: { title: 'Активные клиенты', subtitle: 'Последняя активность', empty: 'Нет активных клиентов', noSessions: 'Нет сессий' },
         schedule: { title: 'Расписание на сегодня', subtitle: 'Ближайшие сессии', empty: 'Нет событий' },
         eventTypeDefault: 'тренировка',
-        activity: {
-          title: 'Лента активности',
-          subtitle: 'Последние события',
-          empty: 'Пока нет активности',
-          payment: 'Оплата · {{amount}}',
-          session: 'Тренировка завершена',
-          message: 'Новое сообщение',
-        },
       },
       clients: {
         title: 'Клиенты',
@@ -374,14 +366,6 @@ export const extensions = {
         activeClients: { title: 'Active clients', subtitle: 'Recent activity', empty: 'No active clients', noSessions: 'No sessions' },
         schedule: { title: "Today's schedule", subtitle: 'Upcoming sessions', empty: 'No events' },
         eventTypeDefault: 'training',
-        activity: {
-          title: 'Activity feed',
-          subtitle: 'Latest updates',
-          empty: 'No activity yet',
-          payment: 'Payment · {{amount}}',
-          session: 'Workout completed',
-          message: 'New message',
-        },
       },
       clients: {
         title: 'Clients',

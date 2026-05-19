@@ -1,16 +1,16 @@
-/** Shared Recharts styling — enterprise dark */
+/** Shared Recharts styling — editorial dark */
 export const CHART = {
   grid: 'rgba(255,255,255,0.04)',
-  axis: 'rgba(236,238,242,0.35)',
-  line: 'rgba(236,238,242,0.5)',
-  accent: '#34c38f',
-  accentSoft: 'rgba(52, 195, 143, 0.12)',
-  emerald: '#34c38f',
+  axis: 'rgba(240,237,232,0.3)',
+  line: 'rgba(240,237,232,0.55)',
+  accent: '#b8f53d',
+  accentSoft: 'rgba(184, 245, 61, 0.12)',
+  emerald: '#b8f53d',
   tooltip: {
-    background: 'rgba(24, 27, 36, 0.98)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: 8,
+    background: 'rgba(22, 22, 22, 0.96)',
+    border: '1px solid rgba(255,255,255,0.1)',
+    borderRadius: 10,
     fontSize: 12,
-    color: '#eceef2',
+    color: '#f0ede8',
   },
 } as const

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "./styles/tokens.css";
-@import "./styles/saas.css";
 @import "./styles/concept.css";
 @import "./styles/mobile-app.css";
 
@@ -80,10 +79,11 @@
   }
 
   .glass-panel {
-    background: var(--surface2);
+    background: var(--glass);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-glass);
+    backdrop-filter: blur(16px);
   }
 
   .hover-surface {
@@ -107,7 +107,7 @@
   .nav-active {
     background: var(--accent-dim);
     color: var(--accent);
-    box-shadow: inset 3px 0 0 var(--accent);
+    box-shadow: inset -2px 0 0 var(--accent);
   }
 
   .page-container {
@@ -149,7 +149,7 @@
   }
 
   .accent-glow {
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-glow);
   }
 
   .logo-accent {

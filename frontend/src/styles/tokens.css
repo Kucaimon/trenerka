@@ -1,38 +1,35 @@
 /**
- * Trenerka — enterprise SaaS design tokens
- * Linear / Stripe / Notion inspired — graphite surfaces, restrained accent
+ * Trenerka — design tokens (1:1 from trenerka_platform_concept.html :root)
  */
 :root {
-  --black: #090a0e;
-  --graphite: #0f1117;
-  --surface: #13151c;
-  --surface2: #181b24;
-  --surface3: #1f2330;
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.1);
-  --text-primary: #eceef2;
-  --text-secondary: rgba(236, 238, 242, 0.58);
-  --text-tertiary: rgba(236, 238, 242, 0.38);
-  --text-muted: rgba(236, 238, 242, 0.38);
-
-  --accent: #34c38f;
-  --accent2: #2aa876;
-  --accent-dim: rgba(52, 195, 143, 0.1);
-  --accent-glow: rgba(52, 195, 143, 0.04);
-  --accent-soft: rgba(52, 195, 143, 0.18);
-  --accent-foreground: #0a0f0d;
-
-  --red: #f87171;
-  --blue: #60a5fa;
+  --black: #080808;
+  --graphite: #111111;
+  --surface: #161616;
+  --surface2: #1c1c1c;
+  --surface3: #222222;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --text-primary: #f0ede8;
+  --text-secondary: rgba(240, 237, 232, 0.55);
+  --text-tertiary: rgba(240, 237, 232, 0.3);
+  --text-muted: rgba(240, 237, 232, 0.3);
+  --accent: #b8f53d;
+  --accent2: #95d425;
+  --accent-dim: rgba(184, 245, 61, 0.12);
+  --accent-glow: rgba(184, 245, 61, 0.06);
+  --accent-soft: rgba(184, 245, 61, 0.2);
+  --red: #ff4d4d;
+  --blue: #4d9eff;
   --purple: #a78bfa;
-  --orange: #fb923c;
+  --orange: #ff8c42;
 
+  /* Aliases used across the app */
   --bg-base: var(--black);
   --bg-elevated: var(--surface);
   --bg-muted: var(--surface2);
   --bg-soft: var(--surface3);
   --bg-hover: var(--surface2);
-  --glass: rgba(15, 17, 23, 0.92);
+  --glass: rgba(8, 8, 8, 0.85);
   --success: var(--accent);
   --warning: var(--orange);
   --danger: var(--red);
@@ -45,31 +42,21 @@
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 28px;
-  --space-7: 40px;
-  --space-8: 56px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
 
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 12px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
 
-  --sidebar-width: 232px;
-  --sidebar-collapsed: 56px;
-  --header-height: 56px;
-  --content-max: 1280px;
+  --sidebar-width: 220px;
+  --header-height: 60px;
+  --content-max: 1200px;
 
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.24);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.28);
-  --shadow-glow: none;
-  --shadow-glass: 0 4px 24px rgba(0, 0, 0, 0.32);
-
-  --text-xs: 0.6875rem;
-  --text-sm: 0.8125rem;
-  --text-base: 0.9375rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.375rem;
-  --text-2xl: 1.75rem;
+  --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 8px 30px rgba(184, 245, 61, 0.25);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
 }

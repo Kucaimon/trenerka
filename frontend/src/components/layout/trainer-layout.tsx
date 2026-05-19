@@ -187,8 +187,8 @@ export function TrainerLayout() {
         {!isMobile ? (
         <aside
           className={cn(
-            'trainer-sidebar flex shrink-0 flex-col border-r border-[var(--border)] bg-[var(--graphite)]',
-            collapsed ? 'w-[var(--sidebar-collapsed)]' : 'w-[var(--sidebar-width)]',
+            'trainer-sidebar flex shrink-0 flex-col border-r border-[var(--border)] bg-[var(--surface)]',
+            collapsed ? 'w-14' : 'w-[var(--sidebar-width)]',
           )}
         >
           <div
@@ -225,7 +225,7 @@ export function TrainerLayout() {
                         <>
                           <span className="truncate">{item.label}</span>
                           {item.badge != null && item.badge > 0 && (
-                            <span className="ml-auto rounded-[var(--radius-sm)] border border-[var(--accent-soft)] bg-[var(--accent-dim)] px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-[var(--accent)]">
+                            <span className="ml-auto rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[10px] font-bold text-[#111]">
                               {item.badge}
                             </span>
                           )}
@@ -244,7 +244,7 @@ export function TrainerLayout() {
             </div>
             {!collapsed && user && (
               <div className="mb-3 flex items-center gap-2.5">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface3)] text-xs font-semibold text-[var(--accent)]">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-[#111]">
                   {user.name.slice(0, 1)}
                 </div>
                 <div className="min-w-0">
@@ -270,7 +270,7 @@ export function TrainerLayout() {
         ) : null}
 
         <div className="trainer-main flex min-h-0 min-w-0 w-full flex-1 flex-col">
-          <header className="trainer-mobile-header sticky top-0 z-30 flex h-[var(--header-height)] shrink-0 items-center gap-2 border-b border-[var(--border)] bg-[var(--graphite)] px-3 md:gap-3 md:px-6">
+          <header className="trainer-mobile-header sticky top-0 z-30 flex h-[var(--header-height)] shrink-0 items-center gap-2 border-b border-[var(--border)] bg-[rgba(8,8,8,0.85)] px-3 backdrop-blur-xl md:gap-3 md:px-8">
             {isMobile ? (
               <LogoLink size="sm" className="shrink-0" />
             ) : null}
@@ -336,7 +336,7 @@ export function TrainerLayout() {
               className={({ isActive }) =>
                 cn(
                   'flex min-h-[48px] items-center gap-2.5 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors',
-                  isActive && 'bg-[var(--accent-dim)] text-[var(--text-primary)]',
+                  isActive && 'bg-[rgba(184,245,61,0.08)] text-[var(--accent)]',
                 )
               }
               onClick={() => setMoreOpen(false)}
@@ -355,7 +355,7 @@ export function TrainerLayout() {
       <CommandPalette />
       <Link
         to="/trainer/ai-coach"
-        className="trainer-fab fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-[var(--radius-lg)] border border-[var(--border-strong)] bg-[var(--surface2)] text-[var(--text-secondary)] shadow-[var(--shadow-sm)] transition-colors hover:border-[var(--accent-soft)] hover:text-[var(--accent)] max-md:bottom-[calc(var(--tab-bar-height)+var(--safe-area-bottom)+12px)]"
+        className="trainer-fab fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--accent)]/30 bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-glow)] transition-transform hover:scale-105 max-md:bottom-[calc(var(--tab-bar-height)+var(--safe-area-bottom)+12px)]"
         title={t('nav.aiCoach')}
       >
         <Bot className="h-5 w-5" />
