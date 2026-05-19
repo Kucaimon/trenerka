@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Drawer } from 'vaul'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LogoLink } from '@/components/shared/LogoLink'
@@ -19,90 +19,7 @@ export function SiteHeader() {
     { href: '#pricing', label: t('nav.pricing') },
   ]
 
-  useEffect(() => {
-    if (!menuOpen) return
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = prevOverflow
-    }
-  }, [menuOpen])
-
-  useEffect(() => {
-    if (!menuOpen) return
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMenuOpen(false)
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [menuOpen])
-
   const closeMenu = () => setMenuOpen(false)
-
-  const mobileMenu =
-    menuOpen &&
-    createPortal(
-      <>
-        <button
-          type="button"
-          className="concept-nav-backdrop concept-nav-backdrop--visible lg:hidden"
-          aria-label={t('nav.closeMenu')}
-          onClick={closeMenu}
-        />
-        <aside
-          id="site-mobile-nav"
-          className="concept-nav-drawer concept-nav-drawer--open lg:hidden"
-          aria-modal="true"
-          role="dialog"
-          aria-label={t('nav.mobileMenu')}
-        >
-          <div className="concept-nav-drawer__head">
-            <LogoLink
-              size="md"
-              className="concept-nav-drawer__logo flex min-w-0 items-center py-1"
-              logoClassName="!h-9 !max-w-[10rem]"
-              onClick={closeMenu}
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="concept-nav-drawer__close touch-target"
-              aria-label={t('nav.closeMenu')}
-              onClick={closeMenu}
-            >
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
-          <nav className="concept-nav-drawer__nav">
-            {nav.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="touch-target rounded-lg px-3 py-2.5 text-base font-medium text-[var(--text-secondary)] hover:bg-[var(--surface2)] hover:text-[var(--text-primary)]"
-                onClick={closeMenu}
-              >
-                {item.label}
-              </a>
-            ))}
-            <div className="mt-4 flex flex-col gap-3 border-t border-[var(--border)] pt-4">
-              <MobileLanguageList onSelect={closeMenu} />
-              <Button variant="outline" size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
-                <Link to="/login/trainer" onClick={closeMenu}>
-                  {t('actions.login')}
-                </Link>
-              </Button>
-              <Button size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
-                <Link to="/register/trainer" onClick={closeMenu}>
-                  {t('actions.startFree')}
-                </Link>
-              </Button>
-            </div>
-          </nav>
-        </aside>
-      </>,
-      document.body,
-    )
 
   return (
     <header className="concept-nav">
@@ -132,23 +49,88 @@ export function SiteHeader() {
             <Link to="/register/trainer">{t('actions.startFree')}</Link>
           </Button>
         </div>
-        {!menuOpen ? (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="concept-nav-menu-btn touch-target shrink-0 lg:hidden"
-            aria-label={t('nav.openMenu')}
-            aria-expanded={false}
-            aria-controls="site-mobile-nav"
-            onClick={() => setMenuOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
-        ) : null}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="concept-nav-menu-btn touch-target shrink-0 lg:hidden"
+          aria-label={t('nav.openMenu')}
+          aria-expanded={menuOpen}
+          aria-controls="site-mobile-nav"
+          onClick={() => setMenuOpen(true)}
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
       </div>
 
-      {mobileMenu}
+      <Drawer.Root
+        open={menuOpen}
+        onOpenChange={setMenuOpen}
+        direction="right"
+        shouldScaleBackground={false}
+        setBackgroundColorOnScale={false}
+      >
+        <Drawer.Portal>
+          <Drawer.Overlay className="concept-nav-backdrop" />
+          <Drawer.Content
+            id="site-mobile-nav"
+            className="concept-nav-drawer lg:hidden"
+            aria-label={t('nav.mobileMenu')}
+          >
+            <div className="concept-nav-drawer__head">
+              <LogoLink
+                size="md"
+                className="concept-nav-drawer__logo flex min-w-0 items-center py-1"
+                logoClassName="!h-9 !max-w-[10rem]"
+                onClick={closeMenu}
+              />
+              <Drawer.Close asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="concept-nav-drawer__close touch-target"
+                  aria-label={t('nav.closeMenu')}
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </Drawer.Close>
+            </div>
+
+            <div className="concept-nav-drawer__body">
+              <nav className="concept-nav-drawer__nav">
+                {nav.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="concept-nav-drawer__link touch-target"
+                    onClick={closeMenu}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </nav>
+
+              <div className="concept-nav-drawer__languages">
+                <MobileLanguageList onSelect={closeMenu} />
+              </div>
+            </div>
+
+            <div className="concept-nav-drawer__footer">
+              <Button variant="outline" size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
+                <Link to="/login/trainer" onClick={closeMenu}>
+                  {t('actions.login')}
+                </Link>
+              </Button>
+              <Button size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
+                <Link to="/register/trainer" onClick={closeMenu}>
+                  {t('actions.startFree')}
+                </Link>
+              </Button>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
     </header>
   )
 }
