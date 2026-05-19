@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "today": "今天",
+    "progress": "进度",
+    "workouts": "训练",
+    "chat": "聊天",
+    "profile": "资料"
+  },
+  "cabinet": "个人中心",
+  "profile": {
+    "title": "资料",
+    "defaultName": "客户",
+    "filesTitle": "文件与资源",
+    "filesHint": "教练文档和学习资料。",
+    "premium": "高级客户"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "language": {
+    "switch": "Seleziona lingua"
+  },
+  "actions": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "login": "Accedi",
+    "logout": "Esci",
+    "add": "Aggiungi",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "upload": "Carica",
+    "search": "Cerca…",
+    "loading": "Caricamento…",
+    "createAccount": "Crea account",
+    "startFree": "Inizia gratis",
+    "demo": "Demo"
+  },
+  "nav": {
+    "product": "Prodotto",
+    "builder": "Builder",
+    "analytics": "Analisi",
+    "pricing": "Prezzi",
+    "closeMenu": "Chiudi menu",
+    "openMenu": "Apri menu",
+    "mobileMenu": "Menu mobile"
+  },
+  "footer": {
+    "tagline": "CRM, calendario, programmi, finanze e portale clienti per personal trainer.",
+    "product": "Prodotto",
+    "forTrainers": "Per trainer",
+    "forClients": "Per clienti",
+    "company": "Azienda",
+    "about": "Chi siamo",
+    "contacts": "Contatti",
+    "legal": "Legale",
+    "policy": "Privacy",
+    "terms": "Termini",
+    "copyright": "© 2025 Trenerka"
+  },
+  "skills": "Skills",
+  "notFound": "Non trovato",
+  "deleted": "Eliminato",
+  "saveError": "Salvataggio non riuscito"
+}

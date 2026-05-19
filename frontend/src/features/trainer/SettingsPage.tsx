@@ -1,20 +1,27 @@
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/store/auth-store'
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 
 export function SettingsPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const user = useAuthStore((s) => s.user)
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Настройки</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
+        <LanguageSwitcher />
+      </div>
       <Card>
-        <CardHeader><CardTitle>Профиль тренера</CardTitle></CardHeader>
+        <CardHeader><CardTitle>{t('settings.profile')}</CardTitle></CardHeader>
         <CardContent className="max-w-md space-y-4">
-          <div><Label>Имя</Label><Input defaultValue={user?.name} /></div>
+          <div><Label>{t('settings.name')}</Label><Input defaultValue={user?.name} /></div>
           <div><Label>Email</Label><Input defaultValue={user?.email} disabled /></div>
-          <Button>Сохранить</Button>
+          <Button>{t('common:actions.save')}</Button>
         </CardContent>
       </Card>
     </div>

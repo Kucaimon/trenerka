@@ -1,0 +1,46 @@
+{
+  "language": {
+    "switch": "Sprache wählen"
+  },
+  "actions": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "add": "Hinzufügen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "upload": "Hochladen",
+    "search": "Suchen…",
+    "loading": "Laden…",
+    "createAccount": "Konto erstellen",
+    "startFree": "Kostenlos starten",
+    "demo": "Demo"
+  },
+  "nav": {
+    "product": "Produkt",
+    "builder": "Builder",
+    "analytics": "Analytik",
+    "pricing": "Preise",
+    "closeMenu": "Menü schließen",
+    "openMenu": "Menü öffnen",
+    "mobileMenu": "Mobiles Menü"
+  },
+  "footer": {
+    "tagline": "CRM, Kalender, Programme, Finanzen und Kundenportal für Fitnesstrainer.",
+    "product": "Produkt",
+    "forTrainers": "Für Trainer",
+    "forClients": "Für Kunden",
+    "company": "Unternehmen",
+    "about": "Über uns",
+    "contacts": "Kontakt",
+    "legal": "Rechtliches",
+    "policy": "Datenschutz",
+    "terms": "AGB",
+    "copyright": "© 2025 Trenerka"
+  },
+  "skills": "Skills",
+  "notFound": "Nicht gefunden",
+  "deleted": "Gelöscht",
+  "saveError": "Speichern fehlgeschlagen"
+}

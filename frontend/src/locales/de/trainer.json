@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "clients": "Kunden",
+    "chats": "Chats",
+    "calendar": "Kalender",
+    "builder": "Builder",
+    "programs": "Programme",
+    "exercises": "Übungen",
+    "finance": "Finanzen",
+    "analytics": "Analytik",
+    "aiCoach": "KI-Coach",
+    "files": "Dateien",
+    "notifications": "Benachrichtigungen",
+    "settings": "Einstellungen",
+    "more": "Mehr",
+    "sections": "Bereiche"
+  },
+  "groups": {
+    "main": "Haupt",
+    "workouts": "Training",
+    "business": "Business",
+    "other": "Sonstiges"
+  },
+  "role": "Trainer · Pro",
+  "expandMenu": "Menü erweitern",
+  "collapseMenu": "Menü einklappen",
+  "exercisesPage": {
+    "title": "Übungen",
+    "catalog": "Katalog mit {{count}} Übungen",
+    "searchPlaceholder": "Übung suchen…",
+    "notFound": "Keine Übungen",
+    "newExercise": "Neue Übung",
+    "updated": "Übung aktualisiert",
+    "added": "Übung hinzugefügt",
+    "name": "Name",
+    "muscleGroup": "Muskelgruppe",
+    "equipment": "Gerät",
+    "level": "Niveau",
+    "difficulty": {
+      "beginner": "Anfänger",
+      "intermediate": "Mittel",
+      "advanced": "Fortgeschritten"
+    }
+  },
+  "exerciseDetail": {
+    "notFound": "Übung nicht gefunden.",
+    "backToCatalog": "Zum Katalog",
+    "trainer": "Trainer: {{name}}",
+    "breathing": "Atmung"
+  },
+  "filesPage": {
+    "title": "Dateien",
+    "description": "Kundendokumente und Medien. Upload bis 10 MB (MVP: Demo).",
+    "clientsCount": "{{count}} Kunden",
+    "filesCount": "{{count}} Dateien",
+    "training": "Schulung",
+    "trainingHint": "Fitness Academy Kurse",
+    "demo": "Demo"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "profile": "Trainerprofil",
+    "name": "Name"
+  }
+}

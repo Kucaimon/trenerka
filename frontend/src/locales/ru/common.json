@@ -1,0 +1,46 @@
+{
+  "language": {
+    "switch": "Выбрать язык"
+  },
+  "actions": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "login": "Войти",
+    "logout": "Выйти",
+    "add": "Добавить",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "upload": "Загрузить",
+    "search": "Поиск…",
+    "loading": "Загрузка…",
+    "createAccount": "Создать аккаунт",
+    "startFree": "Начать бесплатно",
+    "demo": "Демо"
+  },
+  "nav": {
+    "product": "Продукт",
+    "builder": "Конструктор",
+    "analytics": "Аналитика",
+    "pricing": "Тарифы",
+    "closeMenu": "Закрыть меню",
+    "openMenu": "Открыть меню",
+    "mobileMenu": "Мобильное меню"
+  },
+  "footer": {
+    "tagline": "CRM, календарь, программы, финансы и клиентский кабинет для фитнес-тренеров.",
+    "product": "Продукт",
+    "forTrainers": "Для тренеров",
+    "forClients": "Для клиентов",
+    "company": "Компания",
+    "about": "О нас",
+    "contacts": "Контакты",
+    "legal": "Правовое",
+    "policy": "Политика",
+    "terms": "Оферта",
+    "copyright": "© 2025 Trenerka"
+  },
+  "skills": "Навыки",
+  "notFound": "Не найдено",
+  "deleted": "Удалено",
+  "saveError": "Ошибка сохранения"
+}

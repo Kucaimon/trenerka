@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "today": "اليوم",
+    "progress": "التقدم",
+    "workouts": "التدريبات",
+    "chat": "الدردشة",
+    "profile": "الملف"
+  },
+  "cabinet": "الحساب الشخصي",
+  "profile": {
+    "title": "الملف",
+    "defaultName": "عميل",
+    "filesTitle": "الملفات والموارد",
+    "filesHint": "مستندات ومواد المدرب.",
+    "premium": "عميل مميز"
+  }
+}

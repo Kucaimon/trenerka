@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "today": "Oggi",
+    "progress": "Progressi",
+    "workouts": "Allenamenti",
+    "chat": "Chat",
+    "profile": "Profilo"
+  },
+  "cabinet": "area personale",
+  "profile": {
+    "title": "Profilo",
+    "defaultName": "Cliente",
+    "filesTitle": "File e risorse",
+    "filesHint": "Documenti e materiali del trainer.",
+    "premium": "Cliente premium"
+  }
+}

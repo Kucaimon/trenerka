@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Painel",
+    "clients": "Clientes",
+    "chats": "Chats",
+    "calendar": "Calendário",
+    "builder": "Construtor",
+    "programs": "Programas",
+    "exercises": "Exercícios",
+    "finance": "Finanças",
+    "analytics": "Análises",
+    "aiCoach": "Coach IA",
+    "files": "Arquivos",
+    "notifications": "Notificações",
+    "settings": "Configurações",
+    "more": "Mais",
+    "sections": "Seções"
+  },
+  "groups": {
+    "main": "Principal",
+    "workouts": "Treinos",
+    "business": "Negócios",
+    "other": "Outros"
+  },
+  "role": "Trainer · Pro",
+  "expandMenu": "Expand menu",
+  "collapseMenu": "Collapse menu",
+  "exercisesPage": {
+    "title": "Exercícios",
+    "catalog": "Catálogo de {{count}} exercícios",
+    "searchPlaceholder": "Search exercises…",
+    "notFound": "No exercises found",
+    "newExercise": "New exercise",
+    "updated": "Exercise updated",
+    "added": "Exercise added",
+    "name": "Name",
+    "muscleGroup": "Muscle group",
+    "equipment": "Equipment",
+    "level": "Level",
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  },
+  "exerciseDetail": {
+    "notFound": "Exercise not found.",
+    "backToCatalog": "Back to catalog",
+    "trainer": "Trainer: {{name}}",
+    "breathing": "Breathing"
+  },
+  "filesPage": {
+    "title": "Arquivos",
+    "description": "Client documents and media (MVP: demo).",
+    "clientsCount": "{{count}} clients",
+    "filesCount": "{{count}} files",
+    "training": "Training",
+    "trainingHint": "Fitness Academy courses",
+    "demo": "Demo"
+  },
+  "settings": {
+    "title": "Configurações",
+    "profile": "Trainer profile",
+    "name": "Name"
+  }
+}

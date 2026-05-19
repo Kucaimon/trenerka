@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { FileText, Image, Upload } from 'lucide-react'
 import { PageHeader } from '@/components/shared/page-header'
 import { SkillsButton } from '@/components/shared/SkillsButton'
@@ -12,29 +13,30 @@ const demoFiles = [
 ]
 
 export function FilesPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const { data: clients = [] } = useClients()
 
   return (
     <div className="page-container">
       <PageHeader
-        title="Файлы"
-        description="Документы и медиа клиентов. Загрузка до 10 МБ — через API /upload (MVP: демо-список)."
+        title={t('filesPage.title')}
+        description={t('filesPage.description')}
         actions={
           <Button size="sm" disabled>
             <Upload className="mr-2 h-4 w-4" />
-            Загрузить
+            {t('common:actions.upload')}
           </Button>
         }
       />
 
       <div className="flex flex-wrap gap-2">
-        <Badge variant="secondary">{clients.length} клиентов</Badge>
-        <Badge variant="accent">{demoFiles.length} файлов</Badge>
+        <Badge variant="secondary">{t('filesPage.clientsCount', { count: clients.length })}</Badge>
+        <Badge variant="accent">{t('filesPage.filesCount', { count: demoFiles.length })}</Badge>
       </div>
 
       <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
-        <p className="text-sm font-semibold">Обучение</p>
-        <p className="mt-1 text-xs text-[var(--text-muted)]">Курсы и материалы Фитнес Академии</p>
+        <p className="text-sm font-semibold">{t('filesPage.training')}</p>
+        <p className="mt-1 text-xs text-[var(--text-muted)]">{t('filesPage.trainingHint')}</p>
         <SkillsButton className="mt-3" fullWidth />
       </section>
 
@@ -55,7 +57,7 @@ export function FilesPage() {
                   {file.client} · {file.size}
                 </p>
               </div>
-              <Badge variant="secondary">Демо</Badge>
+              <Badge variant="secondary">{t('filesPage.demo')}</Badge>
             </div>
           )
         })}

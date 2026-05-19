@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "clients": "العملاء",
+    "chats": "المحادثات",
+    "calendar": "التقويم",
+    "builder": "المنشئ",
+    "programs": "البرامج",
+    "exercises": "التمارين",
+    "finance": "المالية",
+    "analytics": "التحليلات",
+    "aiCoach": "مدرب الذكاء",
+    "files": "الملفات",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "more": "المزيد",
+    "sections": "الأقسام"
+  },
+  "groups": {
+    "main": "رئيسي",
+    "workouts": "التدريبات",
+    "business": "الأعمال",
+    "other": "أخرى"
+  },
+  "role": "مدرب · Pro",
+  "expandMenu": "توسيع القائمة",
+  "collapseMenu": "طي القائمة",
+  "exercisesPage": {
+    "title": "التمارين",
+    "catalog": "كتالوج {{count}} تمرين",
+    "searchPlaceholder": "بحث تمرين…",
+    "notFound": "لا تمارين",
+    "newExercise": "تمرين جديد",
+    "updated": "تم تحديث التمرين",
+    "added": "تمت إضافة التمرين",
+    "name": "الاسم",
+    "muscleGroup": "مجموعة العضلات",
+    "equipment": "المعدات",
+    "level": "المستوى",
+    "difficulty": {
+      "beginner": "مبتدئ",
+      "intermediate": "متوسط",
+      "advanced": "متقدم"
+    }
+  },
+  "exerciseDetail": {
+    "notFound": "التمرين غير موجود.",
+    "backToCatalog": "إلى الكتالوج",
+    "trainer": "المدرب: {{name}}",
+    "breathing": "التنفس"
+  },
+  "filesPage": {
+    "title": "الملفات",
+    "description": "مستندات ووسائط العملاء. رفع حتى 10 ميجا (عرض تجريبي).",
+    "clientsCount": "{{count}} عملاء",
+    "filesCount": "{{count}} ملفات",
+    "training": "تدريب",
+    "trainingHint": "دورات أكاديمية اللياقة",
+    "demo": "تجريبي"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "profile": "ملف المدرب",
+    "name": "الاسم"
+  }
+}

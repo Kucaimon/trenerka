@@ -1,0 +1,46 @@
+{
+  "language": {
+    "switch": "Choisir la langue"
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "upload": "Téléverser",
+    "search": "Rechercher…",
+    "loading": "Chargement…",
+    "createAccount": "Créer un compte",
+    "startFree": "Commencer gratuitement",
+    "demo": "Démo"
+  },
+  "nav": {
+    "product": "Produit",
+    "builder": "Constructeur",
+    "analytics": "Analytique",
+    "pricing": "Tarifs",
+    "closeMenu": "Fermer le menu",
+    "openMenu": "Ouvrir le menu",
+    "mobileMenu": "Menu mobile"
+  },
+  "footer": {
+    "tagline": "CRM, calendrier, programmes, finances et portail client pour coachs fitness.",
+    "product": "Produit",
+    "forTrainers": "Pour les coachs",
+    "forClients": "Pour les clients",
+    "company": "Entreprise",
+    "about": "À propos",
+    "contacts": "Contact",
+    "legal": "Mentions légales",
+    "policy": "Confidentialité",
+    "terms": "Conditions",
+    "copyright": "© 2025 Trenerka"
+  },
+  "skills": "Skills",
+  "notFound": "Introuvable",
+  "deleted": "Supprimé",
+  "saveError": "Échec de l’enregistrement"
+}

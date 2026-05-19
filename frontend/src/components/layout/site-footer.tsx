@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Dumbbell } from 'lucide-react'
 
 export function SiteFooter() {
+  const { t } = useTranslation('common')
+
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--black)] py-12">
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
@@ -11,43 +14,41 @@ export function SiteFooter() {
               <span className="flex h-8 w-8 items-center justify-center rounded-md bg-[var(--accent)] text-[#111]">
                 <Dumbbell className="h-4 w-4" strokeWidth={2} />
               </span>
-              Тренерка
+              Trenerka
             </div>
-            <p className="mt-2 max-w-sm text-sm text-[var(--text-secondary)]">
-              CRM, календарь, программы, финансы и клиентский кабинет для фитнес-тренеров.
-            </p>
+            <p className="mt-2 max-w-sm text-sm text-[var(--text-secondary)]">{t('footer.tagline')}</p>
           </div>
           <div className="grid grid-cols-2 gap-8 text-sm text-[var(--text-secondary)] sm:grid-cols-3">
             <div>
-              <p className="mb-2 font-medium text-[var(--text-primary)]">Продукт</p>
+              <p className="mb-2 font-medium text-[var(--text-primary)]">{t('footer.product')}</p>
               <Link to="/login/trainer" className="block hover:text-[var(--text-primary)]">
-                Для тренеров
+                {t('footer.forTrainers')}
               </Link>
               <Link to="/login/client" className="block hover:text-[var(--text-primary)]">
-                Для клиентов
+                {t('footer.forClients')}
               </Link>
             </div>
             <div>
-              <p className="mb-2 font-medium text-[var(--text-primary)]">Компания</p>
+              <p className="mb-2 font-medium text-[var(--text-primary)]">{t('footer.company')}</p>
               <a href="#" className="block hover:text-[var(--text-primary)]">
-                О нас
+                {t('footer.about')}
               </a>
               <a href="#" className="block hover:text-[var(--text-primary)]">
-                Контакты
+                {t('footer.contacts')}
               </a>
             </div>
             <div>
-              <p className="mb-2 font-medium text-[var(--text-primary)]">Правовое</p>
+              <p className="mb-2 font-medium text-[var(--text-primary)]">{t('footer.legal')}</p>
               <a href="#" className="block hover:text-[var(--text-primary)]">
-                Политика
+                {t('footer.policy')}
               </a>
               <a href="#" className="block hover:text-[var(--text-primary)]">
-                Оферта
+                {t('footer.terms')}
               </a>
             </div>
           </div>
         </div>
-        <p className="mt-8 text-center text-xs text-[var(--text-muted)]">© 2025 Trenerka</p>
+        <p className="mt-8 text-center text-xs text-[var(--text-muted)]">{t('footer.copyright')}</p>
       </div>
     </footer>
   )

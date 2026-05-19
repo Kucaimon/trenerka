@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,17 +12,19 @@ import { CardContent, CardDescription, CardHeader, CardTitle } from '@/component
 import { registerTrainer } from '@/features/api/auth-service'
 import { Mail } from 'lucide-react'
 
-const schema = z.object({
-  name: z.string().min(2, 'Введите имя'),
-  email: z.string().email(),
-  password: z.string().min(8, 'Минимум 8 символов'),
-})
-
-type FormData = z.infer<typeof schema>
+type FormData = { name: string; email: string; password: string }
 
 export function RegisterPage() {
+  const { t } = useTranslation(['auth', 'common'])
   const [step, setStep] = useState<'form' | 'confirm'>('form')
   const [email, setEmail] = useState('')
+
+  const schema = z.object({
+    name: z.string().min(2, t('validation.name')),
+    email: z.string().email(t('validation.email')),
+    password: z.string().min(8, t('validation.passwordMin8')),
+  })
+
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: FormData) => {
@@ -29,9 +32,9 @@ export function RegisterPage() {
       await registerTrainer(data)
       setEmail(data.email)
       setStep('confirm')
-      toast.success('Проверьте почту')
+      toast.success(t('register.checkEmail'))
     } catch {
-      toast.error('Ошибка регистрации')
+      toast.error(t('register.error'))
     }
   }
 
@@ -39,12 +42,12 @@ export function RegisterPage() {
     return (
       <CardContent className="py-12 text-center">
         <Mail className="mx-auto h-10 w-10 text-[var(--text-muted)]" />
-        <h2 className="mt-4 text-lg font-semibold">Подтвердите email</h2>
+        <h2 className="mt-4 text-lg font-semibold">{t('register.confirmTitle')}</h2>
         <p className="mt-2 text-sm text-[var(--text-secondary)]">
-          Ссылка отправлена на <strong className="text-[var(--text-primary)]">{email}</strong>
+          {t('register.confirmText')} <strong className="text-[var(--text-primary)]">{email}</strong>
         </p>
         <Button className="mt-6" variant="secondary" asChild>
-          <Link to="/login/trainer">Ко входу</Link>
+          <Link to="/login/trainer">{t('register.backToLogin')}</Link>
         </Button>
       </CardContent>
     )
@@ -53,13 +56,13 @@ export function RegisterPage() {
   return (
     <>
       <CardHeader>
-        <CardTitle>Регистрация тренера</CardTitle>
-        <CardDescription>14 дней бесплатно</CardDescription>
+        <CardTitle>{t('register.title')}</CardTitle>
+        <CardDescription>{t('register.subtitle')}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Имя</Label>
+            <Label>{t('register.name')}</Label>
             <Input {...register('name')} />
             {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
           </div>
@@ -69,18 +72,18 @@ export function RegisterPage() {
             {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
           </div>
           <div className="space-y-1.5">
-            <Label>Пароль</Label>
+            <Label>{t('login.password')}</Label>
             <Input type="password" {...register('password')} />
             {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
           </div>
           <Button type="submit" className="w-full">
-            Создать аккаунт
+            {t('register.create')}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">
-          Уже есть аккаунт?{' '}
+          {t('register.hasAccount')}{' '}
           <Link to="/login/trainer" className="text-[var(--text-primary)] hover:underline">
-            Войти
+            {t('common:actions.login')}
           </Link>
         </p>
       </CardContent>

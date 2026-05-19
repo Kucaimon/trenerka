@@ -1,0 +1,290 @@
+{
+  "hero": {
+    "badge": "AI Fitness SaaS Platform",
+    "title1": "Trainings",
+    "title2": "und Kunden",
+    "titleAccent": "an einem Ort",
+    "subtitle": "Plattform der nächsten Generation für Personal Trainer.",
+    "ctaPrimary": "Kostenlos starten →",
+    "ctaSecondary": "Demo ansehen",
+    "note": "Kostenlos bis 10 Kunden · Keine Kreditkarte"
+  },
+  "metrics": {
+    "hours": [
+      "5h",
+      "saved per week"
+    ],
+    "trainers": [
+      "2,700+",
+      "trainers on platform"
+    ],
+    "satisfaction": [
+      "94%",
+      "satisfied with results"
+    ],
+    "income": [
+      "₽48k",
+      "average trainer income"
+    ]
+  },
+  "preview": {
+    "windowTitle": "Trenerka · Dashboard",
+    "greeting": "Good morning, Maria 👋",
+    "dateLine": "Wednesday, May 19, 2026 · 9 workouts today",
+    "sidebar": [
+      "Dashboard",
+      "Clients",
+      "Workouts",
+      "Calendar",
+      "Finance",
+      "Chats",
+      "Analytics"
+    ],
+    "stats": {
+      "activeClients": [
+        "Active clients",
+        "32",
+        "+3 this week"
+      ],
+      "monthlyIncome": [
+        "Monthly income",
+        "₽127,400",
+        "+18% vs last"
+      ],
+      "sessions": [
+        "Sessions",
+        "52",
+        "this week"
+      ],
+      "retention": [
+        "Retention",
+        "94%",
+        "+2 pp"
+      ]
+    },
+    "activeClientsTitle": "Active clients",
+    "scheduleTitle": "Today's schedule"
+  },
+  "testimonials": [
+    {
+      "name": "Maria K.",
+      "role": "personal trainer",
+      "text": "Stopped using Excel for clients — everything in one window, saving 5+ hours a week."
+    },
+    {
+      "name": "Alexey T.",
+      "role": "functional studio",
+      "text": "Clients actually use the app: workouts, chat, measurements — no extra messengers."
+    },
+    {
+      "name": "Elena V.",
+      "role": "online coach",
+      "text": "Analytics and finances are finally tied to the schedule. I see churn risk before clients leave."
+    }
+  ],
+  "product": {
+    "eyebrow": "Product",
+    "title": "Professional trainer workspace",
+    "text": "Everything you need to run your business — in one window. No Excel spreadsheets or lost chats.",
+    "features": [
+      {
+        "title": "Workout builder",
+        "text": "Drag-and-drop interface. 30+ base exercises, custom moves, AI recommendations and program templates."
+      },
+      {
+        "title": "Trainer CRM",
+        "text": "Full client card with workout history, measurement progress, payment history and trainer notes."
+      },
+      {
+        "title": "Revenue analytics",
+        "text": "Revenue charts, client retention, workout stats. Excel export for taxes."
+      },
+      {
+        "title": "Smart calendar",
+        "text": "Schedule workouts and consultations. Auto reminders 2h and 30 min before sessions."
+      },
+      {
+        "title": "Built-in chat",
+        "text": "Async messaging with clients, message templates, file attachments up to 10 MB."
+      },
+      {
+        "title": "AI assistant",
+        "text": "Generate programs, analyze progress, nutrition tips and automatic reports."
+      }
+    ]
+  },
+  "workflow": {
+    "eyebrow": "Workout builder",
+    "title": "Weekly plan in minutes",
+    "text": "The builder should be a real tool: catalog exercises, custom moves, sets, reps, rest, video and client assignment.",
+    "programTitle": "Program: Strength A",
+    "programMeta": "Week 1 · Monday · 56 min",
+    "assigned": "Assigned",
+    "days": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "exercises": [
+      [
+        "Bench press",
+        "Chest · barbell",
+        "4",
+        "8",
+        "90 sec"
+      ],
+      [
+        "Barbell squat",
+        "Legs · barbell",
+        "5",
+        "5",
+        "120 sec"
+      ],
+      [
+        "Barbell row",
+        "Back · barbell",
+        "4",
+        "10",
+        "90 sec"
+      ],
+      [
+        "Plank",
+        "Core · bodyweight",
+        "3",
+        "45 sec",
+        "60 sec"
+      ]
+    ],
+    "fields": {
+      "sets": "Sets",
+      "reps": "Reps",
+      "rest": "Rest"
+    },
+    "catalog": "Catalog",
+    "catalogItems": [
+      "Pull-ups",
+      "Overhead press",
+      "Bulgarian split squat",
+      "Cable row"
+    ]
+  },
+  "analytics": {
+    "eyebrow": "Analytics",
+    "title": "Reports that help run your practice",
+    "text": "Analytics is not decorative: active clients, period revenue, calendar load, client progress and PDF reports.",
+    "insights": {
+      "mrr": {
+        "label": "MRR",
+        "value": "292,000 ₽",
+        "trend": "+8.2%"
+      },
+      "active": {
+        "label": "Active",
+        "value": "11",
+        "trend": "2 at risk"
+      },
+      "retention": {
+        "label": "Retention",
+        "value": "95%",
+        "trend": "+5 pp"
+      },
+      "week": {
+        "label": "Week",
+        "value": "52",
+        "trend": "sessions"
+      }
+    },
+    "charts": {
+      "retention": {
+        "title": "Client retention",
+        "subtitle": "Cohorts and pause risk"
+      },
+      "attendance": {
+        "title": "Attendance",
+        "subtitle": "Planned vs completed sessions",
+        "tooltip": "Sessions"
+      }
+    }
+  },
+  "mobile": {
+    "eyebrow": "Client app",
+    "title": "Clients see program, progress and trainer connection",
+    "text": "Mobile should be fast and clear: today’s workout, week, measurements, progress photos, chat and payment history.",
+    "today": "Today",
+    "progress": "Progress",
+    "workoutA": "Strength A",
+    "workoutMeta": "6 exercises · 45 min",
+    "progressMeta": "−4.6 kg per cycle",
+    "blocks": [
+      "Warm-up",
+      "Main block",
+      "Cool-down"
+    ]
+  },
+  "pricing": {
+    "eyebrow": "Preise",
+    "title": "Einfache, transparente Preise",
+    "text": "Start free, upgrade to Pro when ready. No hidden fees.",
+    "popular": "Popular",
+    "plans": {
+      "basic": {
+        "name": "Basic",
+        "priceLabel": "Free",
+        "period": "Up to 10 clients",
+        "features": [
+          "Up to 10 active clients",
+          "Workout builder",
+          "Exercise catalog",
+          "Basic calendar"
+        ],
+        "disabled": [
+          "Financial tracking",
+          "AI assistant"
+        ],
+        "cta": "Start for free"
+      },
+      "pro": {
+        "name": "Pro",
+        "period": "per month · up to 50 clients",
+        "features": [
+          "Up to 50 active clients",
+          "Full builder features",
+          "Full CRM access",
+          "Financial tracking",
+          "Analytics & reports",
+          "AI assistant"
+        ],
+        "cta": "Try Pro →"
+      },
+      "vip": {
+        "name": "VIP",
+        "period": "per month · unlimited",
+        "features": [
+          "Unlimited clients",
+          "White-label branding",
+          "Priority support",
+          "Group courses",
+          "API access",
+          "Dedicated manager"
+        ],
+        "cta": "Discuss VIP"
+      }
+    }
+  },
+  "cta": {
+    "eyebrow": "Start in 10 minutes",
+    "title": "Move clients, programs and payments into one workflow",
+    "text": "14 days free, no card. Demo trainer account is ready to explore the real workflow.",
+    "create": "Create account",
+    "demo": "View demo",
+    "features": [
+      "Secure authentication",
+      "Chat & notifications",
+      "Financial reports"
+    ]
+  }
+}

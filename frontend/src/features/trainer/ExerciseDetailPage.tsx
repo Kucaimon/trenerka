@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft, Wind } from 'lucide-react'
 import { useExercise } from '@/features/api/hooks'
 import { Badge } from '@/components/ui/badge'
@@ -12,26 +13,21 @@ const muscleTone: Record<string, string> = {
   Плечи: 'text-[var(--accent)] bg-[var(--accent-dim)]',
 }
 
-const difficultyLabels: Record<string, string> = {
-  beginner: 'Начальный',
-  intermediate: 'Средний',
-  advanced: 'Продвинутый',
-}
-
 export function ExerciseDetailPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const { id } = useParams<{ id: string }>()
   const { data: exercise, isLoading } = useExercise(id)
 
   if (isLoading) {
-    return <p className="p-10 text-center text-sm text-[var(--text-muted)]">Загрузка…</p>
+    return <p className="p-10 text-center text-sm text-[var(--text-muted)]">{t('common:actions.loading')}</p>
   }
 
   if (!exercise) {
     return (
       <div className="page-container">
-        <p className="text-[var(--text-muted)]">Упражнение не найдено.</p>
+        <p className="text-[var(--text-muted)]">{t('exerciseDetail.notFound')}</p>
         <Link to="/trainer/exercises" className="mt-4 inline-flex items-center gap-2 text-sm text-[var(--accent)]">
-          <ArrowLeft className="h-4 w-4" /> К каталогу
+          <ArrowLeft className="h-4 w-4" /> {t('exerciseDetail.backToCatalog')}
         </Link>
       </div>
     )
@@ -51,7 +47,7 @@ export function ExerciseDetailPage() {
         to="/trainer/exercises"
         className="inline-flex items-center gap-2 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
       >
-        <ArrowLeft className="h-4 w-4" /> Упражнения
+        <ArrowLeft className="h-4 w-4" /> {t('exercisesPage.title')}
       </Link>
 
       <article className="exercise-detail">
@@ -76,14 +72,14 @@ export function ExerciseDetailPage() {
               {exercise.equipment}
             </Badge>
             <Badge variant="secondary" className="text-[10px]">
-              {difficultyLabels[exercise.difficulty] ?? exercise.difficulty}
+              {t(`exercisesPage.difficulty.${exercise.difficulty}`)}
             </Badge>
           </div>
 
           <h1 className="exercise-detail__title">{exercise.name}</h1>
 
           {exercise.trainerName ? (
-            <p className="exercise-detail__trainer">Тренер: {exercise.trainerName}</p>
+            <p className="exercise-detail__trainer">{t('exerciseDetail.trainer', { name: exercise.trainerName })}</p>
           ) : null}
 
           {exercise.level ? <p className="exercise-detail__level">{exercise.level}</p> : null}
@@ -103,7 +99,7 @@ export function ExerciseDetailPage() {
             <div className="exercise-detail__breathing">
               <Wind className="h-5 w-5 shrink-0 text-[var(--accent)]" aria-hidden />
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent)]">Дыхание</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent)]">{t('exerciseDetail.breathing')}</p>
                 <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">{exercise.breathingTip}</p>
               </div>
             </div>

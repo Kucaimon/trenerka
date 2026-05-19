@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { useTranslation } from 'react-i18next'
 import { Plus, Pencil, Search, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import {
@@ -40,6 +41,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function ExercisesPage() {
+  const { t } = useTranslation(['trainer', 'common'])
   const { data: exercises = [], isLoading } = useExercises()
   const createEx = useCreateExercise()
   const updateEx = useUpdateExercise()
@@ -78,25 +80,25 @@ export function ExercisesPage() {
     try {
       if (editing) {
         await updateEx.mutateAsync({ id: editing.id, data })
-        toast.success('Упражнение обновлено')
+        toast.success(t('exercisesPage.updated'))
       } else {
         await createEx.mutateAsync({ ...data, isPublic: false })
-        toast.success('Упражнение добавлено')
+        toast.success(t('exercisesPage.added'))
       }
       setOpen(false)
     } catch {
-      toast.error('Ошибка сохранения')
+      toast.error(t('common:saveError'))
     }
   }
 
   return (
     <div className="page-container">
       <PageHeader
-        title="Упражнения"
-        description={`Каталог из ${exercises.length} упражнений`}
+        title={t('exercisesPage.title')}
+        description={t('exercisesPage.catalog', { count: exercises.length })}
         actions={
           <Button size="sm" onClick={openCreate}>
-            <Plus className="h-4 w-4" /> Добавить
+            <Plus className="h-4 w-4" /> {t('common:actions.add')}
           </Button>
         }
       />
@@ -105,7 +107,7 @@ export function ExercisesPage() {
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--text-muted)]" />
         <Input
           className="border-[var(--border)] bg-[var(--surface2)] pl-9"
-          placeholder="Поиск упражнения…"
+          placeholder={t('exercisesPage.searchPlaceholder')}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -113,9 +115,9 @@ export function ExercisesPage() {
 
       <div className="gap-grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
         {isLoading ? (
-          <p className="col-span-full p-10 text-center text-sm text-[var(--text-muted)]">Загрузка…</p>
+          <p className="col-span-full p-10 text-center text-sm text-[var(--text-muted)]">{t('common:actions.loading')}</p>
         ) : filtered.length === 0 ? (
-          <p className="col-span-full p-10 text-center text-sm text-[var(--text-muted)]">Упражнения не найдены</p>
+          <p className="col-span-full p-10 text-center text-sm text-[var(--text-muted)]">{t('exercisesPage.notFound')}</p>
         ) : (
           filtered.map((ex) => (
             <div key={ex.id} className="gap-grid-cell overflow-hidden p-0">
@@ -135,7 +137,9 @@ export function ExercisesPage() {
                     <div className="min-w-0">
                       <p className="font-display text-[15px] font-bold">{ex.name}</p>
                       <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{ex.equipment}</p>
-                      <p className="mt-2 text-[12px] text-[var(--text-muted)]">{ex.difficulty}</p>
+                      <p className="mt-2 text-[12px] text-[var(--text-muted)]">
+                        {t(`exercisesPage.difficulty.${ex.difficulty}`)}
+                      </p>
                     </div>
                     <Badge variant="secondary" className={cn('shrink-0 text-[10px] uppercase', muscleTone[ex.muscleGroup])}>
                       {ex.muscleGroup}
@@ -152,7 +156,7 @@ export function ExercisesPage() {
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 text-red-400"
-                    onClick={() => deleteEx.mutate(ex.id, { onSuccess: () => toast.success('Удалено') })}
+                    onClick={() => deleteEx.mutate(ex.id, { onSuccess: () => toast.success(t('common:deleted')) })}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -166,34 +170,34 @@ export function ExercisesPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editing ? 'Редактировать' : 'Новое упражнение'}</DialogTitle>
+            <DialogTitle>{editing ? t('common:actions.edit') : t('exercisesPage.newExercise')}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
             <div className="space-y-1.5">
-              <Label>Название</Label>
+              <Label>{t('exercisesPage.name')}</Label>
               <Input {...register('name')} />
               {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5">
-                <Label>Группа мышц</Label>
+                <Label>{t('exercisesPage.muscleGroup')}</Label>
                 <Input {...register('muscleGroup')} />
               </div>
               <div className="space-y-1.5">
-                <Label>Оборудование</Label>
+                <Label>{t('exercisesPage.equipment')}</Label>
                 <Input {...register('equipment')} />
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label>Уровень</Label>
+              <Label>{t('exercisesPage.level')}</Label>
               <select {...register('difficulty')} className="w-full rounded-md border border-[var(--border)] bg-[var(--surface2)] px-3 py-2 text-sm">
-                <option value="beginner">Начальный</option>
-                <option value="intermediate">Средний</option>
-                <option value="advanced">Продвинутый</option>
+                <option value="beginner">{t('exercisesPage.difficulty.beginner')}</option>
+                <option value="intermediate">{t('exercisesPage.difficulty.intermediate')}</option>
+                <option value="advanced">{t('exercisesPage.difficulty.advanced')}</option>
               </select>
             </div>
             <Button type="submit" className="w-full" disabled={createEx.isPending || updateEx.isPending}>
-              Сохранить
+              {t('common:actions.save')}
             </Button>
           </form>
         </DialogContent>

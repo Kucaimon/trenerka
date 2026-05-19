@@ -21,7 +21,9 @@ import {
   ListTree,
   FolderOpen,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 import { useUiStore } from '@/store/ui-store'
 import { useAuthStore } from '@/store/auth-store'
 import { Button } from '@/components/ui/button'
@@ -51,26 +53,42 @@ type NavGroup = {
   items: NavItem[]
 }
 
-const mobileBottomNav: MobileTabItem[] = [
-  { to: '/trainer', icon: LayoutDashboard, label: 'Дашборд', end: true },
-  { to: '/trainer/clients', icon: Users, label: 'Клиенты' },
-  { to: '/trainer/messages', icon: MessageSquare, label: 'Чаты' },
-  { to: '/trainer/calendar', icon: Calendar, label: 'Календарь' },
-]
+function useMobileBottomNav(): MobileTabItem[] {
+  const { t } = useTranslation('trainer')
+  return [
+    { to: '/trainer', icon: LayoutDashboard, label: t('nav.dashboard'), end: true },
+    { to: '/trainer/clients', icon: Users, label: t('nav.clients') },
+    { to: '/trainer/messages', icon: MessageSquare, label: t('nav.chats') },
+    { to: '/trainer/calendar', icon: Calendar, label: t('nav.calendar') },
+  ]
+}
 
-const mobileMoreNav: NavItem[] = [
-  { to: '/trainer/workouts/builder', icon: Dumbbell, label: 'Конструктор' },
-  { to: '/trainer/programs', icon: Layers, label: 'Программы' },
-  { to: '/trainer/exercises', icon: ListTree, label: 'Упражнения' },
-  { to: '/trainer/finance', icon: CreditCard, label: 'Финансы' },
-  { to: '/trainer/analytics', icon: BarChart3, label: 'Аналитика' },
-  { to: '/trainer/settings', icon: Settings, label: 'Настройки' },
-  { to: '/trainer/ai-coach', icon: Bot, label: 'AI-коуч' },
-  { to: '/trainer/files', icon: FolderOpen, label: 'Файлы' },
-  { to: '/trainer/notifications', icon: Bell, label: 'Уведомления' },
-]
+function useMobileMoreNav(): NavItem[] {
+  const { t } = useTranslation('trainer')
+  return [
+    { to: '/trainer/workouts/builder', icon: Dumbbell, label: t('nav.builder') },
+    { to: '/trainer/programs', icon: Layers, label: t('nav.programs') },
+    { to: '/trainer/exercises', icon: ListTree, label: t('nav.exercises') },
+    { to: '/trainer/finance', icon: CreditCard, label: t('nav.finance') },
+    { to: '/trainer/analytics', icon: BarChart3, label: t('nav.analytics') },
+    { to: '/trainer/settings', icon: Settings, label: t('nav.settings') },
+    { to: '/trainer/ai-coach', icon: Bot, label: t('nav.aiCoach') },
+    { to: '/trainer/files', icon: FolderOpen, label: t('nav.files') },
+    { to: '/trainer/notifications', icon: Bell, label: t('nav.notifications') },
+  ]
+}
 
-const moreRoutePrefixes = mobileMoreNav.map((item) => item.to)
+const moreRoutePrefixes = [
+  '/trainer/workouts/builder',
+  '/trainer/programs',
+  '/trainer/exercises',
+  '/trainer/finance',
+  '/trainer/analytics',
+  '/trainer/settings',
+  '/trainer/ai-coach',
+  '/trainer/files',
+  '/trainer/notifications',
+]
 
 function isMoreRouteActive(pathname: string) {
   return moreRoutePrefixes.some(
@@ -79,6 +97,7 @@ function isMoreRouteActive(pathname: string) {
 }
 
 function useNavGroups(): NavGroup[] {
+  const { t } = useTranslation('trainer')
   const { data: clients = [] } = useClients()
   const { data: analytics } = useTrainerAnalytics()
   const activeClients = clients.filter((c) => c.status === 'active').length
@@ -86,36 +105,36 @@ function useNavGroups(): NavGroup[] {
 
   return [
     {
-      label: 'Главное',
+      label: t('groups.main'),
       items: [
-        { to: '/trainer', icon: LayoutDashboard, label: 'Дашборд', end: true },
-        { to: '/trainer/clients', icon: Users, label: 'Клиенты', badge: activeClients || clients.length },
-        { to: '/trainer/messages', icon: MessageSquare, label: 'Чаты', badge: unread || undefined },
+        { to: '/trainer', icon: LayoutDashboard, label: t('nav.dashboard'), end: true },
+        { to: '/trainer/clients', icon: Users, label: t('nav.clients'), badge: activeClients || clients.length },
+        { to: '/trainer/messages', icon: MessageSquare, label: t('nav.chats'), badge: unread || undefined },
       ],
     },
     {
-      label: 'Тренировки',
+      label: t('groups.workouts'),
       items: [
-        { to: '/trainer/workouts/builder', icon: Dumbbell, label: 'Конструктор' },
-        { to: '/trainer/programs', icon: Layers, label: 'Программы' },
-        { to: '/trainer/exercises', icon: ListTree, label: 'Упражнения' },
+        { to: '/trainer/workouts/builder', icon: Dumbbell, label: t('nav.builder') },
+        { to: '/trainer/programs', icon: Layers, label: t('nav.programs') },
+        { to: '/trainer/exercises', icon: ListTree, label: t('nav.exercises') },
       ],
     },
     {
-      label: 'Бизнес',
+      label: t('groups.business'),
       items: [
-        { to: '/trainer/calendar', icon: Calendar, label: 'Календарь' },
-        { to: '/trainer/finance', icon: CreditCard, label: 'Финансы' },
-        { to: '/trainer/analytics', icon: BarChart3, label: 'Аналитика' },
+        { to: '/trainer/calendar', icon: Calendar, label: t('nav.calendar') },
+        { to: '/trainer/finance', icon: CreditCard, label: t('nav.finance') },
+        { to: '/trainer/analytics', icon: BarChart3, label: t('nav.analytics') },
       ],
     },
     {
-      label: 'Прочее',
+      label: t('groups.other'),
       items: [
-        { to: '/trainer/ai-coach', icon: Bot, label: 'AI-коуч' },
-        { to: '/trainer/files', icon: FolderOpen, label: 'Файлы' },
-        { to: '/trainer/notifications', icon: Bell, label: 'Уведомления' },
-        { to: '/trainer/settings', icon: Settings, label: 'Настройки' },
+        { to: '/trainer/ai-coach', icon: Bot, label: t('nav.aiCoach') },
+        { to: '/trainer/files', icon: FolderOpen, label: t('nav.files') },
+        { to: '/trainer/notifications', icon: Bell, label: t('nav.notifications') },
+        { to: '/trainer/settings', icon: Settings, label: t('nav.settings') },
       ],
     },
   ]
@@ -137,7 +156,10 @@ export function TrainerLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const user = useAuthStore((s) => s.user)
+  const { t } = useTranslation(['trainer', 'common'])
   const navGroups = useNavGroups()
+  const mobileBottomNav = useMobileBottomNav()
+  const mobileMoreNav = useMobileMoreNav()
   const isMobile = useIsMobile()
   const [moreOpen, setMoreOpen] = useState(false)
   const moreActive = isMoreRouteActive(location.pathname)
@@ -223,7 +245,7 @@ export function TrainerLayout() {
                 </div>
                 <div className="min-w-0">
                   <p className="truncate text-[13px] font-semibold">{user.name}</p>
-                  <p className="text-[11px] text-[var(--text-muted)]">Тренер · Pro</p>
+                  <p className="text-[11px] text-[var(--text-muted)]">{t('role')}</p>
                 </div>
               </div>
             )}
@@ -237,7 +259,7 @@ export function TrainerLayout() {
               }}
             >
               <LogOut className="h-4 w-4" />
-              {!collapsed && 'Выйти'}
+              {!collapsed && t('common:actions.logout')}
             </Button>
           </div>
         </aside>
@@ -256,7 +278,7 @@ export function TrainerLayout() {
               size="icon"
               className="shrink-0"
               onClick={toggle}
-              aria-label={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
+              aria-label={collapsed ? t('expandMenu') : t('collapseMenu')}
             >
               {collapsed ? <Menu className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </Button>
@@ -268,11 +290,12 @@ export function TrainerLayout() {
               onClick={() => setCommandOpen(true)}
             >
               <Search className="h-4 w-4 shrink-0" />
-              <span className="truncate">Поиск…</span>
+              <span className="truncate">{t('common:actions.search')}</span>
               <kbd className="ml-auto hidden rounded border border-[var(--border)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] sm:inline">
                 ⌘K
               </kbd>
             </Button>
+            <LanguageSwitcher />
           </header>
           <main className="app-content trainer-main-content flex-1 md:!px-8 md:!py-7 md:!pb-7">
             <AnimatePresence mode="wait">
@@ -294,7 +317,7 @@ export function TrainerLayout() {
             {
               key: 'more',
               icon: MoreHorizontal,
-              label: 'Ещё',
+              label: t('nav.more'),
               active: moreActive || moreOpen,
               onClick: () => setMoreOpen(true),
             },
@@ -302,7 +325,7 @@ export function TrainerLayout() {
         />
       ) : null}
 
-      <MobileBottomSheet open={moreOpen} onClose={() => setMoreOpen(false)} title="Разделы">
+      <MobileBottomSheet open={moreOpen} onClose={() => setMoreOpen(false)} title={t('nav.sections')}>
         <nav className="grid grid-cols-2 gap-2 p-4">
           {mobileMoreNav.map((item) => (
             <NavLink
@@ -328,7 +351,7 @@ export function TrainerLayout() {
       <Link
         to="/trainer/ai-coach"
         className="trainer-fab fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--accent)]/30 bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-glow)] transition-transform hover:scale-105 max-md:bottom-[calc(var(--tab-bar-height)+var(--safe-area-bottom)+12px)]"
-        title="AI-коуч"
+        title={t('nav.aiCoach')}
       >
         <Bot className="h-5 w-5" />
       </Link>

@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Дашборд",
+    "clients": "Клиенты",
+    "chats": "Чаты",
+    "calendar": "Календарь",
+    "builder": "Конструктор",
+    "programs": "Программы",
+    "exercises": "Упражнения",
+    "finance": "Финансы",
+    "analytics": "Аналитика",
+    "aiCoach": "AI-коуч",
+    "files": "Файлы",
+    "notifications": "Уведомления",
+    "settings": "Настройки",
+    "more": "Ещё",
+    "sections": "Разделы"
+  },
+  "groups": {
+    "main": "Главное",
+    "workouts": "Тренировки",
+    "business": "Бизнес",
+    "other": "Прочее"
+  },
+  "role": "Тренер · Pro",
+  "expandMenu": "Развернуть меню",
+  "collapseMenu": "Свернуть меню",
+  "exercisesPage": {
+    "title": "Упражнения",
+    "catalog": "Каталог из {{count}} упражнений",
+    "searchPlaceholder": "Поиск упражнения…",
+    "notFound": "Упражнения не найдены",
+    "newExercise": "Новое упражнение",
+    "updated": "Упражнение обновлено",
+    "added": "Упражнение добавлено",
+    "name": "Название",
+    "muscleGroup": "Группа мышц",
+    "equipment": "Оборудование",
+    "level": "Уровень",
+    "difficulty": {
+      "beginner": "Начальный",
+      "intermediate": "Средний",
+      "advanced": "Продвинутый"
+    }
+  },
+  "exerciseDetail": {
+    "notFound": "Упражнение не найдено.",
+    "backToCatalog": "К каталогу",
+    "trainer": "Тренер: {{name}}",
+    "breathing": "Дыхание"
+  },
+  "filesPage": {
+    "title": "Файлы",
+    "description": "Документы и медиа клиентов. Загрузка до 10 МБ — через API /upload (MVP: демо-список).",
+    "clientsCount": "{{count}} клиентов",
+    "filesCount": "{{count}} файлов",
+    "training": "Обучение",
+    "trainingHint": "Курсы и материалы Фитнес Академии",
+    "demo": "Демо"
+  },
+  "settings": {
+    "title": "Настройки",
+    "profile": "Профиль тренера",
+    "name": "Имя"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "today": "今日",
+    "progress": "進捗",
+    "workouts": "トレーニング",
+    "chat": "チャット",
+    "profile": "プロフィール"
+  },
+  "cabinet": "個人エリア",
+  "profile": {
+    "title": "プロフィール",
+    "defaultName": "クライアント",
+    "filesTitle": "ファイルとリソース",
+    "filesHint": "トレーナーの資料と学習教材。",
+    "premium": "プレミアムクライアント"
+  }
+}

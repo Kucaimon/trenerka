@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/shared/Logo'
-
-const nav = [
-  { href: '#product', label: 'Продукт' },
-  { href: '#workouts', label: 'Конструктор' },
-  { href: '#analytics', label: 'Аналитика' },
-  { href: '#pricing', label: 'Тарифы' },
-]
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 
 export function SiteHeader() {
+  const { t } = useTranslation('common')
   const [menuOpen, setMenuOpen] = useState(false)
+
+  const nav = [
+    { href: '#product', label: t('nav.product') },
+    { href: '#workouts', label: t('nav.builder') },
+    { href: '#analytics', label: t('nav.analytics') },
+    { href: '#pricing', label: t('nav.pricing') },
+  ]
 
   useEffect(() => {
     if (!menuOpen) return
@@ -42,7 +45,7 @@ export function SiteHeader() {
         <button
           type="button"
           className="concept-nav-backdrop concept-nav-backdrop--visible lg:hidden"
-          aria-label="Закрыть меню"
+          aria-label={t('nav.closeMenu')}
           onClick={closeMenu}
         />
         <aside
@@ -50,7 +53,7 @@ export function SiteHeader() {
           className="concept-nav-drawer concept-nav-drawer--open lg:hidden"
           aria-modal="true"
           role="dialog"
-          aria-label="Мобильное меню"
+          aria-label={t('nav.mobileMenu')}
         >
           <div className="concept-nav-drawer__head">
             <Link
@@ -65,7 +68,7 @@ export function SiteHeader() {
               variant="ghost"
               size="icon"
               className="touch-target shrink-0"
-              aria-label="Закрыть меню"
+              aria-label={t('nav.closeMenu')}
               onClick={closeMenu}
             >
               <X className="h-5 w-5" />
@@ -83,14 +86,15 @@ export function SiteHeader() {
               </a>
             ))}
             <div className="mt-4 flex flex-col gap-3 border-t border-[var(--border)] pt-4">
+              <LanguageSwitcher variant="outline" size="default" showLabel className="w-full justify-center" />
               <Button variant="outline" size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
                 <Link to="/login/trainer" onClick={closeMenu}>
-                  Войти
+                  {t('actions.login')}
                 </Link>
               </Button>
               <Button size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
                 <Link to="/register/trainer" onClick={closeMenu}>
-                  Начать бесплатно
+                  {t('actions.startFree')}
                 </Link>
               </Button>
             </div>
@@ -118,11 +122,12 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="concept-nav-actions--desktop flex shrink-0 items-center gap-2">
+          <LanguageSwitcher />
           <Button variant="outline" size="sm" className="hidden sm:inline-flex" asChild>
-            <Link to="/login/trainer">Войти</Link>
+            <Link to="/login/trainer">{t('actions.login')}</Link>
           </Button>
           <Button size="sm" asChild>
-            <Link to="/register/trainer">Начать бесплатно</Link>
+            <Link to="/register/trainer">{t('actions.startFree')}</Link>
           </Button>
         </div>
         <Button
@@ -130,7 +135,7 @@ export function SiteHeader() {
           variant="ghost"
           size="icon"
           className="concept-nav-menu-btn touch-target shrink-0 lg:hidden"
-          aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}
+          aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
           aria-expanded={menuOpen}
           aria-controls="site-mobile-nav"
           onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}

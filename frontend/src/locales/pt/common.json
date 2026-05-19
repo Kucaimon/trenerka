@@ -1,0 +1,46 @@
+{
+  "language": {
+    "switch": "Selecionar idioma"
+  },
+  "actions": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "login": "Entrar",
+    "logout": "Sair",
+    "add": "Adicionar",
+    "edit": "Editar",
+    "delete": "Excluir",
+    "upload": "Enviar",
+    "search": "Pesquisar…",
+    "loading": "Carregando…",
+    "createAccount": "Criar conta",
+    "startFree": "Começar grátis",
+    "demo": "Demo"
+  },
+  "nav": {
+    "product": "Produto",
+    "builder": "Construtor",
+    "analytics": "Análises",
+    "pricing": "Preços",
+    "closeMenu": "Fechar menu",
+    "openMenu": "Abrir menu",
+    "mobileMenu": "Menu móvel"
+  },
+  "footer": {
+    "tagline": "CRM, calendário, programas, finanças e portal do cliente para treinadores.",
+    "product": "Produto",
+    "forTrainers": "Para treinadores",
+    "forClients": "Para clientes",
+    "company": "Empresa",
+    "about": "Sobre",
+    "contacts": "Contato",
+    "legal": "Legal",
+    "policy": "Privacidade",
+    "terms": "Termos",
+    "copyright": "© 2025 Trenerka"
+  },
+  "skills": "Skills",
+  "notFound": "Não encontrado",
+  "deleted": "Excluído",
+  "saveError": "Falha ao salvar"
+}

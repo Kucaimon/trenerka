@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "today": "Сегодня",
+    "progress": "Прогресс",
+    "workouts": "Тренировки",
+    "chat": "Чат",
+    "profile": "Профиль"
+  },
+  "cabinet": "личный кабинет",
+  "profile": {
+    "title": "Профиль",
+    "defaultName": "Клиент",
+    "filesTitle": "Файлы и ресурсы",
+    "filesHint": "Документы тренера и обучающие материалы.",
+    "premium": "Premium client"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "language": {
+    "switch": "اختر اللغة"
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "login": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "add": "إضافة",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "upload": "رفع",
+    "search": "بحث…",
+    "loading": "جاري التحميل…",
+    "createAccount": "إنشاء حساب",
+    "startFree": "ابدأ مجاناً",
+    "demo": "عرض تجريبي"
+  },
+  "nav": {
+    "product": "المنتج",
+    "builder": "المنشئ",
+    "analytics": "التحليلات",
+    "pricing": "الأسعار",
+    "closeMenu": "إغلاق القائمة",
+    "openMenu": "فتح القائمة",
+    "mobileMenu": "قائمة الجوال"
+  },
+  "footer": {
+    "tagline": "نظام CRM وتقويم وبرامج ومالية وبوابة عملاء لمدربي اللياقة.",
+    "product": "المنتج",
+    "forTrainers": "للمدربين",
+    "forClients": "للعملاء",
+    "company": "الشركة",
+    "about": "من نحن",
+    "contacts": "اتصل بنا",
+    "legal": "قانوني",
+    "policy": "الخصوصية",
+    "terms": "الشروط",
+    "copyright": "© 2025 Trenerka"
+  },
+  "skills": "المهارات",
+  "notFound": "غير موجود",
+  "deleted": "تم الحذف",
+  "saveError": "فشل الحفظ"
+}

@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "clients": "Clients",
+    "chats": "Chats",
+    "calendar": "Calendar",
+    "builder": "Builder",
+    "programs": "Programs",
+    "exercises": "Exercises",
+    "finance": "Finance",
+    "analytics": "Analytics",
+    "aiCoach": "AI Coach",
+    "files": "Files",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "more": "More",
+    "sections": "Sections"
+  },
+  "groups": {
+    "main": "Main",
+    "workouts": "Workouts",
+    "business": "Business",
+    "other": "Other"
+  },
+  "role": "Trainer · Pro",
+  "expandMenu": "Expand menu",
+  "collapseMenu": "Collapse menu",
+  "exercisesPage": {
+    "title": "Exercises",
+    "catalog": "Catalog of {{count}} exercises",
+    "searchPlaceholder": "Search exercises…",
+    "notFound": "No exercises found",
+    "newExercise": "New exercise",
+    "updated": "Exercise updated",
+    "added": "Exercise added",
+    "name": "Name",
+    "muscleGroup": "Muscle group",
+    "equipment": "Equipment",
+    "level": "Level",
+    "difficulty": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    }
+  },
+  "exerciseDetail": {
+    "notFound": "Exercise not found.",
+    "backToCatalog": "Back to catalog",
+    "trainer": "Trainer: {{name}}",
+    "breathing": "Breathing"
+  },
+  "filesPage": {
+    "title": "Files",
+    "description": "Client documents and media. Upload up to 10 MB via API /upload (MVP: demo list).",
+    "clientsCount": "{{count}} clients",
+    "filesCount": "{{count}} files",
+    "training": "Training",
+    "trainingHint": "Fitness Academy courses and materials",
+    "demo": "Demo"
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Trainer profile",
+    "name": "Name"
+  }
+}

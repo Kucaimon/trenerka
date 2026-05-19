@@ -1,0 +1,46 @@
+{
+  "language": {
+    "switch": "Select language"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "login": "Log in",
+    "logout": "Log out",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "upload": "Upload",
+    "search": "Search…",
+    "loading": "Loading…",
+    "createAccount": "Create account",
+    "startFree": "Start for free",
+    "demo": "Demo"
+  },
+  "nav": {
+    "product": "Product",
+    "builder": "Builder",
+    "analytics": "Analytics",
+    "pricing": "Pricing",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "mobileMenu": "Mobile menu"
+  },
+  "footer": {
+    "tagline": "CRM, calendar, programs, finances and client portal for fitness trainers.",
+    "product": "Product",
+    "forTrainers": "For trainers",
+    "forClients": "For clients",
+    "company": "Company",
+    "about": "About",
+    "contacts": "Contact",
+    "legal": "Legal",
+    "policy": "Privacy",
+    "terms": "Terms",
+    "copyright": "© 2025 Trenerka"
+  },
+  "skills": "Skills",
+  "notFound": "Not found",
+  "deleted": "Deleted",
+  "saveError": "Save failed"
+}

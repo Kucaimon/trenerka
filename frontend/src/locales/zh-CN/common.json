@@ -1,0 +1,46 @@
+{
+  "language": {
+    "switch": "选择语言"
+  },
+  "actions": {
+    "save": "保存",
+    "cancel": "取消",
+    "login": "登录",
+    "logout": "退出",
+    "add": "添加",
+    "edit": "编辑",
+    "delete": "删除",
+    "upload": "上传",
+    "search": "搜索…",
+    "loading": "加载中…",
+    "createAccount": "创建账户",
+    "startFree": "免费开始",
+    "demo": "演示"
+  },
+  "nav": {
+    "product": "产品",
+    "builder": "构建器",
+    "analytics": "分析",
+    "pricing": "定价",
+    "closeMenu": "关闭菜单",
+    "openMenu": "打开菜单",
+    "mobileMenu": "移动菜单"
+  },
+  "footer": {
+    "tagline": "面向健身教练的CRM、日历、计划、财务和客户门户。",
+    "product": "产品",
+    "forTrainers": "教练端",
+    "forClients": "客户端",
+    "company": "公司",
+    "about": "关于",
+    "contacts": "联系",
+    "legal": "法律",
+    "policy": "隐私",
+    "terms": "条款",
+    "copyright": "© 2025 Trenerka"
+  },
+  "skills": "技能",
+  "notFound": "未找到",
+  "deleted": "已删除",
+  "saveError": "保存失败"
+}

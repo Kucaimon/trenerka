@@ -1,0 +1,66 @@
+{
+  "nav": {
+    "dashboard": "仪表板",
+    "clients": "客户",
+    "chats": "聊天",
+    "calendar": "日历",
+    "builder": "构建器",
+    "programs": "计划",
+    "exercises": "练习",
+    "finance": "财务",
+    "analytics": "分析",
+    "aiCoach": "AI教练",
+    "files": "文件",
+    "notifications": "通知",
+    "settings": "设置",
+    "more": "更多",
+    "sections": "部分"
+  },
+  "groups": {
+    "main": "主要",
+    "workouts": "训练",
+    "business": "业务",
+    "other": "其他"
+  },
+  "role": "教练 · Pro",
+  "expandMenu": "展开菜单",
+  "collapseMenu": "收起菜单",
+  "exercisesPage": {
+    "title": "练习",
+    "catalog": "{{count}}个练习目录",
+    "searchPlaceholder": "搜索练习…",
+    "notFound": "未找到练习",
+    "newExercise": "新练习",
+    "updated": "练习已更新",
+    "added": "练习已添加",
+    "name": "名称",
+    "muscleGroup": "肌群",
+    "equipment": "器械",
+    "level": "级别",
+    "difficulty": {
+      "beginner": "初级",
+      "intermediate": "中级",
+      "advanced": "高级"
+    }
+  },
+  "exerciseDetail": {
+    "notFound": "未找到练习。",
+    "backToCatalog": "返回目录",
+    "trainer": "教练：{{name}}",
+    "breathing": "呼吸"
+  },
+  "filesPage": {
+    "title": "文件",
+    "description": "Client documents and media (MVP: demo).",
+    "clientsCount": "{{count}} clients",
+    "filesCount": "{{count}} files",
+    "training": "培训",
+    "trainingHint": "Fitness Academy courses",
+    "demo": "Demo"
+  },
+  "settings": {
+    "title": "设置",
+    "profile": "教练资料",
+    "name": "姓名"
+  }
+}
