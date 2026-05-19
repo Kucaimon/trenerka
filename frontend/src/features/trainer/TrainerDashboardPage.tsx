@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { Clock3 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { SaasPageHeader } from '@/components/saas'
 import { useClients, useEvents, useTrainerAnalytics } from '@/features/api/hooks'
 import { generateRevenueSeries, mockActivityFeed } from '@/lib/mock-data'
 import { formatRub } from '@/lib/utils'
@@ -40,11 +41,12 @@ export function TrainerDashboardPage() {
   const periodDays = chartPeriods.find((p) => p.id === chartPeriod)?.days ?? 30
   const revenueData = useMemo(() => generateRevenueSeries(periodDays), [periodDays])
   const periodTotal = useMemo(() => revenueData.reduce((s, p) => s + p.revenue, 0), [revenueData])
-  const activityItems = useMemo(() => mockActivityFeed.slice(0, 8), [])
+  const activityItems = useMemo(() => mockActivityFeed.slice(0, 12), [])
 
   const statusLabel = (status: ClientStatus) => t(`common:status.${status}`)
 
   const activeCount = analytics?.activeClients ?? clients.filter((c) => c.status === 'active').length
+  const unreadCount = analytics?.unreadMessages ?? 0
   const upcoming = [...events].sort((a, b) => a.start.localeCompare(b.start)).slice(0, 6)
   const activeClients = clients.filter((c) => c.status === 'active').slice(0, 6)
 
@@ -59,31 +61,21 @@ export function TrainerDashboardPage() {
     { label: t('dashboard.stats.clients'), value: clientsLoading ? '…' : String(activeCount), change: t('dashboard.change.weekClients'), accent: true },
     { label: t('dashboard.stats.revenueMay'), value: formatRub(analytics?.monthlyRevenue ?? 0), change: t('dashboard.change.revenue') },
     { label: t('dashboard.stats.workouts'), value: String(analytics?.weeklySessions ?? 0), change: t('dashboard.change.thisWeek') },
-    { label: t('dashboard.stats.completion'), value: '91%', change: t('dashboard.change.completion') },
+    { label: t('dashboard.stats.unread'), value: String(unreadCount), change: t('dashboard.change.unread') },
   ]
 
   return (
-    <div className="page-container overflow-x-hidden">
-      <header className="saas-page-header">
-        <div className="min-w-0">
-          <h1 className="saas-page-header__title">{t('dashboard.title')}</h1>
-          <p className="saas-page-header__sub max-w-full truncate capitalize md:whitespace-normal">{today} · {t('dashboard.greeting')}</p>
-        </div>
-      </header>
+    <div className="page-container page-container--dense overflow-x-hidden">
+      <SaasPageHeader
+        title={t('dashboard.title')}
+        description={`${today} · ${t('dashboard.greeting')}`}
+        breadcrumbs={[
+          { label: t('dashboard.breadcrumb.app'), href: '/trainer' },
+          { label: t('dashboard.breadcrumb.dashboard') },
+        ]}
+      />
 
-      <div className="trainer-mobile-stat-stack mb-4 md:hidden">
-        {stats.map((stat) => (
-          <div key={stat.label} className="trainer-mobile-stat-card">
-            <div>
-              <p className="saas-metric-cell__label">{stat.label}</p>
-              <p className={cn('saas-metric-cell__value', stat.accent && 'text-[var(--accent)]')}>{stat.value}</p>
-            </div>
-            <p className="saas-metric-cell__hint text-right">{stat.change}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="saas-metric-grid trainer-desktop-stat-grid mb-4 hidden md:grid">
+      <div className="saas-metric-grid mb-4">
         {stats.map((stat) => (
           <div key={stat.label} className="saas-metric-cell">
             <p className="saas-metric-cell__label">{stat.label}</p>
@@ -99,7 +91,7 @@ export function TrainerDashboardPage() {
             <div className="saas-panel__header">
               <div>
                 <h2 className="saas-panel__title">{t('dashboard.revenue.title')}</h2>
-                <p className="mt-0.5 font-display text-lg font-extrabold tabular-nums text-[var(--accent)]">{formatRub(periodTotal)}</p>
+                <p className="saas-panel__sub tabular-nums">{t('dashboard.revenue.periodTotal', { amount: formatRub(periodTotal) })}</p>
               </div>
               <div className="flex gap-0.5 rounded-[var(--radius-sm)] bg-[var(--surface3)] p-0.5">
                 {chartPeriods.map((p) => (
@@ -142,18 +134,18 @@ export function TrainerDashboardPage() {
             </div>
             <div className="saas-panel__body saas-panel__body--flush divide-y divide-[var(--border)]">
               {activeClients.length === 0 ? (
-                <p className="px-4 py-3 text-sm text-[var(--text-muted)]">{t('dashboard.activeClients.empty')}</p>
+                <p className="px-4 py-2.5 text-sm text-[var(--text-muted)]">{t('dashboard.activeClients.empty')}</p>
               ) : (
                 activeClients.map((c) => (
-                  <div key={c.id} className="flex items-center gap-3 px-4 py-2 hover:bg-[var(--surface3)]">
-                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent-dim)] text-[10px] font-bold text-[var(--accent)]">
+                  <div key={c.id} className="flex items-center gap-2.5 px-3 py-1.5 hover:bg-[var(--surface3)]">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent-dim)] text-[9px] font-bold text-[var(--accent)]">
                       {c.name.slice(0, 1)}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[13px] font-medium">{c.name}</p>
                       <p className="text-[11px] text-[var(--text-muted)]">{c.lastSession ?? t('dashboard.activeClients.noSessions')}</p>
                     </div>
-                    <Badge variant="success" className="shrink-0 text-[10px]">
+                    <Badge variant="success" className="shrink-0 px-1.5 py-0 text-[10px]">
                       {statusLabel(c.status)}
                     </Badge>
                   </div>
@@ -172,14 +164,14 @@ export function TrainerDashboardPage() {
             </div>
             <div className="saas-panel__body saas-panel__body--flush divide-y divide-[var(--border)]">
               {upcoming.length === 0 ? (
-                <p className="px-4 py-3 text-sm text-[var(--text-muted)]">{t('dashboard.schedule.empty')}</p>
+                <p className="px-4 py-2.5 text-sm text-[var(--text-muted)]">{t('dashboard.schedule.empty')}</p>
               ) : (
                 upcoming.slice(0, 5).map((e) => (
-                  <div key={e.id} className="flex gap-3 px-4 py-2 hover:bg-[var(--surface3)]">
+                  <div key={e.id} className="flex gap-2.5 px-3 py-1.5 hover:bg-[var(--surface3)]">
                     <span className="min-w-[40px] pt-0.5 text-[11px] tabular-nums text-[var(--text-muted)]">
                       {new Date(e.start).toLocaleTimeString(intlLocale(i18n.language), { hour: '2-digit', minute: '2-digit' })}
                     </span>
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
+                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[var(--accent)]" />
                     <div className="min-w-0">
                       <p className="truncate text-[13px] font-medium">{e.title}</p>
                       <p className="text-[11px] text-[var(--text-muted)]">{e.type ?? t('dashboard.eventTypeDefault')}</p>
@@ -191,16 +183,16 @@ export function TrainerDashboardPage() {
           </section>
         </div>
 
-        <section className="saas-panel saas-dash-activity hidden lg:flex lg:flex-col">
+        <section className="saas-panel saas-dash-activity flex flex-col md:flex">
           <div className="saas-panel__header">
             <div>
               <h2 className="saas-panel__title">{t('dashboard.activity.title')}</h2>
               <p className="saas-panel__sub">{t('dashboard.activity.subtitle')}</p>
             </div>
           </div>
-          <div className="saas-panel__body saas-panel__body--flush flex-1 overflow-y-auto p-0">
+          <div className="saas-panel__body saas-panel__body--flush max-h-[420px] flex-1 overflow-y-auto p-0 md:max-h-none">
             {activityItems.length === 0 ? (
-              <p className="px-4 py-3 text-sm text-[var(--text-muted)]">{t('dashboard.activity.empty')}</p>
+              <p className="px-4 py-2.5 text-sm text-[var(--text-muted)]">{t('dashboard.activity.empty')}</p>
             ) : (
               activityItems.map((item) => (
                 <div key={item.id} className="saas-activity-item">
@@ -209,7 +201,7 @@ export function TrainerDashboardPage() {
                   </time>
                   <div className="min-w-0">
                     <p className="saas-activity-item__title">{item.title}</p>
-                    <p className="saas-activity-item__body line-clamp-2">{item.body}</p>
+                    <p className="saas-activity-item__body line-clamp-1">{item.body}</p>
                   </div>
                 </div>
               ))

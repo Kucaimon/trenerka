@@ -68,7 +68,7 @@ export function AnalyticsPage() {
       </div>
 
       <div className="grid gap-4 overflow-x-hidden xl:grid-cols-2">
-        <Card className="metric-grid">
+        <Card className="chart-grid-bg">
           <CardHeader>
             <CardTitle>{t('analytics.charts.revenueByMonth')}</CardTitle>
           </CardHeader>

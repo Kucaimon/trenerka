@@ -7,7 +7,9 @@ import { Link } from 'react-router-dom'
 import { Search, Download, UserPlus, MessageSquare, CreditCard, CalendarCheck2, Dumbbell } from 'lucide-react'
 import { exportClientsSpreadsheet, getClient, getClients } from '@/features/api/clients-service'
 import { useCreateClient, usePayments, useUpdateClient } from '@/features/api/hooks'
+import { SaasPageHeader } from '@/components/saas'
 import { ClientFormDialog, type ClientFormValues } from '@/components/trainer/ClientFormDialog'
+import { ClientsDataTable } from '@/features/trainer/ClientsDataTable'
 import { AssignProgramDialog } from '@/components/trainer/AssignProgramDialog'
 import { toast } from 'sonner'
 import { Pencil } from 'lucide-react'
@@ -70,41 +72,45 @@ export function ClientsPage() {
       )}
     >
         <aside className="crm-list">
-          <div className="flex items-center justify-between border-b border-[var(--border)] px-[18px] py-4">
-            <div>
-              <h1 className="page-title">{t('clients.title')}</h1>
-              <p className="text-[11px] text-[var(--text-muted)]">{t('clients.inDatabase', { count: filtered.length })}</p>
-            </div>
-            <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8" title={t('common:actions.exportCsv')} onClick={() => exportClientsSpreadsheet(filtered)}>
-                <Download className="h-4 w-4" />
-              </Button>
-              <Button size="icon" className="h-8 w-8" onClick={() => setCreateOpen(true)}>
-                <UserPlus className="h-4 w-4" />
-              </Button>
-            </div>
+          <div className="crm-list__toolbar border-b border-[var(--border)] px-3 py-3 md:px-4">
+            <SaasPageHeader
+              className="!mb-0"
+              title={t('clients.title')}
+              description={t('clients.inDatabase', { count: filtered.length })}
+              breadcrumbs={[
+                { label: t('dashboard.breadcrumb.app'), href: '/trainer' },
+                { label: t('clients.breadcrumb.clients') },
+              ]}
+              actions={
+                <div className="flex gap-1">
+                  <Button variant="ghost" size="icon" className="h-8 w-8" title={t('common:actions.exportCsv')} onClick={() => exportClientsSpreadsheet(filtered)}>
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button size="icon" className="h-8 w-8" onClick={() => setCreateOpen(true)}>
+                    <UserPlus className="h-4 w-4" />
+                  </Button>
+                </div>
+              }
+            />
           </div>
 
-          <div className="crm-list__filters">
-            <div className="border-b border-[var(--border)] px-3.5 py-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
-                <Input
-                  className="h-9 border-[var(--border)] bg-[var(--surface2)] pl-9 text-[13px]"
-                  placeholder={t('clients.searchPlaceholder')}
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
+          <div className="crm-filter-bar border-b border-[var(--border)] px-3 py-2 md:px-4">
+            <div className="relative min-w-0 flex-1">
+              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
+              <Input
+                className="h-8 border-[var(--border)] bg-[var(--surface2)] pl-8 text-[13px]"
+                placeholder={t('clients.searchPlaceholder')}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
             </div>
-
-            <div className="flex gap-1 overflow-x-auto border-b border-[var(--border)] px-3.5 py-2.5">
+            <div className="flex shrink-0 gap-1 overflow-x-auto">
               {filters.map((f) => (
                 <button
                   key={f.id}
                   type="button"
                   onClick={() => setStatus(f.id)}
-                  className={cn('filter-pill', status === f.id && 'active')}
+                  className={cn('filter-pill filter-pill--compact', status === f.id && 'active')}
                 >
                   {f.label}
                   {f.id === 'all' ? ` (${clients.length})` : ''}
@@ -129,49 +135,8 @@ export function ClientsPage() {
                 />
               ))
             ) : (
-              <div className="saas-table-wrap hidden lg:block">
-                <table className="saas-table">
-                  <thead>
-                    <tr>
-                      <th>{t('clients.table.name')}</th>
-                      <th>{t('clients.table.status')}</th>
-                      <th>{t('clients.table.goal')}</th>
-                      <th>{t('clients.table.sessions')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filtered.map((c) => (
-                      <tr
-                        key={c.id}
-                        className={cn(c.id === activeId && 'saas-table__row--active')}
-                        onClick={() => setSelectedId(c.id)}
-                      >
-                        <td>
-                          <div className="flex items-center gap-2.5">
-                            <div
-                              className={cn(
-                                'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold',
-                                avatarClass(),
-                              )}
-                            >
-                              {c.name.slice(0, 1)}
-                            </div>
-                            <span className="font-medium">{c.name}</span>
-                          </div>
-                        </td>
-                        <td>
-                          <Badge variant={STATUS_VARIANTS[c.status]} className="text-[10px]">
-                            {t(`common:status.${c.status}`)}
-                          </Badge>
-                        </td>
-                        <td className="text-[var(--text-secondary)]">{c.goal ?? t('clients.fallback.program')}</td>
-                        <td className="tabular-nums text-[var(--text-secondary)]">
-                          {c.packageBalance} {t('common:units.sessionsShort')}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="hidden lg:block">
+                <ClientsDataTable clients={filtered} activeId={activeId} onSelect={setSelectedId} />
               </div>
             )}
             {!isMobileCrm ? (
@@ -280,7 +245,7 @@ function ClientListItem({
         </div>
       </div>
       <div className="flex items-center gap-2 pl-[46px]">
-        <Badge variant={variant} className="text-[10px]">
+        <Badge variant={variant} className="px-1.5 py-0 text-[10px]">
           {t(`common:status.${client.status}`)}
         </Badge>
         <span className="text-[11px] text-[var(--text-muted)]">{client.packageBalance} {t('common:units.sessionsShort')}</span>

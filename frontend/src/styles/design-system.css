@@ -226,6 +226,11 @@
   border-left: 2px solid var(--accent);
 }
 
+.ds-app-sidebar-item:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
 .ds-app-topbar {
   display: flex;
   flex-shrink: 0;

@@ -266,7 +266,7 @@ export function TrainerLayout() {
                   key={item.to}
                   to={item.to}
                   end={item.end}
-                  className={({ isActive }) => cn('snav-item touch-target', isActive && 'active')}
+                  className={({ isActive }) => cn('snav-item touch-target focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]', isActive && 'active')}
                 >
                   <item.icon className="h-4 w-4 shrink-0 opacity-80" strokeWidth={1.75} />
                   {!collapsed && (
@@ -352,7 +352,7 @@ export function TrainerLayout() {
       <CommandPalette />
       <Link
         to="/trainer/ai-coach"
-        className="trainer-fab fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-[10px] border border-[var(--border)] bg-[var(--surface2)] text-[var(--accent)] transition-colors hover:bg-[var(--surface3)] max-md:bottom-[calc(var(--tab-bar-height)+var(--safe-area-bottom)+12px)]"
+        className="trainer-fab trainer-fab--subtle fixed bottom-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] opacity-90 transition-colors hover:bg-[var(--surface2)] hover:text-[var(--accent)] max-md:bottom-[calc(var(--tab-bar-height)+var(--safe-area-bottom)+12px)]"
         title={t('nav.aiCoach')}
       >
         <Bot className="h-5 w-5" />

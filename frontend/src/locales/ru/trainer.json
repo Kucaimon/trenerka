@@ -94,13 +94,13 @@
       "clients": "Клиенты",
       "revenueMay": "Доход (май)",
       "workouts": "Тренировок",
-      "completion": "Выполнение"
+      "unread": "Непрочитанные"
     },
     "change": {
       "weekClients": "↑ +3 за неделю",
       "revenue": "↑ +18%",
       "thisWeek": "за эту неделю",
-      "completion": "↑ +4%"
+      "unread": "сообщений"
     },
     "period": {
       "d7": "7д",
@@ -110,7 +110,8 @@
     },
     "revenue": {
       "title": "Выручка",
-      "chart": "Выручка"
+      "chart": "Выручка",
+      "periodTotal": "За период: {{amount}}"
     },
     "activeClients": {
       "title": "Активные клиенты",
@@ -128,7 +129,11 @@
       "subtitle": "Оплаты, сообщения, напоминания",
       "empty": "Нет недавней активности"
     },
-    "eventTypeDefault": "тренировка"
+    "eventTypeDefault": "тренировка",
+    "breadcrumb": {
+      "app": "Trenerka",
+      "dashboard": "Дашборд"
+    }
   },
   "clients": {
     "title": "Клиенты",
@@ -205,6 +210,9 @@
     "statsDetail": {
       "lastSessionLower": "последняя сессия",
       "programFocus": "фокус программы"
+    },
+    "breadcrumb": {
+      "clients": "Клиенты"
     }
   },
   "clientForm": {

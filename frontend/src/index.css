@@ -123,7 +123,11 @@
     box-shadow: var(--shadow-soft);
   }
 
-  .metric-grid {
+  .page-container--dense {
+    @apply space-y-5;
+  }
+
+  .chart-grid-bg {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);

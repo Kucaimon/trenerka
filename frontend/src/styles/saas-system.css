@@ -130,7 +130,7 @@
 
 .saas-metric-cell {
   background: var(--surface2);
-  padding: 12px 16px;
+  padding: 10px 14px;
 }
 
 .saas-metric-cell__label {
@@ -269,8 +269,8 @@
 
 .saas-activity-item {
   display: flex;
-  gap: var(--space-3);
-  padding: 10px 16px;
+  gap: var(--space-2);
+  padding: 7px 14px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -466,4 +466,37 @@
   background: var(--surface2);
   border-left: 2px solid var(--accent);
   border-right: none;
+}
+
+.trainer-sidebar--saas .snav-item:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.trainer-sidebar--saas .snav-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-tertiary);
+}
+
+.crm-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.filter-pill--compact {
+  padding: 4px 10px;
+  font-size: 11px;
+  min-height: 28px;
+}
+
+.trainer-fab--subtle {
+  box-shadow: none;
+}
+
+.trainer-fab--subtle:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
