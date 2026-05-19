@@ -66,7 +66,7 @@ const plans = [
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen overflow-hidden bg-[var(--black)] text-[var(--text-primary)]">
+    <div className="min-h-screen overflow-x-hidden bg-[var(--black)] text-[var(--text-primary)]">
       <SiteHeader />
       <main className="pt-[60px]">
         <HeroSection />
