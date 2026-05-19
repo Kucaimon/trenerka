@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Logo } from '@/components/shared/Logo'
+import { LogoLink } from '@/components/shared/LogoLink'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 import { MobileLanguageList } from '@/components/shared/MobileLanguageList'
 
@@ -57,13 +57,12 @@ export function SiteHeader() {
           aria-label={t('nav.mobileMenu')}
         >
           <div className="concept-nav-drawer__head">
-            <Link
-              to="/"
+            <LogoLink
+              size="md"
               className="concept-nav-drawer__logo flex min-w-0 items-center py-1"
+              logoClassName="!h-9 !max-w-[10rem]"
               onClick={closeMenu}
-            >
-              <Logo size="md" className="!h-9 !max-w-[10rem]" />
-            </Link>
+            />
             <Button
               type="button"
               variant="ghost"
@@ -108,9 +107,11 @@ export function SiteHeader() {
   return (
     <header className="concept-nav">
       <div className="concept-nav-bar mx-auto flex w-full max-w-[1200px] items-center justify-between gap-2 sm:gap-3">
-        <Link to="/" className="concept-nav-logo flex min-w-0 shrink items-center py-1">
-          <Logo size="md" className="!h-8 !max-w-[7.5rem] md:!h-10 md:!max-w-[11rem]" />
-        </Link>
+        <LogoLink
+          size="md"
+          className="concept-nav-logo flex min-w-0 shrink items-center py-1"
+          logoClassName="!h-8 !max-w-[7.5rem] md:!h-10 md:!max-w-[11rem]"
+        />
         <nav className="hidden items-center gap-0.5 lg:flex">
           {nav.map((item) => (
             <a

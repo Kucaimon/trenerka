@@ -7,7 +7,7 @@ import {
   MobilePageTransition,
   type MobileTabItem,
 } from '@/components/mobile'
-import { Logo } from '@/components/shared/Logo'
+import { LogoLink } from '@/components/shared/LogoLink'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 
 const hideTabBarPaths = ['/client/workouts/session']
@@ -47,7 +47,7 @@ export function ClientShell() {
         >
           {!isHome ? (
             <div>
-              <Logo size="sm" />
+              <LogoLink size="sm" />
               <p className="text-xs text-[var(--text-muted)]">{t('cabinet')}</p>
             </div>
           ) : null}

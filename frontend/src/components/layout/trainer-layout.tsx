@@ -28,7 +28,7 @@ import { MobileLanguageList } from '@/components/shared/MobileLanguageList'
 import { useUiStore } from '@/store/ui-store'
 import { useAuthStore } from '@/store/auth-store'
 import { Button } from '@/components/ui/button'
-import { Logo } from '@/components/shared/Logo'
+import { LogoLink } from '@/components/shared/LogoLink'
 import { CommandPalette } from '@/components/layout/command-palette'
 import { SkillsButton } from '@/components/shared/SkillsButton'
 import { useClients, useTrainerAnalytics } from '@/features/api/hooks'
@@ -198,9 +198,9 @@ export function TrainerLayout() {
             )}
           >
             {!collapsed ? (
-              <Logo size="md" className="max-w-[180px]" />
+              <LogoLink size="md" logoClassName="max-w-[180px]" />
             ) : (
-              <Logo size="sm" variant="icon" />
+              <LogoLink size="sm" variant="icon" />
             )}
           </div>
 
@@ -272,9 +272,7 @@ export function TrainerLayout() {
         <div className="trainer-main flex min-h-0 min-w-0 w-full flex-1 flex-col">
           <header className="trainer-mobile-header sticky top-0 z-30 flex h-[var(--header-height)] shrink-0 items-center gap-2 border-b border-[var(--border)] bg-[rgba(8,8,8,0.85)] px-3 backdrop-blur-xl md:gap-3 md:px-8">
             {isMobile ? (
-              <Link to="/trainer" className="shrink-0">
-                <Logo size="sm" />
-              </Link>
+              <LogoLink size="sm" className="shrink-0" />
             ) : null}
             {!isMobile ? (
             <Button
