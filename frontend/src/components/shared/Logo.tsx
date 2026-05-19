@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-const LOGO_VERSION = 6
+const LOGO_VERSION = 7
 
 /** Intrinsic dimensions of frontend/public/logo.png */
 const FULL_WIDTH = 1024
