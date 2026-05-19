@@ -754,14 +754,6 @@
     padding: 0 16px;
   }
 
-  .concept-nav-actions--desktop {
-    display: none;
-  }
-
-  .concept-nav-actions--mobile {
-    display: flex;
-  }
-
   .concept-nav-drawer {
     width: min(100vw, 18.5rem);
     padding-inline: 1rem;

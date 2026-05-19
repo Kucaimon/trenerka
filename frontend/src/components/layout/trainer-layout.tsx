@@ -24,6 +24,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
+import { MobileLanguageList } from '@/components/shared/MobileLanguageList'
 import { useUiStore } from '@/store/ui-store'
 import { useAuthStore } from '@/store/auth-store'
 import { Button } from '@/components/ui/button'
@@ -298,7 +299,7 @@ export function TrainerLayout() {
                 ⌘K
               </kbd>
             </Button>
-            <LanguageSwitcher compact />
+            {!isMobile ? <LanguageSwitcher compact /> : null}
           </header>
           <main className="app-content trainer-main-content flex-1 md:!px-8 md:!py-7 md:!pb-7">
             <AnimatePresence mode="wait">
@@ -348,7 +349,7 @@ export function TrainerLayout() {
           ))}
           <MoreMenuSkills />
           <div className="col-span-2 border-t border-[var(--border)] pt-3">
-            <LanguageSwitcher showLabel className="w-full justify-center" />
+            <MobileLanguageList onSelect={() => setMoreOpen(false)} />
           </div>
         </nav>
       </MobileBottomSheet>
