@@ -28,6 +28,7 @@ import { SiteHeader } from '@/components/layout/site-header'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { mockAttendanceData, mockCalendarEvents, mockClients, mockRetentionData } from '@/lib/mock-data'
 import { formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
@@ -202,9 +203,24 @@ function ProductDashboardPreview() {
 
 function SocialProofStrip() {
   const quotes = [
-    { name: 'Мария К.', role: 'персональный тренер', text: 'Перестала вести клиентов в Excel — всё в одном окне, экономлю 5+ часов в неделю.' },
-    { name: 'Алексей Т.', role: 'студия functional', text: 'Клиенты реально пользуются приложением: тренировки, чат, замеры — без лишних мессенджеров.' },
-    { name: 'Елена В.', role: 'онлайн-коуч', text: 'Аналитика и финансы наконец связаны с расписанием. Вижу риски оттока до того, как клиент уйдёт.' },
+    {
+      name: 'Мария К.',
+      role: 'персональный тренер',
+      text: 'Перестала вести клиентов в Excel — всё в одном окне, экономлю 5+ часов в неделю.',
+      avatar: '/testimonials/avatar-1.webp',
+    },
+    {
+      name: 'Алексей Т.',
+      role: 'студия functional',
+      text: 'Клиенты реально пользуются приложением: тренировки, чат, замеры — без лишних мессенджеров.',
+      avatar: '/testimonials/avatar-2.webp',
+    },
+    {
+      name: 'Елена В.',
+      role: 'онлайн-коуч',
+      text: 'Аналитика и финансы наконец связаны с расписанием. Вижу риски оттока до того, как клиент уйдёт.',
+      avatar: '/testimonials/avatar-3.webp',
+    },
   ]
   return (
     <section className="border-y border-[var(--border)] bg-[var(--graphite)] px-5 py-12 sm:px-10">
@@ -212,8 +228,18 @@ function SocialProofStrip() {
         {quotes.map((q) => (
           <motion.div key={q.name} {...fade} className="rounded-xl border border-[var(--border)] bg-[var(--surface)]/60 p-6">
             <p className="text-sm leading-relaxed text-[var(--text-secondary)]">«{q.text}»</p>
-            <p className="mt-4 text-sm font-semibold">{q.name}</p>
-            <p className="text-xs text-[var(--text-muted)]">{q.role}</p>
+            <div className="mt-5 flex items-center gap-3">
+              <Avatar className="h-11 w-11 border border-[var(--border-strong)] ring-2 ring-[var(--accent)]/15">
+                <AvatarImage src={q.avatar} alt={q.name} className="object-cover" />
+                <AvatarFallback className="bg-[var(--accent-dim)] text-sm font-bold text-[var(--accent)]">
+                  {q.name.slice(0, 1)}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-semibold">{q.name}</p>
+                <p className="text-xs text-[var(--text-muted)]">{q.role}</p>
+              </div>
+            </div>
           </motion.div>
         ))}
       </div>
