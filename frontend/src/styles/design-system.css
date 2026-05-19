@@ -222,8 +222,9 @@
 
 .ds-app-sidebar-item--active {
   color: var(--text-primary);
-  background: var(--accent-dim);
+  background: var(--surface2);
   border-left: 2px solid var(--accent);
+  box-shadow: none;
 }
 
 .ds-app-sidebar-item:focus-visible {

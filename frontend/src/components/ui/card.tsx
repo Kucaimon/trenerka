@@ -18,11 +18,11 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
 Card.displayName = 'Card'
 
 const CardHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex flex-col gap-1 border-b border-[var(--border)] px-5 py-4', className)} {...props} />
+  <div className={cn('flex flex-col gap-1 border-b border-[var(--border)] px-4 pb-2 pt-4 md:px-5 md:pt-5', className)} {...props} />
 )
 
 const CardTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={cn('font-display text-sm font-bold leading-none tracking-tight text-[var(--text-primary)]', className)} {...props} />
+  <h3 className={cn('text-sm font-semibold leading-none text-[var(--text-primary)]', className)} {...props} />
 )
 
 const CardDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
@@ -30,11 +30,11 @@ const CardDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParag
 )
 
 const CardContent = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('px-5 py-4', className)} {...props} />
+  <div className={cn('p-4 md:p-5', className)} {...props} />
 )
 
 const CardFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex items-center border-t border-[var(--border)] px-5 py-4', className)} {...props} />
+  <div className={cn('flex items-center border-t border-[var(--border)] px-4 py-3 md:px-5 md:py-4', className)} {...props} />
 )
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

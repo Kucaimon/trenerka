@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { PageHeader } from '@/components/shared/page-header'
+import { SaasPageHeader } from '@/components/saas'
 import { useClients, useMessages, useSendMessage } from '@/features/api/hooks'
 import { uploadAttachment } from '@/features/api/messages-service'
 import { useIsMobile } from '@/components/mobile'
@@ -63,7 +63,13 @@ export function MessagesPage() {
 
   return (
     <div className="page-container messages-mobile flex flex-col">
-      <PageHeader title={t('messages.title')} />
+      <SaasPageHeader
+        title={t('messages.title')}
+        breadcrumbs={[
+          { label: t('dashboard.breadcrumb.app'), href: '/trainer' },
+          { label: t('messages.title') },
+        ]}
+      />
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-3">
         <Card className={cn('flex flex-col overflow-hidden p-0', isMobile && !showMobileList && 'hidden', isMobile && showMobileList && 'flex-1')}>
           <ScrollArea className="flex-1">

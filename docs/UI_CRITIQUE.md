@@ -109,3 +109,19 @@
 ---
 
 *Аудит: май 2026. Ограничение: hex в `tokens.css` не менялись.*
+
+---
+
+## Refinement pass 2 (production SaaS realism)
+
+| Область | Что исправлено |
+|---------|----------------|
+| Sidebar | Ряды 34px, labels 10px uppercase muted, active `surface2` + 2px accent без glow, collapsed — центрированные иконки |
+| Dashboard | `DashboardGrid` + `DashboardContainer` / `AnalyticsWidget`; KPI только из `useTrainerAnalytics` / hooks; график из `getRevenueChart`; убраны fake change hints; блок «Сегодня» для сессий; activity с иконками и relative time |
+| CRM | TanStack sort по name/status, column sizing, hover/active `surface2`, компактные filter chips |
+| Typography | `SaasPageHeader` + `ds-h1` на Programs, Calendar, Finance, Messages; `page-container` `space-y-5` |
+| Cards | `CardHeader` pb-2, `CardTitle` text-sm semibold, padding `p-4 md:p-5`, без glow |
+| Landing | Hero padding −20%, `saas-product-mock--hero` меньше, feature panels flat border |
+| Mobile | Metrics 2×2 compact на xs; client-card padding уплотнён |
+
+*Pass 2: май 2026. `#b8f53d`, `#080808` в `tokens.css` без изменений.*

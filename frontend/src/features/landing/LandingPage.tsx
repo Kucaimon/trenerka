@@ -134,7 +134,7 @@ function HeroProductMock() {
   const previewDate = formatLongDate()
 
   return (
-    <div className="saas-product-mock">
+    <div className="saas-product-mock saas-product-mock--hero">
       <div className="saas-product-mock__chrome">
         <span className="saas-product-mock__dot" style={{ background: '#ff5f57' }} />
         <span className="saas-product-mock__dot" style={{ background: '#febc2e' }} />

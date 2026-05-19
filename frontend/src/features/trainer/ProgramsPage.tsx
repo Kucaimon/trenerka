@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { Layers, ChevronRight } from 'lucide-react'
-import { PageHeader } from '@/components/shared/page-header'
+import { SaasPageHeader } from '@/components/saas'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { usePrograms } from '@/features/api/hooks'
@@ -12,9 +12,13 @@ export function ProgramsPage() {
 
   return (
     <div className="page-container">
-      <PageHeader
+      <SaasPageHeader
         title={t('programs.title')}
         description={t('programs.description')}
+        breadcrumbs={[
+          { label: t('dashboard.breadcrumb.app'), href: '/trainer' },
+          { label: t('programs.title') },
+        ]}
         actions={
           <Button variant="secondary" size="sm" asChild>
             <Link to="/trainer/workouts/builder">{t('programs.builderLink')}</Link>

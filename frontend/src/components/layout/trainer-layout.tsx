@@ -266,7 +266,13 @@ export function TrainerLayout() {
                   key={item.to}
                   to={item.to}
                   end={item.end}
-                  className={({ isActive }) => cn('snav-item touch-target focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]', isActive && 'active')}
+                  className={({ isActive }) =>
+                    cn(
+                      'snav-item touch-target focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]',
+                      collapsed && 'justify-center',
+                      isActive && 'active',
+                    )
+                  }
                 >
                   <item.icon className="h-4 w-4 shrink-0 opacity-80" strokeWidth={1.75} />
                   {!collapsed && (

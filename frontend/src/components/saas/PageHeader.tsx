@@ -36,7 +36,7 @@ export function SaasPageHeader({ title, description, actions, breadcrumbs, class
             ))}
           </nav>
         ) : null}
-        <h1 className="saas-page-header__title ds-h2">{title}</h1>
+        <h1 className="saas-page-header__title ds-h1">{title}</h1>
         {description ? <p className="saas-page-header__sub">{description}</p> : null}
       </div>
       {actions ? <div className="saas-page-header__actions">{actions}</div> : null}

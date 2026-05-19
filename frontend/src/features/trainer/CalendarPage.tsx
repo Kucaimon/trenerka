@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { PageHeader } from '@/components/shared/page-header'
+import { SaasPageHeader } from '@/components/saas'
 import { useEvents, useSaveEvent } from '@/features/api/hooks'
 import { completeEvent, copyRecurringEvent } from '@/features/api/calendar-service'
 import { formatDateTime } from '@/lib/i18n-format'
@@ -93,9 +93,13 @@ export function CalendarPage() {
 
   return (
     <div className="page-container">
-      <PageHeader
+      <SaasPageHeader
         title={t('calendar.title')}
         description={t('calendar.description')}
+        breadcrumbs={[
+          { label: t('dashboard.breadcrumb.app'), href: '/trainer' },
+          { label: t('calendar.title') },
+        ]}
         actions={<span className="text-sm text-[var(--text-muted)]">{t('calendar.eventCount', { count: apiEvents.length })}</span>}
       />
       <Card className="premium-panel calendar-mobile-wrap">

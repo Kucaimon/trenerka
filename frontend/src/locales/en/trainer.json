@@ -122,7 +122,11 @@
     "schedule": {
       "title": "Today's schedule",
       "subtitle": "Upcoming sessions",
+      "upcoming": "Upcoming",
       "empty": "No events"
+    },
+    "today": {
+      "badge": "Today"
     },
     "activity": {
       "title": "Activity",

@@ -111,8 +111,11 @@ export const mockNotifications: Notification[] = [
   { id: 'n3', title: 'Сообщение', body: 'Анна Смирнова написала в чат', createdAt: '2025-05-17T09:30:00', read: true },
 ]
 
+export type ActivityFeedType = 'payment' | 'message' | 'notification'
+
 export type ActivityFeedItem = {
   id: string
+  type: ActivityFeedType
   title: string
   body: string
   createdAt: string
@@ -122,12 +125,14 @@ export type ActivityFeedItem = {
 export const mockActivityFeed: ActivityFeedItem[] = [
   ...mockNotifications.map((n) => ({
     id: n.id,
+    type: n.title.toLowerCase().includes('оплат') ? ('payment' as const) : ('notification' as const),
     title: n.title,
     body: n.body,
     createdAt: n.createdAt,
   })),
   ...mockMessages.map((m) => ({
     id: m.id,
+    type: 'message' as const,
     title: m.sender === 'client' ? 'Сообщение от клиента' : 'Исходящее сообщение',
     body: m.text,
     createdAt: m.createdAt,

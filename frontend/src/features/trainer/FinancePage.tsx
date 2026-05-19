@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { PageHeader } from '@/components/shared/page-header'
+import { SaasPageHeader } from '@/components/saas'
 import { StatCard } from '@/components/shared/stat-card'
 import { useClients, usePayments, queryKeys } from '@/features/api/hooks'
 import { createPayment, exportPaymentsCsv, getPaymentProviderConfig, getPaymentReport } from '@/features/api/payments-service'
@@ -54,13 +54,17 @@ export function FinancePage() {
 
   return (
     <div className="page-container">
-      <PageHeader
+      <SaasPageHeader
         title={t('finance.title')}
         description={
           provider.enabled
             ? t('finance.provider', { name: provider.provider })
             : t('finance.integrationStub')
         }
+        breadcrumbs={[
+          { label: t('dashboard.breadcrumb.app'), href: '/trainer' },
+          { label: t('finance.title') },
+        ]}
         actions={
           <Button
             variant="secondary"
