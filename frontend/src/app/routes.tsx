@@ -38,6 +38,19 @@ import { ExercisesAdminPage } from '@/features/admin/ExercisesAdminPage'
 import { UsersAdminPage } from '@/features/admin/UsersAdminPage'
 import { NewsAdminPage } from '@/features/admin/NewsAdminPage'
 
+const devRoutes =
+  import.meta.env.DEV
+    ? [
+        {
+          path: '/dev/design-system',
+          lazy: async () => {
+            const { DesignSystemPage } = await import('@/features/dev/DesignSystemPage')
+            return { Component: DesignSystemPage }
+          },
+        },
+      ]
+    : []
+
 export const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
   {
@@ -97,5 +110,6 @@ export const router = createBrowserRouter([
       { path: 'news', element: <NewsAdminPage /> },
     ],
   },
+  ...devRoutes,
   { path: '*', element: <Navigate to="/" replace /> },
 ])

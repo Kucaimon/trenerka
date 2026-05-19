@@ -39,6 +39,13 @@ import {
   type MobileTabItem,
 } from '@/components/mobile'
 import { useIsMobile } from '@/components/mobile/useMediaQuery'
+import {
+  AppShell,
+  AppSidebar,
+  AppSidebarGroup,
+  AppTopBar,
+  AppContent,
+} from '@/components/saas'
 import type { LucideIcon } from 'lucide-react'
 
 type NavItem = {
@@ -182,95 +189,107 @@ export function TrainerLayout() {
   }, [location.pathname])
 
   return (
-    <div className="trainer-layout-root min-h-dvh w-full overflow-x-hidden bg-[var(--black)]">
-      <div className="app-shell app-shell--trainer flex min-h-dvh w-full">
-        {!isMobile ? (
-        <aside
-          className={cn(
-            'trainer-sidebar trainer-sidebar--saas flex shrink-0 flex-col',
-            collapsed ? 'w-14' : 'w-[var(--sidebar-width)]',
-          )}
-        >
-          <div
-            className={cn(
-              'flex items-center border-b border-[var(--border)] py-4',
-              collapsed ? 'justify-center px-1' : 'px-5',
-            )}
-          >
-            {!collapsed ? (
-              <LogoLink size="md" logoClassName="max-w-[180px]" />
-            ) : (
-              <LogoLink size="sm" variant="icon" />
-            )}
-          </div>
-
-          <nav className="flex-1 overflow-y-auto py-3">
-            {navGroups.map((group) => (
-              <div key={group.label} className="mb-2">
-                {!collapsed && <p className="snav-label">{group.label}</p>}
-                <div className="space-y-0.5 px-2">
-                  {group.items.map((item) => (
-                    <NavLink
-                      key={item.to}
-                      to={item.to}
-                      end={item.end}
-                      className={({ isActive }) => cn('snav-item touch-target', isActive && 'active')}
-                    >
-                      <item.icon className="h-4 w-4 shrink-0 opacity-80" strokeWidth={1.75} />
-                      {!collapsed && (
-                        <>
-                          <span className="truncate">{item.label}</span>
-                          {item.badge != null && item.badge > 0 && (
-                            <span className="ml-auto rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[10px] font-bold text-[#111]">
-                              {item.badge}
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </NavLink>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </nav>
-
-          <div className="trainer-sidebar-footer border-t border-[var(--border)] p-4">
-            <div className={cn('mb-3', collapsed && 'flex justify-center')}>
-              <LanguageSwitcher showLabel={!collapsed} className={cn(!collapsed && 'w-full justify-start')} />
-            </div>
-            {!collapsed && user && (
-              <div className="mb-3 flex items-center gap-2.5">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-[#111]">
-                  {user.name.slice(0, 1)}
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate text-[13px] font-semibold">{user.name}</p>
-                  <p className="text-[11px] text-[var(--text-muted)]">{t('role')}</p>
-                </div>
-              </div>
-            )}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start gap-3 text-[var(--text-muted)]"
-              onClick={() => {
-                logout()
-                navigate('/')
-              }}
+    <AppShell
+      variant="trainer"
+      mobileNav={
+        isMobile ? (
+          <MobileTabBar
+            items={mobileBottomNav}
+            variant="trainer"
+            emphasizedIndex={0}
+            className="z-50"
+            extraTabs={[
+              {
+                key: 'more',
+                icon: MoreHorizontal,
+                label: t('nav.more'),
+                active: moreActive || moreOpen,
+                onClick: () => setMoreOpen(true),
+              },
+            ]}
+          />
+        ) : undefined
+      }
+    >
+      {!isMobile ? (
+        <AppSidebar
+          collapsed={collapsed}
+          header={
+            <div
+              className={cn(
+                'flex items-center border-b border-[var(--border)] py-4',
+                collapsed ? 'justify-center px-1' : 'px-5',
+              )}
             >
-              <LogOut className="h-4 w-4" />
-              {!collapsed && t('common:actions.logout')}
-            </Button>
-          </div>
-        </aside>
-        ) : null}
+              {!collapsed ? (
+                <LogoLink size="md" logoClassName="max-w-[180px]" />
+              ) : (
+                <LogoLink size="sm" variant="icon" />
+              )}
+            </div>
+          }
+          footer={
+            <>
+              <div className={cn('mb-3', collapsed && 'flex justify-center')}>
+                <LanguageSwitcher showLabel={!collapsed} className={cn(!collapsed && 'w-full justify-start')} />
+              </div>
+              {!collapsed && user ? (
+                <div className="mb-3 flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-[#111]">
+                    {user.name.slice(0, 1)}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-[13px] font-semibold">{user.name}</p>
+                    <p className="text-[11px] text-[var(--text-muted)]">{t('role')}</p>
+                  </div>
+                </div>
+              ) : null}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start gap-3 text-[var(--text-muted)]"
+                onClick={() => {
+                  logout()
+                  navigate('/')
+                }}
+              >
+                <LogOut className="h-4 w-4" />
+                {!collapsed && t('common:actions.logout')}
+              </Button>
+            </>
+          }
+        >
+          {navGroups.map((group) => (
+            <AppSidebarGroup key={group.label} label={group.label} collapsed={collapsed}>
+              {group.items.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) => cn('snav-item touch-target', isActive && 'active')}
+                >
+                  <item.icon className="h-4 w-4 shrink-0 opacity-80" strokeWidth={1.75} />
+                  {!collapsed && (
+                    <>
+                      <span className="truncate">{item.label}</span>
+                      {item.badge != null && item.badge > 0 && (
+                        <span className="ml-auto rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[10px] font-bold text-[#111]">
+                          {item.badge}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </AppSidebarGroup>
+          ))}
+        </AppSidebar>
+      ) : null}
 
-        <div className="trainer-main flex min-h-0 min-w-0 w-full flex-1 flex-col">
-          <header className="trainer-mobile-header trainer-topbar sticky top-0 z-30 shrink-0 px-3 md:px-8">
-            {isMobile ? (
-              <LogoLink size="sm" className="shrink-0" />
-            ) : null}
-            {!isMobile ? (
+      <div className="trainer-main ds-app-main flex min-h-0 min-w-0 w-full flex-1 flex-col">
+        <AppTopBar className="px-3 md:px-8">
+          {isMobile ? <LogoLink size="sm" className="shrink-0" /> : null}
+          {!isMobile ? (
             <Button
               variant="ghost"
               size="icon"
@@ -280,48 +299,30 @@ export function TrainerLayout() {
             >
               {collapsed ? <Menu className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </Button>
-            ) : null}
-            <Button
-              variant="outline"
-              size="sm"
-              className="trainer-topbar__search min-w-0 flex-1 justify-start gap-2 font-normal text-[var(--text-muted)]"
-              onClick={() => setCommandOpen(true)}
-            >
-              <Search className="h-4 w-4 shrink-0" />
-              <span className="truncate">{t('common:actions.search')}</span>
-              <kbd className="ml-auto hidden rounded border border-[var(--border)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] sm:inline">
-                ⌘K
-              </kbd>
-            </Button>
-            {!isMobile ? <LanguageSwitcher compact /> : null}
-          </header>
-          <main className="app-content trainer-main-content flex-1 md:!px-8 md:!py-7 md:!pb-7">
-            <AnimatePresence mode="wait">
-              <MobilePageTransition key={location.pathname}>
-                <Outlet />
-              </MobilePageTransition>
-            </AnimatePresence>
-          </main>
-        </div>
-      </div>
+          ) : null}
+          <Button
+            variant="outline"
+            size="sm"
+            className="trainer-topbar__search min-w-0 flex-1 justify-start gap-2 font-normal text-[var(--text-muted)]"
+            onClick={() => setCommandOpen(true)}
+          >
+            <Search className="h-4 w-4 shrink-0" />
+            <span className="truncate">{t('common:actions.search')}</span>
+            <kbd className="ml-auto hidden rounded border border-[var(--border)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] sm:inline">
+              ⌘K
+            </kbd>
+          </Button>
+          {!isMobile ? <LanguageSwitcher compact /> : null}
+        </AppTopBar>
 
-      {isMobile ? (
-        <MobileTabBar
-          items={mobileBottomNav}
-          variant="trainer"
-          emphasizedIndex={0}
-          className="z-50"
-          extraTabs={[
-            {
-              key: 'more',
-              icon: MoreHorizontal,
-              label: t('nav.more'),
-              active: moreActive || moreOpen,
-              onClick: () => setMoreOpen(true),
-            },
-          ]}
-        />
-      ) : null}
+        <AppContent variant="trainer">
+          <AnimatePresence mode="wait">
+            <MobilePageTransition key={location.pathname}>
+              <Outlet />
+            </MobilePageTransition>
+          </AnimatePresence>
+        </AppContent>
+      </div>
 
       <MobileBottomSheet open={moreOpen} onClose={() => setMoreOpen(false)} title={t('nav.sections')}>
         <nav className="grid grid-cols-2 gap-2 p-4">
@@ -356,6 +357,6 @@ export function TrainerLayout() {
       >
         <Bot className="h-5 w-5" />
       </Link>
-    </div>
+    </AppShell>
   )
 }

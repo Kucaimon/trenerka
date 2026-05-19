@@ -2,6 +2,7 @@
 @plugin "tailwindcss-animate";
 @import "./styles/tokens.css";
 @import "./styles/saas-system.css";
+@import "./styles/design-system.css";
 @import "./styles/concept.css";
 @import "./styles/mobile-app.css";
 
