@@ -102,15 +102,6 @@
   color: var(--text-primary);
 }
 
-.concept-nav-drawer__languages {
-  max-height: min(40vh, 17.5rem);
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--border);
-}
-
 .concept-nav-drawer__footer {
   display: flex;
   flex-shrink: 0;

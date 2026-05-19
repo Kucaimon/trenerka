@@ -6,7 +6,6 @@ import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { LogoLink } from '@/components/shared/LogoLink'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
-import { MobileLanguageList } from '@/components/shared/MobileLanguageList'
 
 export function SiteHeader() {
   const { t } = useTranslation('common')
@@ -40,7 +39,7 @@ export function SiteHeader() {
             </a>
           ))}
         </nav>
-        <div className="concept-nav-actions--desktop hidden shrink-0 items-center gap-2 lg:flex">
+        <div className="concept-nav-actions hidden shrink-0 items-center gap-2 lg:flex">
           <LanguageSwitcher showLabel />
           <Button variant="outline" size="sm" className="hidden sm:inline-flex" asChild>
             <Link to="/login/trainer">{t('actions.login')}</Link>
@@ -49,18 +48,21 @@ export function SiteHeader() {
             <Link to="/register/trainer">{t('actions.startFree')}</Link>
           </Button>
         </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="concept-nav-menu-btn touch-target shrink-0 lg:hidden"
-          aria-label={t('nav.openMenu')}
-          aria-expanded={menuOpen}
-          aria-controls="site-mobile-nav"
-          onClick={() => setMenuOpen(true)}
-        >
-          <Menu className="h-5 w-5" />
-        </Button>
+        <div className="flex shrink-0 items-center gap-1.5 lg:hidden">
+          <LanguageSwitcher compact />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="concept-nav-menu-btn touch-target shrink-0"
+            aria-label={t('nav.openMenu')}
+            aria-expanded={menuOpen}
+            aria-controls="site-mobile-nav"
+            onClick={() => setMenuOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       <Drawer.Root
@@ -110,10 +112,6 @@ export function SiteHeader() {
                   </a>
                 ))}
               </nav>
-
-              <div className="concept-nav-drawer__languages">
-                <MobileLanguageList onSelect={closeMenu} />
-              </div>
             </div>
 
             <div className="concept-nav-drawer__footer">
