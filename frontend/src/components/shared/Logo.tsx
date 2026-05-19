@@ -1,14 +1,14 @@
 import { cn } from '@/lib/utils'
 
-const LOGO_VERSION = 5
+const LOGO_VERSION = 6
 
 /** Intrinsic dimensions of frontend/public/logo.png */
-const FULL_WIDTH = 941
-const FULL_HEIGHT = 216
+const FULL_WIDTH = 1024
+const FULL_HEIGHT = 682
 const FULL_ASPECT = FULL_WIDTH / FULL_HEIGHT
 
 /** Intrinsic dimensions of frontend/public/logo-icon.png */
-const ICON_SIZE = 216
+const ICON_SIZE = 682
 
 const fullHeights = {
   sm: 'h-8',
