@@ -122,13 +122,16 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="concept-nav-actions--desktop flex shrink-0 items-center gap-2">
-          <LanguageSwitcher />
+          <LanguageSwitcher showLabel />
           <Button variant="outline" size="sm" className="hidden sm:inline-flex" asChild>
             <Link to="/login/trainer">{t('actions.login')}</Link>
           </Button>
           <Button size="sm" asChild>
             <Link to="/register/trainer">{t('actions.startFree')}</Link>
           </Button>
+        </div>
+        <div className="concept-nav-actions--mobile flex shrink-0 items-center gap-1.5 md:hidden">
+          <LanguageSwitcher compact />
         </div>
         {!menuOpen ? (
           <Button

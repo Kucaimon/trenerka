@@ -38,15 +38,21 @@ export function ClientShell() {
     <div className="flex min-h-dvh justify-center overflow-x-hidden bg-[var(--bg-base)] sm:items-center sm:p-4">
       <div className="app-shell app-shell--client app-shell--bleed relative">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-64 bg-[radial-gradient(circle_at_50%_0%,rgba(184,245,61,0.08),transparent_18rem)]" />
-        {!isHome ? (
-          <header className="relative z-10 flex shrink-0 items-center justify-between border-b border-[var(--border)] bg-[var(--surface)]/85 px-5 py-3 backdrop-blur-xl">
+        <header
+          className={
+            isHome
+              ? 'relative z-10 flex shrink-0 items-center justify-end px-4 pb-1 pt-3'
+              : 'relative z-10 flex shrink-0 items-center justify-between border-b border-[var(--border)] bg-[var(--surface)]/85 px-5 py-3 backdrop-blur-xl'
+          }
+        >
+          {!isHome ? (
             <div>
               <Logo size="sm" />
               <p className="text-xs text-[var(--text-muted)]">{t('cabinet')}</p>
             </div>
-            <LanguageSwitcher />
-          </header>
-        ) : null}
+          ) : null}
+          <LanguageSwitcher compact={isHome} />
+        </header>
         <main
           className={
             isSession

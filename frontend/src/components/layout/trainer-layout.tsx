@@ -238,6 +238,9 @@ export function TrainerLayout() {
           </nav>
 
           <div className="trainer-sidebar-footer border-t border-[var(--border)] p-4">
+            <div className={cn('mb-3', collapsed && 'flex justify-center')}>
+              <LanguageSwitcher showLabel={!collapsed} className={cn(!collapsed && 'w-full justify-start')} />
+            </div>
             {!collapsed && user && (
               <div className="mb-3 flex items-center gap-2.5">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-[#111]">
@@ -295,7 +298,7 @@ export function TrainerLayout() {
                 ⌘K
               </kbd>
             </Button>
-            <LanguageSwitcher />
+            <LanguageSwitcher compact />
           </header>
           <main className="app-content trainer-main-content flex-1 md:!px-8 md:!py-7 md:!pb-7">
             <AnimatePresence mode="wait">
@@ -344,6 +347,9 @@ export function TrainerLayout() {
             </NavLink>
           ))}
           <MoreMenuSkills />
+          <div className="col-span-2 border-t border-[var(--border)] pt-3">
+            <LanguageSwitcher showLabel className="w-full justify-center" />
+          </div>
         </nav>
       </MobileBottomSheet>
 

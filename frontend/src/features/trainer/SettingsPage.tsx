@@ -14,7 +14,7 @@ export function SettingsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">{t('settings.title')}</h1>
-        <LanguageSwitcher />
+        <LanguageSwitcher showLabel />
       </div>
       <Card>
         <CardHeader><CardTitle>{t('settings.profile')}</CardTitle></CardHeader>

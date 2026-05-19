@@ -93,10 +93,10 @@ export function AdminLayout() {
             <Menu className="h-4 w-4" />
           </Button>
           <span className="flex-1 text-sm font-semibold">{t('brand')}</span>
-          <LanguageSwitcher />
+          <LanguageSwitcher compact />
         </header>
         <header className="hidden h-14 items-center justify-end gap-2 border-b border-[var(--border)] px-6 md:flex">
-          <LanguageSwitcher />
+          <LanguageSwitcher showLabel />
           <Button
             variant="ghost"
             size="sm"
