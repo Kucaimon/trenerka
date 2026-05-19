@@ -860,20 +860,14 @@ Object.assign(T.admin, adminExtras)
 // Landing - comprehensive EN and RU, others derived from EN with key translations
 const landingRu = {
   hero: {
-    badge: 'AI Fitness SaaS Platform',
+    badge: 'Платформа для тренеров',
     title1: 'Управляй тренировками',
     title2: 'и клиентами',
     titleAccent: 'в одном месте',
-    subtitle: 'Платформа нового поколения для персональных тренеров. CRM, конструктор тренировок, аналитика и AI-помощник — всё в одном рабочем пространстве.',
+    subtitle: 'CRM, конструктор тренировок, календарь и аналитика — без таблиц и потерянных чатов.',
     ctaPrimary: 'Начать бесплатно →',
     ctaSecondary: 'Смотреть демо',
-    note: 'Бесплатно до 10 клиентов · Без кредитной карты · Настройка за 5 минут',
-  },
-  metrics: {
-    hours: ['5ч', 'экономии в неделю'],
-    trainers: ['2 700+', 'тренеров на платформе'],
-    satisfaction: ['94%', 'довольны результатом'],
-    income: ['₽48к', 'средний доход тренера'],
+    note: 'Бесплатно до 10 клиентов · Без карты',
   },
   preview: {
     windowTitle: 'Тренерка · Дашборд',
@@ -889,105 +883,59 @@ const landingRu = {
     activeClientsTitle: 'Активные клиенты',
     scheduleTitle: 'Расписание на сегодня',
   },
-  testimonials: [
-    { name: 'Мария К.', role: 'персональный тренер', text: 'Перестала вести клиентов в Excel — всё в одном окне, экономлю 5+ часов в неделю.' },
-    { name: 'Алексей Т.', role: 'студия functional', text: 'Клиенты реально пользуются приложением: тренировки, чат, замеры — без лишних мессенджеров.' },
-    { name: 'Елена В.', role: 'онлайн-коуч', text: 'Аналитика и финансы наконец связаны с расписанием. Вижу риски оттока до того, как клиент уйдёт.' },
-  ],
-  product: {
-    eyebrow: 'Продукт',
-    title: 'Профессиональный рабочий стол тренера',
-    text: 'Всё, что нужно для ведения бизнеса — в одном окне. Никаких Excel-таблиц и потерянных чатов.',
-    features: [
-      { title: 'Конструктор тренировок', text: 'Drag-and-drop интерфейс. Более 30 базовых упражнений, создание собственных, AI-рекомендации и шаблоны программ.' },
-      { title: 'CRM для тренера', text: 'Полная карточка клиента с историей тренировок, прогрессом замеров, историей платежей и заметками тренера.' },
-      { title: 'Аналитика доходов', text: 'Графики выручки, удержание клиентов, статистика тренировок. Экспорт в Excel для налоговой.' },
-      { title: 'Умный календарь', text: 'Планирование тренировок и консультаций. Автоматические напоминания клиентам за 2ч и 30 мин до занятия.' },
-      { title: 'Встроенный чат', text: 'Асинхронное общение с клиентами, шаблоны сообщений, прикрепление файлов до 10 МБ.' },
-      { title: 'AI-ассистент', text: 'Генерация программ тренировок, анализ прогресса, рекомендации по питанию и автоматические отчёты.' },
-    ],
-  },
   workflow: {
-    eyebrow: 'Workout builder',
-    title: 'Недельный план собирается за пару минут',
-    text: 'Конструктор должен быть рабочим инструментом: упражнения из каталога, свои движения, подходы, повторы, отдых, видео и назначение клиенту на период.',
-    programTitle: 'Программа: Силовая A',
-    programMeta: 'Неделя 1 · Понедельник · 56 мин',
-    assigned: 'Назначена',
-    days: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
-    exercises: [
-      ['Жим лёжа', 'Грудь · штанга', '4', '8', '90 сек'],
-      ['Приседания со штангой', 'Ноги · штанга', '5', '5', '120 сек'],
-      ['Тяга штанги в наклоне', 'Спина · штанга', '4', '10', '90 сек'],
-      ['Планка', 'Кор · собственный вес', '3', '45 сек', '60 сек'],
+    eyebrow: 'Workflow',
+    title: 'От клиента к отчёту — один поток',
+    text: 'Четыре связанных модуля в одном интерфейсе.',
+    steps: [
+      { title: 'CRM', text: 'Карточка клиента, статус, оплаты и заметки' },
+      { title: 'Конструктор', text: 'Программы, упражнения, подходы и назначение' },
+      { title: 'Календарь', text: 'Расписание сессий и напоминания' },
+      { title: 'Аналитика', text: 'Доход, удержание и посещаемость' },
     ],
-    fields: { sets: 'Сеты', reps: 'Повт.', rest: 'Отдых' },
-    catalog: 'Каталог',
-    catalogItems: ['Подтягивания', 'Жим стоя', 'Болгарские выпады', 'Тяга блока'],
   },
-  analytics: {
-    eyebrow: 'Analytics',
-    title: 'Отчёты, которые помогают управлять практикой',
-    text: 'В ТЗ аналитика не декоративная: активные клиенты, доход за период, загрузка календаря, прогресс клиентов и PDF-отчёты.',
-    insights: {
-      mrr: { label: 'MRR', value: '292 000 ₽', trend: '+8.2%' },
-      active: { label: 'Активные', value: '11', trend: '2 на риске' },
-      retention: { label: 'Удержание', value: '95%', trend: '+5 п.п.' },
-      week: { label: 'Неделя', value: '52', trend: 'сессии' },
-    },
-    charts: {
-      retention: { title: 'Удержание клиентов', subtitle: 'Когорты и риск паузы' },
-      attendance: { title: 'Посещаемость', subtitle: 'Плановые и проведённые сессии', tooltip: 'Сессии' },
-    },
+  showcase: {
+    eyebrow: 'Дашборд',
+    title: 'Рабочий стол тренера',
+    text: 'Активные клиенты, расписание и метрики без лишних экранов.',
+  },
+  ecosystem: {
+    eyebrow: 'Экосистема',
+    title: 'Тренер и клиент в связке',
+    text: 'Тренер ведёт практику, клиент видит программу и прогресс в кабинете.',
+    trainerTab: 'Кабинет тренера',
+    clientTab: 'Кабинет клиента',
+    trainerGreeting: 'Доброе утро, Мария',
+    clientGreeting: 'Привет, Анна',
   },
   mobile: {
-    eyebrow: 'Client app',
-    title: 'Клиент видит программу, прогресс и связь с тренером',
-    text: 'Мобильная версия должна быть быстрой и понятной: сегодняшняя тренировка, неделя, замеры, фото прогресса, чат и история оплат.',
+    eyebrow: 'Мобильный кабинет',
+    title: 'Клиент открывает тренировку с телефона',
+    text: 'Сегодняшняя сессия, неделя и чат с тренером — без лишних вкладок.',
     today: 'Сегодня',
-    progress: 'Прогресс',
-    workoutA: 'Силовая A',
-    workoutMeta: '6 упражнений · 45 мин',
-    progressMeta: '−4.6 кг за цикл',
-    blocks: ['Разминка', 'Основной блок', 'Заминка'],
-  },
-  pricing: {
-    eyebrow: 'Тарифы',
-    title: 'Простые и прозрачные цены',
-    text: 'Начните бесплатно, переходите на Pro когда будете готовы. Без скрытых платежей.',
-    popular: 'Популярный',
-    plans: {
-      basic: { name: 'Базовый', priceLabel: 'Бесплатно', period: 'До 10 клиентов', features: ['До 10 активных клиентов', 'Конструктор тренировок', 'Каталог упражнений', 'Базовый календарь'], disabled: ['Финансовый учёт', 'AI-ассистент'], cta: 'Начать бесплатно' },
-      pro: { name: 'Pro', period: 'в месяц · до 50 клиентов', features: ['До 50 активных клиентов', 'Все функции конструктора', 'CRM полный доступ', 'Финансовый учёт', 'Аналитика и отчёты', 'AI-ассистент'], cta: 'Попробовать Pro →' },
-      vip: { name: 'VIP', period: 'в месяц · неограничено', features: ['Неограниченно клиентов', 'White-label брендинг', 'Приоритетная поддержка', 'Групповые курсы', 'API доступ', 'Выделенный менеджер'], cta: 'Обсудить VIP' },
-    },
+    workoutTitle: 'Силовая A',
+    workoutMeta: '4 упражнения · 56 мин',
+    exercises: ['Жим лёжа', 'Присед', 'Тяга', 'Планка'],
   },
   cta: {
-    eyebrow: 'Start in 10 minutes',
-    title: 'Перенеси клиентов, программы и оплаты в один рабочий контур',
-    text: '14 дней бесплатно, без карты. Демо-аккаунт тренера уже подключен, чтобы оценить реальный workflow.',
+    eyebrow: 'Старт',
+    title: 'Начните вести клиентов в Trenerka',
+    text: '14 дней бесплатно. Демо-аккаунт уже настроен.',
     create: 'Создать аккаунт',
     demo: 'Посмотреть демо',
-    features: ['Безопасная авторизация', 'Чат и уведомления', 'Финансовые отчёты'],
   },
 }
 
 const landingEn = {
   hero: {
-    badge: 'AI Fitness SaaS Platform',
+    badge: 'Platform for trainers',
     title1: 'Manage workouts',
     title2: 'and clients',
     titleAccent: 'in one place',
-    subtitle: 'Next-generation platform for personal trainers. CRM, workout builder, analytics and AI assistant — all in one workspace.',
+    subtitle: 'CRM, workout builder, calendar and analytics — no spreadsheets or lost chats.',
     ctaPrimary: 'Start for free →',
     ctaSecondary: 'Watch demo',
-    note: 'Free up to 10 clients · No credit card · 5-minute setup',
-  },
-  metrics: {
-    hours: ['5h', 'saved per week'],
-    trainers: ['2,700+', 'trainers on platform'],
-    satisfaction: ['94%', 'satisfied with results'],
-    income: ['₽48k', 'average trainer income'],
+    note: 'Free up to 10 clients · No card',
   },
   preview: {
     windowTitle: 'Trenerka · Dashboard',
@@ -1003,86 +951,46 @@ const landingEn = {
     activeClientsTitle: 'Active clients',
     scheduleTitle: "Today's schedule",
   },
-  testimonials: [
-    { name: 'Maria K.', role: 'personal trainer', text: 'Stopped using Excel for clients — everything in one window, saving 5+ hours a week.' },
-    { name: 'Alexey T.', role: 'functional studio', text: 'Clients actually use the app: workouts, chat, measurements — no extra messengers.' },
-    { name: 'Elena V.', role: 'online coach', text: 'Analytics and finances are finally tied to the schedule. I see churn risk before clients leave.' },
-  ],
-  product: {
-    eyebrow: 'Product',
-    title: 'Professional trainer workspace',
-    text: 'Everything you need to run your business — in one window. No Excel spreadsheets or lost chats.',
-    features: [
-      { title: 'Workout builder', text: 'Drag-and-drop interface. 30+ base exercises, custom moves, AI recommendations and program templates.' },
-      { title: 'Trainer CRM', text: 'Full client card with workout history, measurement progress, payment history and trainer notes.' },
-      { title: 'Revenue analytics', text: 'Revenue charts, client retention, workout stats. Excel export for taxes.' },
-      { title: 'Smart calendar', text: 'Schedule workouts and consultations. Auto reminders 2h and 30 min before sessions.' },
-      { title: 'Built-in chat', text: 'Async messaging with clients, message templates, file attachments up to 10 MB.' },
-      { title: 'AI assistant', text: 'Generate programs, analyze progress, nutrition tips and automatic reports.' },
-    ],
-  },
   workflow: {
-    eyebrow: 'Workout builder',
-    title: 'Weekly plan in minutes',
-    text: 'The builder should be a real tool: catalog exercises, custom moves, sets, reps, rest, video and client assignment.',
-    programTitle: 'Program: Strength A',
-    programMeta: 'Week 1 · Monday · 56 min',
-    assigned: 'Assigned',
-    days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    exercises: [
-      ['Bench press', 'Chest · barbell', '4', '8', '90 sec'],
-      ['Barbell squat', 'Legs · barbell', '5', '5', '120 sec'],
-      ['Barbell row', 'Back · barbell', '4', '10', '90 sec'],
-      ['Plank', 'Core · bodyweight', '3', '45 sec', '60 sec'],
+    eyebrow: 'Workflow',
+    title: 'From client to report — one flow',
+    text: 'Four connected modules in one interface.',
+    steps: [
+      { title: 'CRM', text: 'Client card, status, payments and notes' },
+      { title: 'Builder', text: 'Programs, exercises, sets and assignment' },
+      { title: 'Calendar', text: 'Session schedule and reminders' },
+      { title: 'Analytics', text: 'Revenue, retention and attendance' },
     ],
-    fields: { sets: 'Sets', reps: 'Reps', rest: 'Rest' },
-    catalog: 'Catalog',
-    catalogItems: ['Pull-ups', 'Overhead press', 'Bulgarian split squat', 'Cable row'],
   },
-  analytics: {
-    eyebrow: 'Analytics',
-    title: 'Reports that help run your practice',
-    text: 'Analytics is not decorative: active clients, period revenue, calendar load, client progress and PDF reports.',
-    insights: {
-      mrr: { label: 'MRR', value: '292,000 ₽', trend: '+8.2%' },
-      active: { label: 'Active', value: '11', trend: '2 at risk' },
-      retention: { label: 'Retention', value: '95%', trend: '+5 pp' },
-      week: { label: 'Week', value: '52', trend: 'sessions' },
-    },
-    charts: {
-      retention: { title: 'Client retention', subtitle: 'Cohorts and pause risk' },
-      attendance: { title: 'Attendance', subtitle: 'Planned vs completed sessions', tooltip: 'Sessions' },
-    },
+  showcase: {
+    eyebrow: 'Dashboard',
+    title: 'Trainer workspace',
+    text: 'Active clients, schedule and metrics without extra screens.',
+  },
+  ecosystem: {
+    eyebrow: 'Ecosystem',
+    title: 'Trainer and client connected',
+    text: 'Trainer runs the practice; client sees program and progress in the app.',
+    trainerTab: 'Trainer app',
+    clientTab: 'Client app',
+    trainerGreeting: 'Good morning, Maria',
+    clientGreeting: 'Hi, Anna',
   },
   mobile: {
-    eyebrow: 'Client app',
-    title: 'Clients see program, progress and trainer connection',
-    text: 'Mobile should be fast and clear: today’s workout, week, measurements, progress photos, chat and payment history.',
+    eyebrow: 'Mobile app',
+    title: 'Client opens the workout on their phone',
+    text: "Today's session, week view and trainer chat — no clutter.",
     today: 'Today',
-    progress: 'Progress',
-    workoutA: 'Strength A',
-    workoutMeta: '6 exercises · 45 min',
-    progressMeta: '−4.6 kg per cycle',
-    blocks: ['Warm-up', 'Main block', 'Cool-down'],
-  },
-  pricing: {
-    eyebrow: 'Pricing',
-    title: 'Simple, transparent pricing',
-    text: 'Start free, upgrade to Pro when ready. No hidden fees.',
-    popular: 'Popular',
-    plans: {
-      basic: { name: 'Basic', priceLabel: 'Free', period: 'Up to 10 clients', features: ['Up to 10 active clients', 'Workout builder', 'Exercise catalog', 'Basic calendar'], disabled: ['Financial tracking', 'AI assistant'], cta: 'Start for free' },
-      pro: { name: 'Pro', period: 'per month · up to 50 clients', features: ['Up to 50 active clients', 'Full builder features', 'Full CRM access', 'Financial tracking', 'Analytics & reports', 'AI assistant'], cta: 'Try Pro →' },
-      vip: { name: 'VIP', period: 'per month · unlimited', features: ['Unlimited clients', 'White-label branding', 'Priority support', 'Group courses', 'API access', 'Dedicated manager'], cta: 'Discuss VIP' },
-    },
+    workoutTitle: 'Strength A',
+    workoutMeta: '4 exercises · 56 min',
+    exercises: ['Bench press', 'Squat', 'Row', 'Plank'],
   },
   cta: {
-    eyebrow: 'Start in 10 minutes',
-    title: 'Move clients, programs and payments into one workflow',
-    text: '14 days free, no card. Demo trainer account is ready to explore the real workflow.',
+    eyebrow: 'Get started',
+    title: 'Start coaching clients in Trenerka',
+    text: '14 days free. Demo account is ready.',
     create: 'Create account',
     demo: 'View demo',
-    features: ['Secure authentication', 'Chat & notifications', 'Financial reports'],
   },
 }
 
@@ -1094,24 +1002,18 @@ for (const lang of ['de', 'pt', 'ja', 'it', 'es', 'fr', 'ar', 'zh-CN']) {
   // Patch hero for native feel
   if (lang === 'de') {
     Object.assign(T.landing[lang].hero, { title1: 'Trainings', title2: 'und Kunden', titleAccent: 'an einem Ort', subtitle: 'Plattform der nächsten Generation für Personal Trainer.', ctaPrimary: 'Kostenlos starten →', ctaSecondary: 'Demo ansehen', note: 'Kostenlos bis 10 Kunden · Keine Kreditkarte' })
-    T.landing[lang].pricing.eyebrow = 'Preise'
-    T.landing[lang].pricing.title = 'Einfache, transparente Preise'
   }
   if (lang === 'es') {
     Object.assign(T.landing[lang].hero, { title1: 'Gestiona entrenos', title2: 'y clientes', titleAccent: 'en un solo lugar', ctaPrimary: 'Empezar gratis →', ctaSecondary: 'Ver demo' })
-    T.landing[lang].pricing.eyebrow = 'Precios'
   }
   if (lang === 'fr') {
     Object.assign(T.landing[lang].hero, { title1: 'Gérez entraînements', title2: 'et clients', titleAccent: 'au même endroit', ctaPrimary: 'Commencer gratuitement →' })
   }
   if (lang === 'ar') {
     Object.assign(T.landing[lang].hero, { title1: 'إدارة التدريبات', title2: 'والعملاء', titleAccent: 'في مكان واحد', ctaPrimary: 'ابدأ مجاناً ←', ctaSecondary: 'عرض تجريبي', note: 'مجاني حتى 10 عملاء' })
-    T.landing[lang].pricing.eyebrow = 'الأسعار'
-    T.landing[lang].pricing.title = 'أسعار بسيطة وشفافة'
   }
   if (lang === 'zh-CN') {
     Object.assign(T.landing[lang].hero, { title1: '管理训练', title2: '与客户', titleAccent: '一站式', ctaPrimary: '免费开始 →', ctaSecondary: '观看演示' })
-    T.landing[lang].pricing.eyebrow = '定价'
   }
   if (lang === 'ja') {
     Object.assign(T.landing[lang].hero, { title1: 'トレーニング', title2: 'とクライアントを', titleAccent: '一元管理', ctaPrimary: '無料で始める →' })

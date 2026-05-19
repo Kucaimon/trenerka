@@ -58,6 +58,11 @@
 **Проблема:** шаблонный SaaS-лендинг; oversized типографика.  
 **Исправлено (точечно):** убран pulse у badge, уменьшены отступы hero на mobile.
 
+### 11. Landing — перегруз секциями (2026-05)
+**Где:** `LandingPage.tsx` — testimonials, pricing, analytics charts, feature grid, metrics row.  
+**Проблема:** маркетинговый шум, дубли превью, фиктивные KPI под hero.  
+**Исправлено:** лендинг сокращён до 6 секций (hero → workflow 4 шага → dashboard showcase → trainer/client ecosystem → mobile → CTA); `ds-*` типографика, `saas-product-mock` без декоративных карточек.
+
 ---
 
 ## Области аудита (детально)

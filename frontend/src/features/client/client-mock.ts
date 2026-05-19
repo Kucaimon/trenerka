@@ -76,3 +76,21 @@ export const clientCoachMessages = [
   { id: 'm2', sender: 'client', text: 'Хорошо! Колено уже не беспокоит, готова добавить объём.', time: '18:24' },
   { id: 'm3', sender: 'trainer', text: 'Отлично. После тренировки пришлите фото дневника и самочувствие по 10-балльной шкале.', time: '18:25' },
 ]
+
+export const weekProgress = {
+  completed: 2,
+  planned: 3,
+  streakDays: 4,
+}
+
+export const completedWorkouts = [
+  { id: 'done-1', title: 'Силовая A', date: '17 мая', duration: 54 },
+  { id: 'done-2', title: 'Кардио + мобилити', date: '14 мая', duration: 41 },
+  { id: 'done-3', title: 'Силовая B', date: '12 мая', duration: 58 },
+]
+
+export const clientCalendarMini = [
+  { day: 'Ср', date: '21', hasEvent: true, label: '10:00 · Силовая' },
+  { day: 'Чт', date: '22', hasEvent: false, label: '' },
+  { day: 'Пт', date: '23', hasEvent: true, label: '10:00 · Силовая B' },
+]

@@ -17,25 +17,44 @@
   "home": {
     "greeting": "Привет, {{name}}!",
     "defaultName": "Клиент",
-    "searchPlaceholder": "Поиск тренировок и упражнений…",
-    "progress": {
-      "title": "Ваш прогресс"
+    "todayWorkout": {
+      "label": "Сегодня",
+      "start": "Начать тренировку",
+      "meta": "{{count}} упражнений · {{min}} мин"
     },
-    "cards": {
-      "currentProgram": "Текущая программа",
-      "weekCompletion": "86% недели",
-      "weekCompletionSubtitle": "Выполнение плана",
-      "packageBalance": "{{count}} занятий",
-      "packageBalanceSubtitle": "Баланс пакета",
-      "today": "Сегодня"
+    "upcoming": {
+      "title": "Ближайшая сессия",
+      "withTrainer": "с {{name}}",
+      "empty": "Нет запланированных сессий"
     },
-    "recent": {
-      "title": "Последние тренировки"
+    "weekProgress": {
+      "title": "Неделя",
+      "done": "{{done}} из {{total}} тренировок",
+      "streak": "{{count}} дней подряд"
+    },
+    "measurements": {
+      "title": "Замеры",
+      "weight": "Вес",
+      "waist": "Талия",
+      "view": "Динамика"
+    },
+    "completed": {
+      "title": "Завершённые"
+    },
+    "chat": {
+      "title": "Чат с тренером",
+      "open": "Открыть чат"
+    },
+    "notifications": {
+      "title": "Уведомления"
+    },
+    "calendar": {
+      "title": "Календарь",
+      "empty": "Нет событий"
     },
     "fallback": {
       "program": "Силовая A",
-      "exercise": "Жим лёжа",
-      "dateSample": "20 дек, чт"
+      "exercise": "Жим лёжа"
     }
   },
   "workouts": {

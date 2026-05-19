@@ -96,13 +96,13 @@
       "clients": "Clients",
       "revenueMay": "Revenue (May)",
       "workouts": "Workouts",
-      "unread": "Unread"
+      "completion": "Completion"
     },
     "change": {
       "weekClients": "↑ +3 this week",
       "revenue": "↑ +18%",
       "thisWeek": "this week",
-      "unread": "messages"
+      "completion": "↑ +4%"
     },
     "period": {
       "d7": "7d",
@@ -112,8 +112,7 @@
     },
     "revenue": {
       "title": "Revenue",
-      "chart": "Revenue",
-      "periodTotal": "Period total: {{amount}}"
+      "chart": "Revenue"
     },
     "activeClients": {
       "title": "Active clients",
@@ -126,11 +125,12 @@
       "subtitle": "Upcoming sessions",
       "empty": "No events"
     },
-    "eventTypeDefault": "training",
-    "breadcrumb": {
-      "app": "Trenerka",
-      "dashboard": "Dashboard"
-    }
+    "activity": {
+      "title": "Activity",
+      "subtitle": "Payments, messages, reminders",
+      "empty": "No recent activity"
+    },
+    "eventTypeDefault": "training"
   },
   "clients": {
     "title": "Clients",
@@ -207,9 +207,6 @@
     "statsDetail": {
       "lastSessionLower": "last session",
       "programFocus": "program focus"
-    },
-    "breadcrumb": {
-      "clients": "Clients"
     }
   },
   "clientForm": {

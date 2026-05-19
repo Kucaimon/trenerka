@@ -589,18 +589,32 @@ export const extensions = {
       home: {
         greeting: 'Привет, {{name}}!',
         defaultName: 'Клиент',
-        searchPlaceholder: 'Поиск тренировок и упражнений…',
-        progress: { title: 'Ваш прогресс' },
-        cards: {
-          currentProgram: 'Текущая программа',
-          weekCompletion: '86% недели',
-          weekCompletionSubtitle: 'Выполнение плана',
-          packageBalance: '{{count}} занятий',
-          packageBalanceSubtitle: 'Баланс пакета',
-          today: 'Сегодня',
+        todayWorkout: {
+          label: 'Сегодня',
+          start: 'Начать тренировку',
+          meta: '{{count}} упражнений · {{min}} мин',
         },
-        recent: { title: 'Последние тренировки' },
-        fallback: { program: 'Силовая A', exercise: 'Жим лёжа', dateSample: '20 дек, чт' },
+        upcoming: {
+          title: 'Ближайшая сессия',
+          withTrainer: 'с {{name}}',
+          empty: 'Нет запланированных сессий',
+        },
+        weekProgress: {
+          title: 'Неделя',
+          done: '{{done}} из {{total}} тренировок',
+          streak: '{{count}} дней подряд',
+        },
+        measurements: {
+          title: 'Замеры',
+          weight: 'Вес',
+          waist: 'Талия',
+          view: 'Динамика',
+        },
+        completed: { title: 'Завершённые' },
+        chat: { title: 'Чат с тренером', open: 'Открыть чат' },
+        notifications: { title: 'Уведомления' },
+        calendar: { title: 'Календарь', empty: 'Нет событий' },
+        fallback: { program: 'Силовая A', exercise: 'Жим лёжа' },
       },
       workouts: {
         label: 'Программа',
@@ -681,18 +695,32 @@ export const extensions = {
       home: {
         greeting: 'Hi, {{name}}!',
         defaultName: 'Client',
-        searchPlaceholder: 'Search workouts and exercises…',
-        progress: { title: 'Your progress' },
-        cards: {
-          currentProgram: 'Current program',
-          weekCompletion: '86% of week',
-          weekCompletionSubtitle: 'Plan completion',
-          packageBalance: '{{count}} sessions',
-          packageBalanceSubtitle: 'Package balance',
-          today: 'Today',
+        todayWorkout: {
+          label: 'Today',
+          start: 'Start workout',
+          meta: '{{count}} exercises · {{min}} min',
         },
-        recent: { title: 'Recent workouts' },
-        fallback: { program: 'Strength A', exercise: 'Bench press', dateSample: 'Dec 20, Thu' },
+        upcoming: {
+          title: 'Upcoming session',
+          withTrainer: 'with {{name}}',
+          empty: 'No sessions scheduled',
+        },
+        weekProgress: {
+          title: 'This week',
+          done: '{{done}} of {{total}} workouts',
+          streak: '{{count}} day streak',
+        },
+        measurements: {
+          title: 'Measurements',
+          weight: 'Weight',
+          waist: 'Waist',
+          view: 'Trends',
+        },
+        completed: { title: 'Completed' },
+        chat: { title: 'Trainer chat', open: 'Open chat' },
+        notifications: { title: 'Notifications' },
+        calendar: { title: 'Calendar', empty: 'No events' },
+        fallback: { program: 'Strength A', exercise: 'Bench press' },
       },
       workouts: {
         label: 'Program',
@@ -770,10 +798,7 @@ export const extensions = {
       },
     },
   },
-  landing: {
-    ru: { mobile: { mockWeight: '67.4 кг' } },
-    en: { mobile: { mockWeight: '67.4 kg' } },
-  },
+  landing: {},
   admin: {
     ru: {
       brand: 'Admin',

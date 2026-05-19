@@ -17,25 +17,44 @@
   "home": {
     "greeting": "Hi, {{name}}!",
     "defaultName": "Client",
-    "searchPlaceholder": "Search workouts and exercises…",
-    "progress": {
-      "title": "Your progress"
+    "todayWorkout": {
+      "label": "Today",
+      "start": "Start workout",
+      "meta": "{{count}} exercises · {{min}} min"
     },
-    "cards": {
-      "currentProgram": "Current program",
-      "weekCompletion": "86% of week",
-      "weekCompletionSubtitle": "Plan completion",
-      "packageBalance": "{{count}} sessions",
-      "packageBalanceSubtitle": "Package balance",
-      "today": "Today"
+    "upcoming": {
+      "title": "Upcoming session",
+      "withTrainer": "with {{name}}",
+      "empty": "No sessions scheduled"
     },
-    "recent": {
-      "title": "Recent workouts"
+    "weekProgress": {
+      "title": "This week",
+      "done": "{{done}} of {{total}} workouts",
+      "streak": "{{count}} day streak"
+    },
+    "measurements": {
+      "title": "Measurements",
+      "weight": "Weight",
+      "waist": "Waist",
+      "view": "Trends"
+    },
+    "completed": {
+      "title": "Completed"
+    },
+    "chat": {
+      "title": "Trainer chat",
+      "open": "Open chat"
+    },
+    "notifications": {
+      "title": "Notifications"
+    },
+    "calendar": {
+      "title": "Calendar",
+      "empty": "No events"
     },
     "fallback": {
       "program": "Strength A",
-      "exercise": "Bench press",
-      "dateSample": "Dec 20, Thu"
+      "exercise": "Bench press"
     }
   },
   "workouts": {
