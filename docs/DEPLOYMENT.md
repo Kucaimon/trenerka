@@ -21,6 +21,8 @@ npm run build
 
 Deploy `frontend/dist/` to Netlify, Vercel, or S3. Set SPA fallback to `index.html`.
 
+**Vercel (пошагово на русском):** [VERCEL.md](./VERCEL.md)
+
 ## WordPress
 
 1. Install WordPress 6.x+
