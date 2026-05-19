@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 @import "./styles/tokens.css";
 @import "./styles/saas-system.css";
 @import "./styles/concept.css";
