@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Globe } from 'lucide-react'
+import { ChevronDown, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -7,7 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { SUPPORTED_LANGUAGES, LANG_STORAGE_KEY, applyDocumentDirection } from '@/i18n'
+import { SUPPORTED_LANGUAGES } from '@/i18n'
+import { changeAppLanguage } from '@/lib/change-language'
 import { cn } from '@/lib/utils'
 
 function languageCodeLabel(code: string) {
@@ -35,14 +36,8 @@ export function LanguageSwitcher({
   const current = SUPPORTED_LANGUAGES.find((l) => l.code === i18n.language) ?? SUPPORTED_LANGUAGES[0]
   const codeLabel = languageCodeLabel(current.code)
 
-  const changeLanguage = (code: string) => {
-    void i18n.changeLanguage(code)
-    localStorage.setItem(LANG_STORAGE_KEY, code)
-    applyDocumentDirection(code)
-  }
-
   return (
-    <DropdownMenu>
+    <DropdownMenu modal>
       <DropdownMenuTrigger asChild>
         <Button
           type="button"
@@ -54,6 +49,7 @@ export function LanguageSwitcher({
             className,
           )}
           aria-label={t('language.switch')}
+          aria-haspopup="listbox"
         >
           <Globe className="h-4 w-4 shrink-0 text-[var(--accent)]" aria-hidden />
           {showLabel ? (
@@ -61,13 +57,17 @@ export function LanguageSwitcher({
           ) : (
             <span className="text-xs font-bold uppercase tracking-wide">{codeLabel}</span>
           )}
+          <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="z-[200] max-h-[min(20rem,70vh)] overflow-y-auto">
+      <DropdownMenuContent
+        align="end"
+        className="z-[110] max-h-[min(20rem,70vh)] overflow-y-auto"
+      >
         {SUPPORTED_LANGUAGES.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => changeLanguage(lang.code)}
+            onClick={() => changeAppLanguage(i18n, lang.code)}
             className={cn(i18n.language === lang.code && 'bg-[var(--accent-dim)] text-[var(--accent)]')}
           >
             <span className="font-medium">{lang.native}</span>

@@ -6,6 +6,7 @@ import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/shared/Logo'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
+import { MobileLanguageList } from '@/components/shared/MobileLanguageList'
 
 export function SiteHeader() {
   const { t } = useTranslation('common')
@@ -86,7 +87,7 @@ export function SiteHeader() {
               </a>
             ))}
             <div className="mt-4 flex flex-col gap-3 border-t border-[var(--border)] pt-4">
-              <LanguageSwitcher variant="outline" size="default" showLabel className="w-full justify-center" />
+              <MobileLanguageList onSelect={closeMenu} />
               <Button variant="outline" size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
                 <Link to="/login/trainer" onClick={closeMenu}>
                   {t('actions.login')}
@@ -130,9 +131,11 @@ export function SiteHeader() {
             <Link to="/register/trainer">{t('actions.startFree')}</Link>
           </Button>
         </div>
-        <div className="concept-nav-actions--mobile flex shrink-0 items-center gap-1.5 md:hidden">
-          <LanguageSwitcher compact />
-        </div>
+        {!menuOpen ? (
+          <div className="concept-nav-actions--mobile flex shrink-0 items-center gap-1.5 md:hidden">
+            <LanguageSwitcher compact />
+          </div>
+        ) : null}
         {!menuOpen ? (
           <Button
             type="button"
