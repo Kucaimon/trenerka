@@ -53,7 +53,7 @@
     "legal": "Правовое",
     "policy": "Политика",
     "terms": "Оферта",
-    "copyright": "© 2025 Trenerka"
+    "copyright": "© {{year}} Trenerka"
   },
   "skills": "Навыки",
   "notFound": "Не найдено",

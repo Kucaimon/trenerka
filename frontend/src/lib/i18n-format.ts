@@ -33,6 +33,15 @@ export function formatDate(date: string | Date, lang = i18n.language): string {
   }).format(new Date(date))
 }
 
+export function formatLongDate(date: Date = new Date(), lang = i18n.language): string {
+  return new Intl.DateTimeFormat(intlLocale(lang), {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date)
+}
+
 export function formatDateTime(date: string | Date, lang = i18n.language): string {
   return new Intl.DateTimeFormat(intlLocale(lang), {
     day: 'numeric',

@@ -30,7 +30,7 @@
   "preview": {
     "windowTitle": "Trenerka · Dashboard",
     "greeting": "Good morning, Maria 👋",
-    "dateLine": "Wednesday, May 19, 2026 · 9 workouts today",
+    "dateLine": "{{date}} · 9 workouts today",
     "sidebar": [
       "Dashboard",
       "Clients",

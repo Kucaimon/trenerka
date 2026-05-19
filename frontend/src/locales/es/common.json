@@ -53,7 +53,7 @@
     "legal": "Legal",
     "policy": "Privacidad",
     "terms": "Términos",
-    "copyright": "© 2025 Trenerka"
+    "copyright": "© {{year}} Trenerka"
   },
   "skills": "Skills",
   "notFound": "No encontrado",

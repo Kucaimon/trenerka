@@ -4,6 +4,7 @@ import { Dumbbell } from 'lucide-react'
 
 export function SiteFooter() {
   const { t } = useTranslation('common')
+  const year = new Date().getFullYear()
 
   return (
     <footer className="border-t border-[var(--border)] bg-[var(--black)] py-12">
@@ -48,7 +49,7 @@ export function SiteFooter() {
             </div>
           </div>
         </div>
-        <p className="mt-8 text-center text-xs text-[var(--text-muted)]">{t('footer.copyright')}</p>
+        <p className="mt-8 text-center text-xs text-[var(--text-muted)]">{t('footer.copyright', { year })}</p>
       </div>
     </footer>
   )

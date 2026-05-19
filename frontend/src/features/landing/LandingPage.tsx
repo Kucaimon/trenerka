@@ -31,6 +31,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { mockAttendanceData, mockCalendarEvents, mockClients, mockRetentionData } from '@/lib/mock-data'
+import { formatLongDate } from '@/lib/i18n-format'
 import { formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
 
@@ -129,6 +130,7 @@ function HeroSection() {
 function ProductDashboardPreview() {
   const { t } = useTranslation('landing')
   const sidebar = asStringArray(t('preview.sidebar', { returnObjects: true }))
+  const previewDate = formatLongDate()
 
   return (
     <div className="mt-14 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
@@ -151,7 +153,7 @@ function ProductDashboardPreview() {
         </aside>
         <div className="min-w-0 flex-1 p-6">
           <p className="font-display text-xl font-bold">{t('preview.greeting')}</p>
-          <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{t('preview.dateLine')}</p>
+          <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{t('preview.dateLine', { date: previewDate })}</p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {PREVIEW_STAT_KEYS.map((key, index) => {
               const stat = asStatTuple(t(`preview.stats.${key}`, { returnObjects: true }))

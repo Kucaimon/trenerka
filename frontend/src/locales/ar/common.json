@@ -53,7 +53,7 @@
     "legal": "قانوني",
     "policy": "الخصوصية",
     "terms": "الشروط",
-    "copyright": "© 2025 Trenerka"
+    "copyright": "© {{year}} Trenerka"
   },
   "skills": "المهارات",
   "notFound": "غير موجود",
