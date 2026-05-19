@@ -64,6 +64,14 @@ export function useExercises() {
   return useQuery({ queryKey: queryKeys.exercises, queryFn: exercisesApi.getExercises })
 }
 
+export function useExercise(id: string | undefined) {
+  return useQuery({
+    queryKey: [...queryKeys.exercises, id],
+    queryFn: () => exercisesApi.getExercise(id!),
+    enabled: Boolean(id),
+  })
+}
+
 export function usePrograms() {
   return useQuery({ queryKey: queryKeys.programs, queryFn: programsApi.getPrograms })
 }

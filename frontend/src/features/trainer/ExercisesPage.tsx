@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -117,18 +118,32 @@ export function ExercisesPage() {
           <p className="col-span-full p-10 text-center text-sm text-[var(--text-muted)]">Упражнения не найдены</p>
         ) : (
           filtered.map((ex) => (
-            <div key={ex.id} className="gap-grid-cell p-5">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="font-display text-[15px] font-bold">{ex.name}</p>
-                  <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{ex.equipment}</p>
-                  <p className="mt-2 text-[12px] text-[var(--text-muted)]">{ex.difficulty}</p>
+            <div key={ex.id} className="gap-grid-cell overflow-hidden p-0">
+              <Link
+                to={`/trainer/exercises/${ex.id}`}
+                className="block p-5 transition-colors hover:bg-[var(--surface2)]"
+              >
+                <div className="flex items-start gap-3">
+                  {ex.imageUrl ? (
+                    <img
+                      src={ex.imageUrl}
+                      alt=""
+                      className="h-16 w-16 shrink-0 rounded-lg border border-[var(--border)] object-cover"
+                    />
+                  ) : null}
+                  <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-display text-[15px] font-bold">{ex.name}</p>
+                      <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{ex.equipment}</p>
+                      <p className="mt-2 text-[12px] text-[var(--text-muted)]">{ex.difficulty}</p>
+                    </div>
+                    <Badge variant="secondary" className={cn('shrink-0 text-[10px] uppercase', muscleTone[ex.muscleGroup])}>
+                      {ex.muscleGroup}
+                    </Badge>
+                  </div>
                 </div>
-                <Badge variant="secondary" className={cn('shrink-0 text-[10px] uppercase', muscleTone[ex.muscleGroup])}>
-                  {ex.muscleGroup}
-                </Badge>
-              </div>
-              <div className="mt-3 flex gap-1">
+              </Link>
+              <div className="flex gap-1 border-t border-[var(--border)] px-3 py-2">
                 <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => openEdit(ex)}>
                   <Pencil className="h-4 w-4" />
                 </Button>

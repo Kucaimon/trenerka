@@ -11,6 +11,12 @@ export async function getExercises(): Promise<Exercise[]> {
   return wpFetch<Exercise[]>(wpEndpoints.exercises)
 }
 
+export async function getExercise(id: string): Promise<Exercise | undefined> {
+  await apiDelay()
+  if (config.useMockData) return mockApi.exercises.get(id)
+  return wpFetch<Exercise>(`${wpEndpoints.exercises}/${id}`)
+}
+
 export async function createExercise(data: Omit<Exercise, 'id'>): Promise<Exercise> {
   await apiDelay()
   if (config.useMockData) return mockApi.exercises.create(data)

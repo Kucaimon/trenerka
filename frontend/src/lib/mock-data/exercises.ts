@@ -1,5 +1,27 @@
 import type { Exercise } from '@/types'
 
+/** Showcase exercise with full infographic-style detail (Samat sample). */
+export const romanianDeadliftSample: Exercise = {
+  id: 'ex-rdl',
+  name: 'Румынская становая тяга',
+  muscleGroup: 'Ноги',
+  equipment: 'Штанга',
+  difficulty: 'beginner',
+  level: 'Правильная техника для новичков',
+  trainerName: 'Самат Назиров',
+  imageUrl: '/exercises/romanian-deadlift.png',
+  isPublic: true,
+  steps: [
+    'Исходное положение: стоя, ноги на ширине плеч, штанга в опущенных руках. Спина прямая, плечи расправлены.',
+    'Движение: отводите таз назад, сгибаясь в тазобедренных суставах. Колени слегка согнуты.',
+    'Опускание: опускайте штангу до середины голени, чувствуя растяжение в бицепсах бедра. Спина всегда прямая!',
+    'Подъём: возвращайтесь в исходное положение, мощно разгибая таз и сжимая ягодицы.',
+  ],
+  breathingTip: 'Выдох на усилии (при подъёме), вдох при опускании. Начните с малого веса!',
+  description: 'Базовое упражнение для задней поверхности бедра и ягодиц.',
+  technique: 'Держите спину прямой на всей амплитуде.',
+}
+
 const muscles = ['Грудь', 'Спина', 'Ноги', 'Плечи', 'Руки', 'Кор', 'Кардио']
 const equipment = ['Штанга', 'Гантели', 'Тренажёр', 'Собственный вес', 'Кабель', 'Резина']
 
@@ -15,10 +37,15 @@ const names = [
   'Боковая планка', 'Скалолаз', 'Прыжки на скакалке',
 ]
 
-export const mockExercises: Exercise[] = names.map((name, i) => ({
+const generated: Exercise[] = names.map((name, i) => ({
   id: `ex-${i + 1}`,
   name,
   muscleGroup: muscles[i % muscles.length]!,
   equipment: equipment[i % equipment.length]!,
   difficulty: (['beginner', 'intermediate', 'advanced'] as const)[i % 3]!,
 }))
+
+export const mockExercises: Exercise[] = [
+  ...generated.filter((e) => e.id !== 'ex-13'),
+  romanianDeadliftSample,
+]

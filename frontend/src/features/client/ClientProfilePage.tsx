@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/auth-store'
+import { SkillsButton } from '@/components/shared/SkillsButton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
@@ -17,10 +18,12 @@ export function ClientProfilePage() {
         <p className="mt-2 text-base text-[var(--text-secondary)]">{user?.email}</p>
       </div>
       <div className="glass-panel space-y-4 p-5">
-        <Badge variant="accent">Premium client</Badge>
+        <p className="label-caps">Файлы и ресурсы</p>
         <p className="text-sm leading-6 text-[var(--text-secondary)]">
-          Profile settings, goals, and trainer connection — coming in the next update.
+          Документы тренера и обучающие материалы.
         </p>
+        <SkillsButton fullWidth />
+        <Badge variant="accent">Premium client</Badge>
         <Button
           variant="outline"
           className="mt-4 w-full gap-2"

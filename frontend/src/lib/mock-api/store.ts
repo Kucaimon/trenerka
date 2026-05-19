@@ -32,7 +32,7 @@ import type {
   AdminUser,
 } from '@/types'
 
-const STORAGE_KEY = 'trenerka_mock_store_v2'
+const STORAGE_KEY = 'trenerka_mock_store_v3'
 
 interface MockStore {
   clients: Client[]
@@ -155,6 +155,10 @@ export const mockApi = {
     list(): Exercise[] {
       refresh()
       return [...store.exercises]
+    },
+    get(id: string): Exercise | undefined {
+      refresh()
+      return store.exercises.find((e) => e.id === id)
     },
     create(data: Omit<Exercise, 'id'>) {
       const ex: Exercise = { ...data, id: uid('ex'), isPublic: false }

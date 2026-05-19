@@ -1,5 +1,6 @@
 import { FileText, Image, Upload } from 'lucide-react'
 import { PageHeader } from '@/components/shared/page-header'
+import { SkillsButton } from '@/components/shared/SkillsButton'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { useClients } from '@/features/api/hooks'
@@ -30,6 +31,12 @@ export function FilesPage() {
         <Badge variant="secondary">{clients.length} клиентов</Badge>
         <Badge variant="accent">{demoFiles.length} файлов</Badge>
       </div>
+
+      <section className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4">
+        <p className="text-sm font-semibold">Обучение</p>
+        <p className="mt-1 text-xs text-[var(--text-muted)]">Курсы и материалы Фитнес Академии</p>
+        <SkillsButton className="mt-3" fullWidth />
+      </section>
 
       <div className="gap-grid">
         {demoFiles.map((file) => {

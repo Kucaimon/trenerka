@@ -35,6 +35,12 @@ export interface Exercise {
   imageUrl?: string
   videoUrl?: string
   isPublic?: boolean
+  /** Numbered technique steps (infographic-style detail) */
+  steps?: string[]
+  breathingTip?: string
+  /** Display level label, e.g. «для новичков» */
+  level?: string
+  trainerName?: string
 }
 
 export interface WorkoutSet {

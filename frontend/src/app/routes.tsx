@@ -13,6 +13,7 @@ import { ClientsPage } from '@/features/trainer/ClientsPage'
 import { ClientDetailPage } from '@/features/trainer/ClientDetailPage'
 import { WorkoutBuilderPage } from '@/features/trainer/WorkoutBuilderPage'
 import { ExercisesPage } from '@/features/trainer/ExercisesPage'
+import { ExerciseDetailPage } from '@/features/trainer/ExerciseDetailPage'
 import { ProgramsPage } from '@/features/trainer/ProgramsPage'
 import { CalendarPage } from '@/features/trainer/CalendarPage'
 import { AnalyticsPage } from '@/features/trainer/AnalyticsPage'
@@ -58,6 +59,7 @@ export const router = createBrowserRouter([
       { path: 'clients/:id', element: <ClientDetailPage /> },
       { path: 'workouts/builder', element: <WorkoutBuilderPage /> },
       { path: 'exercises', element: <ExercisesPage /> },
+      { path: 'exercises/:id', element: <ExerciseDetailPage /> },
       { path: 'programs', element: <ProgramsPage /> },
       { path: 'calendar', element: <CalendarPage /> },
       { path: 'analytics', element: <AnalyticsPage /> },
