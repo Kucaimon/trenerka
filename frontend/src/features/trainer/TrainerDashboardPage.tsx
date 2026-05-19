@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { Clock3 } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useClients, useEvents, useTrainerAnalytics } from '@/features/api/hooks'
 import { generateRevenueSeries } from '@/lib/mock-data'
@@ -35,7 +34,7 @@ export function TrainerDashboardPage() {
 
   const activeCount = analytics?.activeClients ?? clients.filter((c) => c.status === 'active').length
   const upcoming = [...events].sort((a, b) => a.start.localeCompare(b.start)).slice(0, 6)
-  const activeClients = clients.filter((c) => c.status === 'active').slice(0, 5)
+  const activeClients = clients.filter((c) => c.status === 'active').slice(0, 6)
 
   const today = new Date().toLocaleDateString(intlLocale(i18n.language), {
     weekday: 'long',
@@ -53,145 +52,132 @@ export function TrainerDashboardPage() {
 
   return (
     <div className="page-container overflow-x-hidden">
-      <div className="mb-5 flex flex-wrap items-start justify-between gap-4 md:mb-7">
+      <header className="saas-page-header">
         <div className="min-w-0">
-          <h1 className="page-title text-xl md:text-2xl">{t('dashboard.title')}</h1>
-          <p className="page-sub max-w-full truncate capitalize md:whitespace-normal">{today} · {t('dashboard.greeting')}</p>
+          <h1 className="saas-page-header__title">{t('dashboard.title')}</h1>
+          <p className="saas-page-header__sub max-w-full truncate capitalize md:whitespace-normal">{today} · {t('dashboard.greeting')}</p>
         </div>
-      </div>
+      </header>
 
-      <div className="trainer-mobile-stat-stack mb-5">
+      <div className="trainer-mobile-stat-stack mb-4 md:hidden">
         {stats.map((stat) => (
           <div key={stat.label} className="trainer-mobile-stat-card">
             <div>
-              <p className="stat-label">{stat.label}</p>
-              <p className={cn('stat-value text-2xl', stat.accent && 'text-[var(--accent)]')}>{stat.value}</p>
+              <p className="saas-metric-cell__label">{stat.label}</p>
+              <p className={cn('saas-metric-cell__value', stat.accent && 'text-[var(--accent)]')}>{stat.value}</p>
             </div>
-            <p className="stat-change text-right">{stat.change}</p>
+            <p className="saas-metric-cell__hint text-right">{stat.change}</p>
           </div>
         ))}
       </div>
 
-      <div className="dash-grid trainer-desktop-stat-grid mb-5 w-full">
-        <div className="dash-grid-cell">
-          <p className="stat-label">{t('dashboard.stats.clients')}</p>
-          <p className="stat-value text-[var(--accent)]">{clientsLoading ? '…' : String(activeCount)}</p>
-          <p className="stat-change">{t('dashboard.change.weekClients')}</p>
-        </div>
-        <div className="dash-grid-cell">
-          <p className="stat-label">{t('dashboard.stats.revenueMay')}</p>
-          <p className="stat-value">{formatRub(analytics?.monthlyRevenue ?? 0)}</p>
-          <p className="stat-change">{t('dashboard.change.revenue')}</p>
-        </div>
-        <div className="dash-grid-cell">
-          <p className="stat-label">{t('dashboard.stats.workouts')}</p>
-          <p className="stat-value">{String(analytics?.weeklySessions ?? 0)}</p>
-          <p className="stat-change">{t('dashboard.change.thisWeek')}</p>
-        </div>
-        <div className="dash-grid-cell">
-          <p className="stat-label">{t('dashboard.stats.completion')}</p>
-          <p className="stat-value">91%</p>
-          <p className="stat-change">{t('dashboard.change.completion')}</p>
-        </div>
+      <div className="saas-metric-grid trainer-desktop-stat-grid mb-4 hidden md:grid">
+        {stats.map((stat) => (
+          <div key={stat.label} className="saas-metric-cell">
+            <p className="saas-metric-cell__label">{stat.label}</p>
+            <p className={cn('saas-metric-cell__value', stat.accent && 'text-[var(--accent)]')}>{stat.value}</p>
+            <p className="saas-metric-cell__hint">{stat.change}</p>
+          </div>
+        ))}
       </div>
 
-      <Card>
-        <CardHeader className="flex-row flex-wrap items-center justify-between gap-3">
-          <div>
-            <CardTitle>{t('dashboard.revenue.title')}</CardTitle>
-            <p className="font-display mt-1 text-2xl font-extrabold text-[var(--accent)] md:text-[28px]">
-              {formatRub(periodTotal)}
-            </p>
-          </div>
-          <div className="flex gap-0.5 rounded-md bg-[var(--surface3)] p-0.5">
-            {chartPeriods.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setChartPeriod(p.id)}
-                className={cn(
-                  'rounded-md px-2.5 py-1 text-xs transition-colors',
-                  chartPeriod === p.id
-                    ? 'bg-[var(--surface2)] text-[var(--text-primary)]'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
-                )}
-              >
-                {t(p.labelKey)}
-              </button>
-            ))}
-          </div>
-        </CardHeader>
-        <CardContent className="chart-mobile h-[220px] min-h-[200px] pt-0 md:h-[200px]">
-          <ResponsiveContainer width="100%" height="100%" minHeight={200}>
-            <LineChart data={revenueData}>
-              <CartesianGrid stroke={CHART.grid} vertical={false} />
-              <XAxis dataKey="label" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-              <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
-              <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), t('dashboard.revenue.chart')]} />
-              <Line type="monotone" dataKey="revenue" stroke={CHART.accent} strokeWidth={2.4} dot={false} isAnimationActive={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader className="flex-row items-center justify-between pb-2">
-            <div>
-              <CardTitle>{t('dashboard.activeClients.title')}</CardTitle>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">{t('dashboard.activeClients.subtitle')}</p>
+      <div className="saas-dash-layout">
+        <div className="saas-dash-main">
+          <section className="saas-panel saas-dash-chart">
+            <div className="saas-panel__header">
+              <div>
+                <h2 className="saas-panel__title">{t('dashboard.revenue.title')}</h2>
+                <p className="font-display mt-1 text-xl font-extrabold text-[var(--accent)] tabular-nums">{formatRub(periodTotal)}</p>
+              </div>
+              <div className="flex gap-0.5 rounded-[8px] bg-[var(--surface3)] p-0.5">
+                {chartPeriods.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setChartPeriod(p.id)}
+                    className={cn(
+                      'rounded-[6px] px-2.5 py-1 text-xs transition-colors',
+                      chartPeriod === p.id
+                        ? 'bg-[var(--surface)] text-[var(--text-primary)]'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
+                    )}
+                  >
+                    {t(p.labelKey)}
+                  </button>
+                ))}
+              </div>
             </div>
-            <Badge variant="secondary">{activeClients.length}</Badge>
-          </CardHeader>
-          <CardContent className="space-y-0 divide-y divide-[var(--border)] p-0 pt-0">
-            {activeClients.length === 0 ? (
-              <p className="px-5 py-4 text-sm text-[var(--text-muted)]">{t('dashboard.activeClients.empty')}</p>
-            ) : (
-              activeClients.map((c) => (
-                <div key={c.id} className="flex items-center gap-3 px-5 py-3 hover:bg-[var(--surface3)]/50">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent-dim)] text-[10px] font-bold text-[var(--accent)]">
-                    {c.name.slice(0, 1)}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium">{c.name}</p>
-                    <p className="text-[11px] text-[var(--text-muted)]">{c.lastSession ?? t('dashboard.activeClients.noSessions')}</p>
-                  </div>
-                  <span className="rounded-full bg-[var(--accent-dim)] px-2 py-0.5 text-[10px] font-semibold text-[var(--accent)]">
-                    {statusLabel(c.status)}
-                  </span>
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex-row items-center justify-between pb-2">
-            <div>
-              <CardTitle>{t('dashboard.schedule.title')}</CardTitle>
-              <p className="mt-1 text-xs text-[var(--text-muted)]">{t('dashboard.schedule.subtitle')}</p>
+            <div className="saas-panel__body chart-mobile h-[200px] min-h-[180px] pt-0 md:h-[220px]">
+              <ResponsiveContainer width="100%" height="100%" minHeight={180}>
+                <LineChart data={revenueData}>
+                  <CartesianGrid stroke={CHART.grid} vertical={false} />
+                  <XAxis dataKey="label" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} interval="preserveStartEnd" />
+                  <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
+                  <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), t('dashboard.revenue.chart')]} />
+                  <Line type="monotone" dataKey="revenue" stroke={CHART.accent} strokeWidth={2} dot={false} isAnimationActive={false} />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
-            <Clock3 className="h-4 w-4 text-[var(--text-muted)]" />
-          </CardHeader>
-          <CardContent className="space-y-0 divide-y divide-[var(--border)] p-0 pt-0">
-            {upcoming.length === 0 ? (
-              <p className="px-5 py-4 text-sm text-[var(--text-muted)]">{t('dashboard.schedule.empty')}</p>
-            ) : (
-              upcoming.slice(0, 5).map((e) => (
-                <div key={e.id} className="flex gap-3 px-5 py-3 hover:bg-[var(--surface3)]/50">
-                  <span className="min-w-[40px] pt-0.5 text-[11px] text-[var(--text-muted)]">
-                    {new Date(e.start).toLocaleTimeString(intlLocale(i18n.language), { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                  <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[var(--accent)]" />
-                  <div className="min-w-0">
-                    <p className="truncate text-[13px] font-medium">{e.title}</p>
-                    <p className="text-[11px] text-[var(--text-muted)]">{e.type ?? t('dashboard.eventTypeDefault')}</p>
+          </section>
+
+          <section className="saas-panel saas-dash-side-a">
+            <div className="saas-panel__header">
+              <div>
+                <h2 className="saas-panel__title">{t('dashboard.activeClients.title')}</h2>
+                <p className="saas-panel__sub">{t('dashboard.activeClients.subtitle')}</p>
+              </div>
+              <Badge variant="secondary">{activeClients.length}</Badge>
+            </div>
+            <div className="saas-panel__body saas-panel__body--flush divide-y divide-[var(--border)]">
+              {activeClients.length === 0 ? (
+                <p className="px-4 py-3 text-sm text-[var(--text-muted)]">{t('dashboard.activeClients.empty')}</p>
+              ) : (
+                activeClients.map((c) => (
+                  <div key={c.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--surface3)]/60">
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent-dim)] text-[10px] font-bold text-[var(--accent)]">
+                      {c.name.slice(0, 1)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[13px] font-medium">{c.name}</p>
+                      <p className="text-[11px] text-[var(--text-muted)]">{c.lastSession ?? t('dashboard.activeClients.noSessions')}</p>
+                    </div>
+                    <Badge variant="success" className="shrink-0 text-[10px]">
+                      {statusLabel(c.status)}
+                    </Badge>
                   </div>
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
+                ))
+              )}
+            </div>
+          </section>
+
+          <section className="saas-panel saas-dash-side-b">
+            <div className="saas-panel__header">
+              <div>
+                <h2 className="saas-panel__title">{t('dashboard.schedule.title')}</h2>
+                <p className="saas-panel__sub">{t('dashboard.schedule.subtitle')}</p>
+              </div>
+              <Clock3 className="h-4 w-4 text-[var(--text-muted)]" />
+            </div>
+            <div className="saas-panel__body saas-panel__body--flush divide-y divide-[var(--border)]">
+              {upcoming.length === 0 ? (
+                <p className="px-4 py-3 text-sm text-[var(--text-muted)]">{t('dashboard.schedule.empty')}</p>
+              ) : (
+                upcoming.slice(0, 5).map((e) => (
+                  <div key={e.id} className="flex gap-3 px-4 py-2.5 hover:bg-[var(--surface3)]/60">
+                    <span className="min-w-[40px] pt-0.5 text-[11px] tabular-nums text-[var(--text-muted)]">
+                      {new Date(e.start).toLocaleTimeString(intlLocale(i18n.language), { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
+                    <div className="min-w-0">
+                      <p className="truncate text-[13px] font-medium">{e.title}</p>
+                      <p className="text-[11px] text-[var(--text-muted)]">{e.type ?? t('dashboard.eventTypeDefault')}</p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   )

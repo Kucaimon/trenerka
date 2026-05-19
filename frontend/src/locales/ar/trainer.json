@@ -135,6 +135,12 @@
       "all": "All",
       "active": "Active"
     },
+    "table": {
+      "name": "Name",
+      "status": "Status",
+      "goal": "Goal",
+      "sessions": "Sessions"
+    },
     "empty": "No clients found",
     "selectPrompt": "Select a client from the list",
     "create": {

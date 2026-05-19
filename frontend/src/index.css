@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/tokens.css";
+@import "./styles/saas-system.css";
 @import "./styles/concept.css";
 @import "./styles/mobile-app.css";
 
@@ -107,7 +108,7 @@
   .nav-active {
     background: var(--accent-dim);
     color: var(--accent);
-    box-shadow: inset -2px 0 0 var(--accent);
+    box-shadow: inset 2px 0 0 var(--accent);
   }
 
   .page-container {

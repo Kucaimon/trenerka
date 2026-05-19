@@ -330,7 +330,8 @@
 .snav-item.active {
   color: var(--accent);
   background: var(--accent-dim);
-  border-right: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+  border-right: none;
 }
 
 .snav-badge {

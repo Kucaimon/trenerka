@@ -32,7 +32,7 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { mockAttendanceData, mockCalendarEvents, mockClients, mockRetentionData } from '@/lib/mock-data'
 import { formatLongDate } from '@/lib/i18n-format'
-import { formatRub } from '@/lib/utils'
+import { cn, formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
 
 const fade = {
@@ -107,6 +107,7 @@ function HeroSection() {
             </Button>
           </div>
           <p className="concept-hero-note">{t('hero.note')}</p>
+          <HeroProductMock />
         </motion.div>
       </section>
 
@@ -127,31 +128,74 @@ function HeroSection() {
   )
 }
 
+function HeroProductMock() {
+  const { t } = useTranslation('landing')
+  const sidebar = asStringArray(t('preview.sidebar', { returnObjects: true }))
+  const previewDate = formatLongDate()
+
+  return (
+    <div className="saas-product-mock">
+      <div className="saas-product-mock__chrome">
+        <span className="saas-product-mock__dot" style={{ background: '#ff5f57' }} />
+        <span className="saas-product-mock__dot" style={{ background: '#febc2e' }} />
+        <span className="saas-product-mock__dot" style={{ background: '#28c840' }} />
+        <span className="saas-product-mock__title">{t('preview.windowTitle')}</span>
+      </div>
+      <div className="saas-product-mock__body">
+        <aside className="saas-product-mock__sidebar">
+          {sidebar.slice(0, 5).map((label, i) => (
+            <div key={label} className={cn('saas-product-mock__nav-item', i === 0 && 'saas-product-mock__nav-item--active')}>
+              {label}
+            </div>
+          ))}
+        </aside>
+        <div className="saas-product-mock__content">
+          <p className="font-display text-base font-bold">{t('preview.greeting')}</p>
+          <p className="mt-0.5 text-[12px] text-[var(--text-secondary)]">{t('preview.dateLine', { date: previewDate })}</p>
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {PREVIEW_STAT_KEYS.map((key, index) => {
+              const stat = asStatTuple(t(`preview.stats.${key}`, { returnObjects: true }))
+              if (!stat) return null
+              const [label, val] = stat
+              return (
+                <div key={key} className="rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] p-3">
+                  <p className="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">{label}</p>
+                  <p className={cn('font-display mt-1 text-lg font-extrabold', index < 2 && 'text-[var(--accent)]')}>{val}</p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ProductDashboardPreview() {
   const { t } = useTranslation('landing')
   const sidebar = asStringArray(t('preview.sidebar', { returnObjects: true }))
   const previewDate = formatLongDate()
 
   return (
-    <div className="mt-14 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
-      <div className="flex items-center gap-2 border-b border-[var(--border)] bg-[var(--surface2)] px-5 py-3">
-        <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
-        <span className="mx-auto text-xs tracking-wide text-[var(--text-muted)]">{t('preview.windowTitle')}</span>
+    <div className="saas-product-mock mt-14">
+      <div className="saas-product-mock__chrome">
+        <span className="saas-product-mock__dot" style={{ background: '#ff5f57' }} />
+        <span className="saas-product-mock__dot" style={{ background: '#febc2e' }} />
+        <span className="saas-product-mock__dot" style={{ background: '#28c840' }} />
+        <span className="saas-product-mock__title">{t('preview.windowTitle')}</span>
       </div>
-      <div className="flex min-h-[480px]">
-        <aside className="hidden w-[200px] shrink-0 border-r border-[var(--border)] p-4 lg:block">
+      <div className="saas-product-mock__body min-h-[420px]">
+        <aside className="saas-product-mock__sidebar">
           {sidebar.map((label, i) => (
             <div
               key={label}
-              className={`px-5 py-2 text-[13px] ${i === 0 ? 'border-r-2 border-[var(--accent)] bg-[var(--accent-glow)] text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}
+              className={cn('saas-product-mock__nav-item', i === 0 && 'saas-product-mock__nav-item--active')}
             >
               {label}
             </div>
           ))}
         </aside>
-        <div className="min-w-0 flex-1 p-6">
+        <div className="saas-product-mock__content">
           <p className="font-display text-xl font-bold">{t('preview.greeting')}</p>
           <p className="mt-1 text-[13px] text-[var(--text-secondary)]">{t('preview.dateLine', { date: previewDate })}</p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -270,7 +314,7 @@ function WorkflowSection() {
     <section id="workouts" className="border-y border-[var(--border)] bg-[var(--graphite)] px-5 py-20 sm:px-10 lg:py-28">
       <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.8fr_1.2fr]">
         <SectionIntro eyebrow={t('workflow.eyebrow')} title={t('workflow.title')} text={t('workflow.text')} />
-        <motion.div {...fade} className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-soft)]">
+        <motion.div {...fade} className="saas-panel rounded-[10px] p-4">
           <div className="mb-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold">{t('workflow.programTitle')}</p>
@@ -518,7 +562,7 @@ function CtaSection() {
     <section className="px-5 pb-24 sm:px-6 lg:px-8">
       <motion.div
         {...fade}
-        className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[var(--border-strong)] bg-[linear-gradient(135deg,rgba(184,245,61,0.12),rgba(22,22,22,0.72)_38%,rgba(8,8,8,0.95))] p-8 shadow-[var(--shadow-soft)] sm:p-10"
+        className="mx-auto max-w-5xl overflow-hidden rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-8 sm:p-10"
       >
         <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
           <div>

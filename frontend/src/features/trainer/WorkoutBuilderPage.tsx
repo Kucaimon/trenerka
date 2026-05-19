@@ -42,7 +42,7 @@ function SortableExercise({
     <div
       ref={setNodeRef}
       style={style}
-      className="group overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] transition-colors hover:border-[var(--border-strong)]"
+      className="group overflow-hidden rounded-[10px] border border-[var(--border)] bg-[var(--surface2)] transition-colors hover:border-[var(--border-strong)]"
     >
       <div className="flex items-center gap-3 px-4 py-3.5">
         <button
@@ -260,7 +260,7 @@ export function WorkoutBuilderPage() {
                 type="button"
                 onClick={() => setWeek(d)}
                 className={cn(
-                  'shrink-0 rounded-lg border px-4 py-1.5 text-xs font-medium transition-colors',
+                  'shrink-0 rounded-[8px] border px-3.5 py-1.5 text-xs font-medium transition-colors',
                   week === d
                     ? 'border-[rgba(184,245,61,0.3)] bg-[var(--accent-dim)] text-[var(--accent)]'
                     : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
@@ -290,7 +290,7 @@ export function WorkoutBuilderPage() {
           </DndContext>
 
           {!selected.length && (
-            <div className="rounded-xl border border-dashed border-[var(--border-strong)] bg-[var(--surface)] py-16 text-center">
+            <div className="rounded-[10px] border border-dashed border-[var(--border-strong)] bg-[var(--surface2)] py-12 text-center">
               <p className="text-sm font-medium text-[var(--text-secondary)]">{t('builder.empty.title')}</p>
               <p className="mt-1 text-xs text-[var(--text-muted)]">{t('builder.empty.hint')}</p>
             </div>
@@ -300,7 +300,7 @@ export function WorkoutBuilderPage() {
         <aside className="hidden w-[280px] shrink-0 flex-col border-l border-[var(--border)] bg-[var(--surface)] xl:flex">
           <div className="border-b border-[var(--border)] px-5 py-4 text-[13px] font-semibold">{t('builder.summary.title')}</div>
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
-            <div className="rounded-xl border border-[var(--border)] bg-gradient-to-br from-[var(--accent-glow)] to-[rgba(77,158,255,0.04)] p-4">
+            <div className="rounded-[10px] border border-[var(--border)] bg-[var(--surface3)] p-4">
               <p className="mb-3 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-[var(--accent)]">
                 <Sparkles className="h-3 w-3" /> AI
               </p>

@@ -187,7 +187,7 @@ export function TrainerLayout() {
         {!isMobile ? (
         <aside
           className={cn(
-            'trainer-sidebar flex shrink-0 flex-col border-r border-[var(--border)] bg-[var(--surface)]',
+            'trainer-sidebar trainer-sidebar--saas flex shrink-0 flex-col',
             collapsed ? 'w-14' : 'w-[var(--sidebar-width)]',
           )}
         >
@@ -270,7 +270,7 @@ export function TrainerLayout() {
         ) : null}
 
         <div className="trainer-main flex min-h-0 min-w-0 w-full flex-1 flex-col">
-          <header className="trainer-mobile-header sticky top-0 z-30 flex h-[var(--header-height)] shrink-0 items-center gap-2 border-b border-[var(--border)] bg-[rgba(8,8,8,0.85)] px-3 backdrop-blur-xl md:gap-3 md:px-8">
+          <header className="trainer-mobile-header trainer-topbar sticky top-0 z-30 shrink-0 px-3 md:px-8">
             {isMobile ? (
               <LogoLink size="sm" className="shrink-0" />
             ) : null}
@@ -288,7 +288,7 @@ export function TrainerLayout() {
             <Button
               variant="outline"
               size="sm"
-              className="min-w-0 flex-1 justify-start gap-2 font-normal text-[var(--text-muted)]"
+              className="trainer-topbar__search min-w-0 flex-1 justify-start gap-2 font-normal text-[var(--text-muted)]"
               onClick={() => setCommandOpen(true)}
             >
               <Search className="h-4 w-4 shrink-0" />
@@ -355,7 +355,7 @@ export function TrainerLayout() {
       <CommandPalette />
       <Link
         to="/trainer/ai-coach"
-        className="trainer-fab fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--accent)]/30 bg-[var(--surface)] text-[var(--accent)] shadow-[var(--shadow-glow)] transition-transform hover:scale-105 max-md:bottom-[calc(var(--tab-bar-height)+var(--safe-area-bottom)+12px)]"
+        className="trainer-fab fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-[10px] border border-[var(--border)] bg-[var(--surface2)] text-[var(--accent)] transition-colors hover:bg-[var(--surface3)] max-md:bottom-[calc(var(--tab-bar-height)+var(--safe-area-bottom)+12px)]"
         title={t('nav.aiCoach')}
       >
         <Bot className="h-5 w-5" />

@@ -1,0 +1,414 @@
+/**
+ * Trenerka SaaS layout system — spacing, typography, panels, tables.
+ * Uses existing tokens only; no new color values.
+ */
+
+/* —— Typography scale —— */
+.saas-text-xs {
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.saas-text-sm {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.saas-text-base {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.saas-text-lg {
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.saas-text-xl {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.saas-text-2xl {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.saas-text-3xl {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.saas-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.saas-muted {
+  color: var(--text-secondary);
+}
+
+/* —— Spacing utilities —— */
+.saas-stack-sm > * + * {
+  margin-top: var(--space-2);
+}
+
+.saas-stack-md > * + * {
+  margin-top: var(--space-4);
+}
+
+.saas-stack-lg > * + * {
+  margin-top: var(--space-5);
+}
+
+.saas-gap-sm {
+  gap: var(--space-2);
+}
+
+.saas-gap-md {
+  gap: var(--space-4);
+}
+
+.saas-gap-lg {
+  gap: var(--space-5);
+}
+
+/* —— Page header —— */
+.saas-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.saas-page-header__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--text-primary);
+}
+
+.saas-page-header__sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.saas-page-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* —— Metric grid —— */
+.saas-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.saas-metric-cell {
+  background: var(--surface2);
+  padding: 14px 16px;
+}
+
+.saas-metric-cell__label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.saas-metric-cell__value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.saas-metric-cell__hint {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--accent);
+}
+
+/* —— Panel —— */
+.saas-panel {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.saas-panel__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.saas-panel__title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.saas-panel__sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.saas-panel__body {
+  padding: 14px 16px;
+}
+
+.saas-panel__body--flush {
+  padding: 0;
+}
+
+/* —— Table (Attio-style) —— */
+.saas-table-wrap {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.saas-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.saas-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--surface2);
+}
+
+.saas-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.saas-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.saas-table tbody tr {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.saas-table tbody tr:hover {
+  background: var(--surface3);
+}
+
+.saas-table tbody tr.saas-table__row--active {
+  background: var(--accent-dim);
+}
+
+.saas-table tbody tr.saas-table__row--active td:first-child {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* —— Dashboard asymmetric layout —— */
+.saas-dash-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.saas-dash-main {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .saas-metric-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .saas-dash-main {
+    grid-template-columns: 1.4fr 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .saas-dash-chart {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+  }
+
+  .saas-dash-side-a {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+  }
+
+  .saas-dash-side-b {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+  }
+}
+
+@media (max-width: 1023px) {
+  .saas-metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 479px) {
+  .saas-metric-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .saas-metric-cell {
+    padding: 12px 14px;
+  }
+
+  .saas-metric-cell__value {
+    font-size: 20px;
+  }
+}
+
+/* —— Landing product mock —— */
+.saas-product-mock {
+  margin-top: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.saas-product-mock__chrome {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.saas-product-mock__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.saas-product-mock__title {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.saas-product-mock__body {
+  display: flex;
+  min-height: 320px;
+}
+
+.saas-product-mock__sidebar {
+  width: 180px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding: 12px 0;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .saas-product-mock__sidebar {
+    display: block;
+  }
+}
+
+.saas-product-mock__nav-item {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.saas-product-mock__nav-item--active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-left: 2px solid var(--accent);
+}
+
+.saas-product-mock__content {
+  flex: 1;
+  min-width: 0;
+  padding: 16px;
+}
+
+/* —— Trainer shell refinements —— */
+.trainer-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--header-height);
+  padding: 0 var(--space-5);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.trainer-topbar__search {
+  flex: 1;
+  min-width: 0;
+  max-width: 420px;
+}
+
+.trainer-sidebar--saas {
+  width: var(--sidebar-width);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+.trainer-sidebar--saas .snav-item {
+  margin: 0 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border-right: none;
+}
+
+.trainer-sidebar--saas .snav-item.active {
+  border-left: 2px solid var(--accent);
+  border-right: none;
+}

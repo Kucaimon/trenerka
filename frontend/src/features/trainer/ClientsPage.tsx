@@ -119,7 +119,7 @@ export function ClientsPage() {
           <div className="flex-1 overflow-y-auto">
             {filtered.length === 0 ? (
               <p className="px-5 py-10 text-center text-sm text-[var(--text-muted)]">{t('clients.empty')}</p>
-            ) : (
+            ) : isMobileCrm ? (
               filtered.map((c) => (
                 <ClientListItem
                   key={c.id}
@@ -127,11 +127,68 @@ export function ClientsPage() {
                   active={c.id === activeId}
                   onSelect={() => {
                     setSelectedId(c.id)
-                    if (isMobileCrm) setShowDetail(true)
+                    setShowDetail(true)
                   }}
                 />
               ))
+            ) : (
+              <div className="saas-table-wrap hidden lg:block">
+                <table className="saas-table">
+                  <thead>
+                    <tr>
+                      <th>{t('clients.table.name')}</th>
+                      <th>{t('clients.table.status')}</th>
+                      <th>{t('clients.table.goal')}</th>
+                      <th>{t('clients.table.sessions')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((c) => (
+                      <tr
+                        key={c.id}
+                        className={cn(c.id === activeId && 'saas-table__row--active')}
+                        onClick={() => setSelectedId(c.id)}
+                      >
+                        <td>
+                          <div className="flex items-center gap-2.5">
+                            <div
+                              className={cn(
+                                'flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-[12px] font-bold text-[#111]',
+                                avatarGradient(c.name),
+                              )}
+                            >
+                              {c.name.slice(0, 1)}
+                            </div>
+                            <span className="font-medium">{c.name}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <Badge variant={STATUS_VARIANTS[c.status]} className="text-[10px]">
+                            {t(`common:status.${c.status}`)}
+                          </Badge>
+                        </td>
+                        <td className="text-[var(--text-secondary)]">{c.goal ?? t('clients.fallback.program')}</td>
+                        <td className="tabular-nums text-[var(--text-secondary)]">
+                          {c.packageBalance} {t('common:units.sessionsShort')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
+            {!isMobileCrm ? (
+              <div className="lg:hidden">
+                {filtered.map((c) => (
+                  <ClientListItem
+                    key={c.id}
+                    client={c}
+                    active={c.id === activeId}
+                    onSelect={() => setSelectedId(c.id)}
+                  />
+                ))}
+              </div>
+            ) : null}
           </div>
         </aside>
 
@@ -254,7 +311,7 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
 
   return (
     <div>
-      <div className="border-b border-[var(--border)] bg-gradient-to-br from-[var(--surface)] to-[rgba(184,245,61,0.04)] px-4 py-5 sm:px-8 sm:py-7">
+      <div className="border-b border-[var(--border)] bg-[var(--surface)] px-4 py-5 sm:px-8 sm:py-6">
         <div className="flex flex-wrap items-start gap-5">
           <div
             className={cn(
