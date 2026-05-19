@@ -123,7 +123,15 @@
       "subtitle": "Ближайшие сессии",
       "empty": "Нет событий"
     },
-    "eventTypeDefault": "тренировка"
+    "eventTypeDefault": "тренировка",
+    "activity": {
+      "title": "Лента активности",
+      "subtitle": "Последние события",
+      "empty": "Пока нет активности",
+      "payment": "Оплата · {{amount}}",
+      "session": "Тренировка завершена",
+      "message": "Новое сообщение"
+    }
   },
   "clients": {
     "title": "Клиенты",

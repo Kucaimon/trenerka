@@ -6,8 +6,8 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
     <div
       ref={ref}
       className={cn(
-        'relative overflow-hidden rounded-[10px] border border-[var(--border)]',
-        'bg-[var(--surface2)] text-[var(--text-primary)]',
+        'relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)]',
+        'bg-[var(--surface2)] text-[var(--text-primary)] shadow-[var(--shadow-xs)]',
         className,
       )}
       {...props}
@@ -17,11 +17,17 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
 Card.displayName = 'Card'
 
 const CardHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex flex-col gap-1 border-b border-[var(--border)] px-5 py-4', className)} {...props} />
+  <div className={cn('flex flex-col gap-1 border-b border-[var(--border)] px-4 py-3.5', className)} {...props} />
 )
 
 const CardTitle = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
-  <h3 className={cn('font-display text-sm font-bold leading-none tracking-tight text-[var(--text-primary)]', className)} {...props} />
+  <h3
+    className={cn(
+      'text-[13px] font-semibold leading-none tracking-tight text-[var(--text-primary)]',
+      className,
+    )}
+    {...props}
+  />
 )
 
 const CardDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
@@ -29,11 +35,11 @@ const CardDescription = ({ className, ...props }: React.HTMLAttributes<HTMLParag
 )
 
 const CardContent = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('px-5 py-4', className)} {...props} />
+  <div className={cn('px-4 py-3.5', className)} {...props} />
 )
 
 const CardFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn('flex items-center border-t border-[var(--border)] px-5 py-4', className)} {...props} />
+  <div className={cn('flex items-center border-t border-[var(--border)] px-4 py-3.5', className)} {...props} />
 )
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

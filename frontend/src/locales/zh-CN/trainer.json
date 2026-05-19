@@ -123,7 +123,15 @@
       "subtitle": "Upcoming sessions",
       "empty": "No events"
     },
-    "eventTypeDefault": "training"
+    "eventTypeDefault": "training",
+    "activity": {
+      "title": "Activity feed",
+      "subtitle": "Latest updates",
+      "empty": "No activity yet",
+      "payment": "Payment · {{amount}}",
+      "session": "Workout completed",
+      "message": "New message"
+    }
   },
   "clients": {
     "title": "Clients",

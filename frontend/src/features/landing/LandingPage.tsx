@@ -88,6 +88,7 @@ function HeroSection() {
   return (
     <>
       <section className="concept-hero">
+        <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <motion.div {...fade}>
           <div className="concept-hero-badge">{t('hero.badge')}</div>
           <h1>
@@ -98,7 +99,7 @@ function HeroSection() {
             <span className="accent">{t('hero.titleAccent')}</span>
           </h1>
           <p className="concept-hero-sub">{t('hero.subtitle')}</p>
-          <div className="mt-11 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button size="lg" asChild>
               <Link to="/register/trainer">{t('hero.ctaPrimary')}</Link>
             </Button>
@@ -108,6 +109,10 @@ function HeroSection() {
           </div>
           <p className="concept-hero-note">{t('hero.note')}</p>
         </motion.div>
+        <motion.div {...fade} className="min-w-0">
+          <ProductDashboardPreview />
+        </motion.div>
+        </div>
       </section>
 
       <motion.div {...fade} className="metrics-row mx-5 sm:mx-10">
@@ -133,11 +138,11 @@ function ProductDashboardPreview() {
   const previewDate = formatLongDate()
 
   return (
-    <div className="mt-14 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)]">
-      <div className="flex items-center gap-2 border-b border-[var(--border)] bg-[var(--surface2)] px-5 py-3">
-        <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+    <div className="saas-product-frame">
+      <div className="saas-product-frame__chrome">
+        <span className="saas-product-frame__dot bg-[#ff5f57]" />
+        <span className="saas-product-frame__dot bg-[#febc2e]" />
+        <span className="saas-product-frame__dot bg-[#28c840]" />
         <span className="mx-auto text-xs tracking-wide text-[var(--text-muted)]">{t('preview.windowTitle')}</span>
       </div>
       <div className="flex min-h-[480px]">
@@ -145,7 +150,7 @@ function ProductDashboardPreview() {
           {sidebar.map((label, i) => (
             <div
               key={label}
-              className={`px-5 py-2 text-[13px] ${i === 0 ? 'border-r-2 border-[var(--accent)] bg-[var(--accent-glow)] text-[var(--accent)]' : 'text-[var(--text-secondary)]'}`}
+              className={`rounded-[var(--radius-sm)] px-3 py-2 text-[13px] ${i === 0 ? 'border-l-2 border-[var(--accent)] bg-[var(--accent-dim)] text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
             >
               {label}
             </div>
@@ -244,7 +249,6 @@ function ProductShowcase() {
             <FeaturePanel key={feature.title} emoji={FEATURE_EMOJIS[index] ?? '✦'} title={feature.title} text={feature.text} />
           ))}
         </div>
-        <ProductDashboardPreview />
       </div>
     </section>
   )
@@ -388,7 +392,7 @@ function InsightCard({ icon: Icon, label, value, trend }: { icon: typeof Wallet;
         <Icon className="h-4 w-4 text-[var(--text-muted)]" />
       </div>
       <p className="mt-5 text-3xl font-semibold tracking-tight">{value}</p>
-      <p className="mt-1 text-sm text-emerald-300">{trend}</p>
+      <p className="mt-1 text-sm text-[var(--accent)]">{trend}</p>
     </motion.div>
   )
 }
@@ -469,7 +473,7 @@ function PricingSection() {
               <motion.div
                 key={key}
                 {...fade}
-                className={`gap-grid-cell relative p-9 text-left ${popular ? 'bg-[#0d1a07]' : ''}`}
+                className={`gap-grid-cell relative p-9 text-left ${popular ? 'bg-[var(--accent-dim)]' : ''}`}
               >
                 {popular && (
                   <Badge variant="accent" className="absolute right-4 top-4 uppercase">
@@ -518,7 +522,7 @@ function CtaSection() {
     <section className="px-5 pb-24 sm:px-6 lg:px-8">
       <motion.div
         {...fade}
-        className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[var(--border-strong)] bg-[linear-gradient(135deg,rgba(184,245,61,0.12),rgba(22,22,22,0.72)_38%,rgba(8,8,8,0.95))] p-8 shadow-[var(--shadow-soft)] sm:p-10"
+        className="mx-auto max-w-5xl overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border-strong)] bg-[var(--surface2)] p-8 shadow-[var(--shadow-soft)] sm:p-10"
       >
         <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
           <div>

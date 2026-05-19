@@ -26,13 +26,13 @@ const STATUS_VARIANTS: Record<ClientStatus, 'success' | 'warning' | 'secondary'>
   archive: 'secondary',
 }
 
-function avatarGradient(name: string) {
-  const hues = [
-    'from-[var(--accent)] to-[var(--accent2)]',
-    'from-[var(--accent2)] to-[rgba(184,245,61,0.6)]',
-    'from-[rgba(184,245,61,0.35)] to-[var(--accent)]',
+function avatarTone(name: string) {
+  const tones = [
+    'bg-[var(--surface3)] text-[var(--accent)]',
+    'bg-[var(--accent-dim)] text-[var(--accent)]',
+    'bg-[var(--surface2)] text-[var(--text-secondary)]',
   ]
-  return hues[name.charCodeAt(0) % hues.length]
+  return tones[name.charCodeAt(0) % tones.length]
 }
 
 
@@ -118,7 +118,10 @@ export function ClientsPage() {
 
           <div className="flex-1 overflow-y-auto">
             {filtered.length === 0 ? (
-              <p className="px-5 py-10 text-center text-sm text-[var(--text-muted)]">{t('clients.empty')}</p>
+              <div className="saas-empty m-4">
+                <p className="saas-empty__title">{t('clients.empty')}</p>
+                <p className="saas-empty__text">{t('clients.searchPlaceholder')}</p>
+              </div>
             ) : (
               filtered.map((c) => (
                 <ClientListItem
@@ -214,8 +217,8 @@ function ClientListItem({
       <div className="mb-1.5 flex items-center gap-2.5">
         <div
           className={cn(
-            'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-[13px] font-bold text-[#111]',
-            avatarGradient(client.name),
+            'flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] text-[13px] font-semibold',
+            avatarTone(client.name),
           )}
         >
           {client.name.slice(0, 1)}
@@ -254,12 +257,12 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
 
   return (
     <div>
-      <div className="border-b border-[var(--border)] bg-gradient-to-br from-[var(--surface)] to-[rgba(184,245,61,0.04)] px-4 py-5 sm:px-8 sm:py-7">
+      <div className="border-b border-[var(--border)] bg-[var(--surface)] px-4 py-5 sm:px-8 sm:py-7">
         <div className="flex flex-wrap items-start gap-5">
           <div
             className={cn(
-              'flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-xl font-bold text-[#111]',
-              avatarGradient(client.name),
+              'flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] text-xl font-semibold',
+              avatarTone(client.name),
             )}
           >
             {client.name.slice(0, 1)}

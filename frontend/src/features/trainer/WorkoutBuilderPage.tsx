@@ -42,7 +42,7 @@ function SortableExercise({
     <div
       ref={setNodeRef}
       style={style}
-      className="group overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)] transition-colors hover:border-[var(--border-strong)]"
+      className="group overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface2)] transition-colors hover:border-[var(--border-strong)]"
     >
       <div className="flex items-center gap-3 px-4 py-3.5">
         <button
@@ -72,7 +72,7 @@ function SortableExercise({
           [repsLabel, '8'],
           [restLabel, restValue],
         ].map(([label, val]) => (
-          <div key={label} className="min-w-[70px] flex-1 rounded-lg bg-[var(--surface2)] px-3 py-2">
+          <div key={label} className="min-w-[70px] flex-1 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2">
             <p className="text-[10px] uppercase tracking-[0.05em] text-[var(--text-muted)]">{label}</p>
             <p className="font-display text-xl font-bold">{val}</p>
           </div>
