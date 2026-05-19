@@ -101,6 +101,10 @@
   margin-right: -0.25rem;
 }
 
+.concept-nav-drawer__close {
+  flex-shrink: 0;
+}
+
 .concept-nav-logo {
   min-width: 0;
 }

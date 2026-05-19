@@ -67,7 +67,7 @@ export function SiteHeader() {
               type="button"
               variant="ghost"
               size="icon"
-              className="touch-target shrink-0"
+              className="concept-nav-drawer__close touch-target"
               aria-label={t('nav.closeMenu')}
               onClick={closeMenu}
             >
@@ -130,18 +130,20 @@ export function SiteHeader() {
             <Link to="/register/trainer">{t('actions.startFree')}</Link>
           </Button>
         </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="concept-nav-menu-btn touch-target shrink-0 lg:hidden"
-          aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
-          aria-expanded={menuOpen}
-          aria-controls="site-mobile-nav"
-          onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
-        >
-          {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </Button>
+        {!menuOpen ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="concept-nav-menu-btn touch-target shrink-0 lg:hidden"
+            aria-label={t('nav.openMenu')}
+            aria-expanded={false}
+            aria-controls="site-mobile-nav"
+            onClick={() => setMenuOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        ) : null}
       </div>
 
       {mobileMenu}
