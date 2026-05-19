@@ -67,6 +67,18 @@
   overflow-y: visible;
 }
 
+/* Beat .app-shell { flex-direction: column } which loads later in the bundle */
+@media (min-width: 768px) {
+  .app-shell.app-shell--trainer {
+    flex-direction: row;
+  }
+
+  .app-shell--trainer .app-content,
+  .trainer-main-content {
+    padding-bottom: var(--mobile-padding-lg);
+  }
+}
+
 .trainer-layout-root {
   position: relative;
   min-height: 100dvh;
@@ -80,12 +92,6 @@
 .trainer-main-content {
   width: 100%;
   padding-bottom: calc(var(--tab-bar-height) + var(--safe-area-bottom) + 12px);
-}
-
-@media (min-width: 768px) {
-  .trainer-main-content {
-    padding-bottom: var(--mobile-padding-lg);
-  }
 }
 
 .app-content {
@@ -107,12 +113,6 @@
 
 .app-content--no-tab {
   padding-bottom: calc(var(--mobile-padding) + var(--safe-area-bottom));
-}
-
-@media (min-width: 768px) {
-  .app-shell--trainer .app-content {
-    padding-bottom: var(--mobile-padding-lg);
-  }
 }
 
 /* —— Floating pill tab bar —— */

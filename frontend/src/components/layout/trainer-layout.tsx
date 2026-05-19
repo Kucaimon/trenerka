@@ -183,7 +183,7 @@ export function TrainerLayout() {
 
   return (
     <div className="trainer-layout-root min-h-dvh w-full overflow-x-hidden bg-[var(--black)]">
-      <div className="app-shell app-shell--trainer flex min-h-dvh w-full flex-col md:flex-row">
+      <div className="app-shell app-shell--trainer flex min-h-dvh w-full">
         {!isMobile ? (
         <aside
           className={cn(
