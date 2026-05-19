@@ -68,7 +68,7 @@ export function SiteHeader() {
           aria-label={menuOpen ? 'Закрыть меню' : 'Открыть меню'}
           aria-expanded={menuOpen}
           aria-controls="site-mobile-nav"
-          onClick={() => setMenuOpen((o) => !o)}
+          onClick={() => (menuOpen ? closeMenu() : setMenuOpen(true))}
         >
           {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
@@ -86,7 +86,27 @@ export function SiteHeader() {
         id="site-mobile-nav"
         className={cn('concept-nav-drawer lg:hidden', menuOpen && 'concept-nav-drawer--open')}
         aria-hidden={!menuOpen}
+        inert={!menuOpen ? true : undefined}
       >
+        <div className="concept-nav-drawer__head">
+          <Link
+            to="/"
+            className="concept-nav-drawer__logo flex min-w-0 items-center py-1"
+            onClick={closeMenu}
+          >
+            <Logo size="md" className="!h-9 !max-w-[10rem]" />
+          </Link>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="touch-target shrink-0"
+            aria-label="Закрыть меню"
+            onClick={closeMenu}
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
         <nav className="concept-nav-drawer__nav">
           {nav.map((item) => (
             <a
