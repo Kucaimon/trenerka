@@ -254,10 +254,10 @@ function SocialProofStrip() {
     <section className="border-y border-[var(--border)] bg-[var(--graphite)] px-5 py-12 sm:px-10">
       <div className="mx-auto grid max-w-[1200px] gap-4 md:grid-cols-3">
         {testimonials.map((q, index) => (
-          <motion.div key={q.name} {...fade} className="rounded-xl border border-[var(--border)] bg-[var(--surface)]/60 p-6">
+          <motion.div key={q.name} {...fade} className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-5">
             <p className="text-sm leading-relaxed text-[var(--text-secondary)]">«{q.text}»</p>
             <div className="mt-5 flex items-center gap-3">
-              <Avatar className="h-11 w-11 border border-[var(--border-strong)] ring-2 ring-[var(--accent)]/15">
+              <Avatar className="h-11 w-11 border border-[var(--border-strong)]">
                 <AvatarImage src={TESTIMONIAL_AVATARS[index]} alt={q.name} className="object-cover" />
                 <AvatarFallback className="bg-[var(--accent-dim)] text-sm font-bold text-[var(--accent)]">
                   {q.name.slice(0, 1)}
@@ -324,7 +324,7 @@ function WorkflowSection() {
           </div>
           <div className="mb-4 grid grid-cols-7 gap-1">
             {days.map((day, index) => (
-              <div key={day} className={`rounded-md border border-[var(--border)] px-2 py-2 text-center text-xs font-semibold ${index === 0 ? 'bg-white/[0.08] text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
+              <div key={day} className={`rounded-md border border-[var(--border)] px-2 py-2 text-center text-xs font-semibold ${index === 0 ? 'bg-[var(--surface3)] text-[var(--text-primary)]' : 'text-[var(--text-muted)]'}`}>
                 {day}
               </div>
             ))}
@@ -332,7 +332,7 @@ function WorkflowSection() {
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px]">
             <div className="space-y-2">
               {exercises.map(([name, meta, sets, reps, rest], index) => (
-                <div key={name} className="grid items-center gap-3 rounded-lg border border-[var(--border)] bg-white/[0.035] p-3 sm:grid-cols-[28px_minmax(0,1fr)_repeat(3,64px)]">
+                <div key={name} className="grid items-center gap-3 rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] p-3 sm:grid-cols-[28px_minmax(0,1fr)_repeat(3,64px)]">
                   <span className="text-xs text-[var(--text-muted)]">{index + 1}</span>
                   <div>
                     <p className="text-sm font-semibold">{name}</p>
@@ -344,11 +344,11 @@ function WorkflowSection() {
                 </div>
               ))}
             </div>
-            <div className="rounded-lg border border-[var(--border)] bg-black/20 p-3">
+            <div className="rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] p-3">
               <p className="text-sm font-semibold">{t('workflow.catalog')}</p>
               <div className="mt-3 space-y-2">
                 {catalogItems.map((item) => (
-                  <div key={item} className="flex items-center justify-between rounded-md px-2 py-2 text-sm hover:bg-white/[0.04]">
+                  <div key={item} className="flex items-center justify-between rounded-md px-2 py-2 text-sm hover:bg-[var(--surface3)]">
                     <span>{item}</span>
                     <Sparkles className="h-3.5 w-3.5 text-[var(--accent)]" />
                   </div>
@@ -364,7 +364,7 @@ function WorkflowSection() {
 
 function MiniField({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-[var(--border)] bg-black/20 px-2 py-1.5 text-center">
+    <div className="rounded-md border border-[var(--border)] bg-[var(--surface3)] px-2 py-1.5 text-center">
       <p className="text-[9px] font-semibold uppercase text-[var(--text-muted)]">{label}</p>
       <p className="mt-0.5 text-xs font-semibold">{value}</p>
     </div>
@@ -426,20 +426,20 @@ function AnalyticsSection() {
 
 function InsightCard({ icon: Icon, label, value, trend }: { icon: typeof Wallet; label: string; value: string; trend: string }) {
   return (
-    <motion.div {...fade} className="rounded-xl border border-[var(--border)] bg-white/[0.025] p-5">
+    <motion.div {...fade} className="rounded-[10px] border border-[var(--border)] bg-[var(--surface2)] p-4">
       <div className="flex items-start justify-between">
         <p className="label-caps">{label}</p>
         <Icon className="h-4 w-4 text-[var(--text-muted)]" />
       </div>
-      <p className="mt-5 text-3xl font-semibold tracking-tight">{value}</p>
-      <p className="mt-1 text-sm text-emerald-300">{trend}</p>
+      <p className="mt-4 text-2xl font-semibold tracking-tight">{value}</p>
+      <p className="mt-1 text-sm text-[var(--accent)]">{trend}</p>
     </motion.div>
   )
 }
 
 function ChartPanel({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
   return (
-    <motion.div {...fade} className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
+    <motion.div {...fade} className="rounded-[10px] border border-[var(--border)] bg-[var(--surface2)] p-4">
       <div className="mb-4">
         <p className="text-sm font-semibold">{title}</p>
         <p className="text-xs text-[var(--text-muted)]">{subtitle}</p>
@@ -468,7 +468,7 @@ function MobileSection() {
 
 function PhoneMock({ title, primary, meta, progress, blocks, secondary }: { title: string; primary: string; meta: string; progress: string; blocks: string[]; secondary?: boolean }) {
   return (
-    <div className={`w-[260px] rounded-[32px] border border-[var(--border-strong)] bg-[#0a0a0a] p-2 shadow-[0_28px_80px_rgba(0,0,0,0.6)] ${secondary ? 'sm:mt-16' : ''}`}>
+    <div className={`w-[260px] rounded-[24px] border border-[var(--border-strong)] bg-[var(--surface)] p-2 ${secondary ? 'sm:mt-16' : ''}`}>
       <div className="rounded-[26px] border border-[var(--border)] bg-[var(--black)] p-4">
         <div className="mx-auto mb-5 h-1.5 w-16 rounded-full bg-white/20" />
         <div className="flex items-center justify-between">
@@ -477,12 +477,12 @@ function PhoneMock({ title, primary, meta, progress, blocks, secondary }: { titl
         </div>
         <p className="mt-3 text-2xl font-semibold tracking-tight">{primary}</p>
         <p className="mt-1 text-sm text-[var(--text-secondary)]">{meta}</p>
-        <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/[0.08]">
+        <div className="mt-5 h-2 overflow-hidden rounded-full bg-[var(--surface3)]">
           <div className="h-full rounded-full bg-[var(--accent)]" style={{ width: progress }} />
         </div>
         <div className="mt-6 space-y-2">
           {blocks.map((item, index) => (
-            <div key={item} className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-white/[0.035] px-3 py-3">
+            <div key={item} className="flex items-center justify-between rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] px-3 py-3">
               <span className="text-sm">{item}</span>
               {index === 0 ? <Check className="h-4 w-4 text-[var(--accent)]" /> : <span className="text-xs text-[var(--text-muted)]">{index + 2}</span>}
             </div>

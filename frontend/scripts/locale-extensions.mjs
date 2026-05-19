@@ -141,6 +141,7 @@ export const extensions = {
         revenue: { title: 'Выручка', chart: 'Выручка' },
         activeClients: { title: 'Активные клиенты', subtitle: 'Последняя активность', empty: 'Нет активных клиентов', noSessions: 'Нет сессий' },
         schedule: { title: 'Расписание на сегодня', subtitle: 'Ближайшие сессии', empty: 'Нет событий' },
+        activity: { title: 'Активность', subtitle: 'Оплаты, сообщения, напоминания', empty: 'Нет недавней активности' },
         eventTypeDefault: 'тренировка',
       },
       clients: {
@@ -366,6 +367,7 @@ export const extensions = {
         revenue: { title: 'Revenue', chart: 'Revenue' },
         activeClients: { title: 'Active clients', subtitle: 'Recent activity', empty: 'No active clients', noSessions: 'No sessions' },
         schedule: { title: "Today's schedule", subtitle: 'Upcoming sessions', empty: 'No events' },
+        activity: { title: 'Activity', subtitle: 'Payments, messages, reminders', empty: 'No recent activity' },
         eventTypeDefault: 'training',
       },
       clients: {

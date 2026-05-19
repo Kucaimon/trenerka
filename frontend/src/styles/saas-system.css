@@ -97,7 +97,7 @@
 
 .saas-page-header__title {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
@@ -130,7 +130,7 @@
 
 .saas-metric-cell {
   background: var(--surface2);
-  padding: 14px 16px;
+  padding: 12px 16px;
 }
 
 .saas-metric-cell__label {
@@ -144,7 +144,7 @@
 
 .saas-metric-cell__value {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -171,7 +171,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  padding: 14px 16px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -189,7 +189,7 @@
 }
 
 .saas-panel__body {
-  padding: 14px 16px;
+  padding: 12px 16px;
 }
 
 .saas-panel__body--flush {
@@ -216,7 +216,7 @@
 }
 
 .saas-table th {
-  padding: 10px 14px;
+  padding: 8px 12px;
   text-align: left;
   font-size: 11px;
   font-weight: 600;
@@ -228,7 +228,7 @@
 }
 
 .saas-table td {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--border);
   color: var(--text-primary);
   vertical-align: middle;
@@ -251,10 +251,9 @@
   box-shadow: inset 2px 0 0 var(--accent);
 }
 
-/* —— Dashboard asymmetric layout —— */
+/* —— Dashboard 12-col asymmetric layout —— */
 .saas-dash-layout {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: var(--space-4);
 }
 
@@ -263,29 +262,78 @@
   gap: var(--space-4);
 }
 
+.saas-dash-activity {
+  display: flex;
+  flex-direction: column;
+}
+
+.saas-activity-item {
+  display: flex;
+  gap: var(--space-3);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.saas-activity-item:last-child {
+  border-bottom: none;
+}
+
+.saas-activity-item__time {
+  flex-shrink: 0;
+  min-width: 52px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.saas-activity-item__title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.saas-activity-item__body {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
 @media (min-width: 1024px) {
   .saas-metric-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 
+  .saas-dash-layout {
+    grid-template-columns: repeat(12, 1fr);
+    align-items: start;
+  }
+
   .saas-dash-main {
-    grid-template-columns: 1.4fr 1fr;
+    grid-column: 1 / 9;
+    grid-template-columns: repeat(8, 1fr);
     grid-template-rows: auto auto;
   }
 
   .saas-dash-chart {
-    grid-column: 1 / 2;
-    grid-row: 1 / 3;
-  }
-
-  .saas-dash-side-a {
-    grid-column: 2 / 3;
+    grid-column: 1 / 9;
     grid-row: 1 / 2;
   }
 
-  .saas-dash-side-b {
-    grid-column: 2 / 3;
+  .saas-dash-side-a {
+    grid-column: 1 / 5;
     grid-row: 2 / 3;
+  }
+
+  .saas-dash-side-b {
+    grid-column: 5 / 9;
+    grid-row: 2 / 3;
+  }
+
+  .saas-dash-activity {
+    grid-column: 9 / 13;
+    grid-row: 1 / 3;
+    align-self: stretch;
   }
 }
 
@@ -316,7 +364,7 @@
   border-radius: 10px;
   background: var(--surface);
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
 }
 
 .saas-product-mock__chrome {
@@ -401,14 +449,21 @@
   border-right: 1px solid var(--border);
 }
 
+.trainer-sidebar--saas .snav-label {
+  padding: var(--space-2) var(--space-4) var(--space-1);
+}
+
 .trainer-sidebar--saas .snav-item {
-  margin: 0 8px;
-  padding: 8px 12px;
-  border-radius: 8px;
+  margin: 0 var(--space-2);
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
   border-right: none;
 }
 
 .trainer-sidebar--saas .snav-item.active {
+  color: var(--text-primary);
+  background: var(--surface2);
   border-left: 2px solid var(--accent);
   border-right: none;
 }

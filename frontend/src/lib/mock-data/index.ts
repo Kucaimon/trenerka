@@ -111,6 +111,29 @@ export const mockNotifications: Notification[] = [
   { id: 'n3', title: 'Сообщение', body: 'Анна Смирнова написала в чат', createdAt: '2025-05-17T09:30:00', read: true },
 ]
 
+export type ActivityFeedItem = {
+  id: string
+  title: string
+  body: string
+  createdAt: string
+}
+
+/** Combined notifications + messages for dashboard activity feed */
+export const mockActivityFeed: ActivityFeedItem[] = [
+  ...mockNotifications.map((n) => ({
+    id: n.id,
+    title: n.title,
+    body: n.body,
+    createdAt: n.createdAt,
+  })),
+  ...mockMessages.map((m) => ({
+    id: m.id,
+    title: m.sender === 'client' ? 'Сообщение от клиента' : 'Исходящее сообщение',
+    body: m.text,
+    createdAt: m.createdAt,
+  })),
+].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+
 export const mockProgress: ProgressMeasurement[] = [
   { date: '2025-01-01', weight: 72, bodyFat: 28 },
   { date: '2025-02-01', weight: 70.5, bodyFat: 26 },

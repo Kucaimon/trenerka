@@ -4,7 +4,7 @@ import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianG
 import { Clock3 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { useClients, useEvents, useTrainerAnalytics } from '@/features/api/hooks'
-import { generateRevenueSeries } from '@/lib/mock-data'
+import { generateRevenueSeries, mockActivityFeed } from '@/lib/mock-data'
 import { formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
 import { cn } from '@/lib/utils'
@@ -20,6 +20,17 @@ const chartPeriods = [
 
 type ChartPeriodId = (typeof chartPeriods)[number]['id']
 
+function formatActivityTime(iso: string, locale: string) {
+  const date = new Date(iso)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  if (diffMins < 60) return `${diffMins}m`
+  const diffHours = Math.floor(diffMins / 60)
+  if (diffHours < 24) return `${diffHours}h`
+  return date.toLocaleDateString(intlLocale(locale), { day: 'numeric', month: 'short' })
+}
+
 export function TrainerDashboardPage() {
   const { t, i18n } = useTranslation(['trainer', 'common'])
   const { data: clients = [], isLoading: clientsLoading } = useClients()
@@ -29,6 +40,7 @@ export function TrainerDashboardPage() {
   const periodDays = chartPeriods.find((p) => p.id === chartPeriod)?.days ?? 30
   const revenueData = useMemo(() => generateRevenueSeries(periodDays), [periodDays])
   const periodTotal = useMemo(() => revenueData.reduce((s, p) => s + p.revenue, 0), [revenueData])
+  const activityItems = useMemo(() => mockActivityFeed.slice(0, 8), [])
 
   const statusLabel = (status: ClientStatus) => t(`common:status.${status}`)
 
@@ -87,16 +99,16 @@ export function TrainerDashboardPage() {
             <div className="saas-panel__header">
               <div>
                 <h2 className="saas-panel__title">{t('dashboard.revenue.title')}</h2>
-                <p className="font-display mt-1 text-xl font-extrabold text-[var(--accent)] tabular-nums">{formatRub(periodTotal)}</p>
+                <p className="mt-0.5 font-display text-lg font-extrabold tabular-nums text-[var(--accent)]">{formatRub(periodTotal)}</p>
               </div>
-              <div className="flex gap-0.5 rounded-[8px] bg-[var(--surface3)] p-0.5">
+              <div className="flex gap-0.5 rounded-[var(--radius-sm)] bg-[var(--surface3)] p-0.5">
                 {chartPeriods.map((p) => (
                   <button
                     key={p.id}
                     type="button"
                     onClick={() => setChartPeriod(p.id)}
                     className={cn(
-                      'rounded-[6px] px-2.5 py-1 text-xs transition-colors',
+                      'rounded-[var(--radius-sm)] px-2.5 py-1 text-xs transition-colors',
                       chartPeriod === p.id
                         ? 'bg-[var(--surface)] text-[var(--text-primary)]'
                         : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
@@ -133,7 +145,7 @@ export function TrainerDashboardPage() {
                 <p className="px-4 py-3 text-sm text-[var(--text-muted)]">{t('dashboard.activeClients.empty')}</p>
               ) : (
                 activeClients.map((c) => (
-                  <div key={c.id} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--surface3)]/60">
+                  <div key={c.id} className="flex items-center gap-3 px-4 py-2 hover:bg-[var(--surface3)]">
                     <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent-dim)] text-[10px] font-bold text-[var(--accent)]">
                       {c.name.slice(0, 1)}
                     </div>
@@ -163,7 +175,7 @@ export function TrainerDashboardPage() {
                 <p className="px-4 py-3 text-sm text-[var(--text-muted)]">{t('dashboard.schedule.empty')}</p>
               ) : (
                 upcoming.slice(0, 5).map((e) => (
-                  <div key={e.id} className="flex gap-3 px-4 py-2.5 hover:bg-[var(--surface3)]/60">
+                  <div key={e.id} className="flex gap-3 px-4 py-2 hover:bg-[var(--surface3)]">
                     <span className="min-w-[40px] pt-0.5 text-[11px] tabular-nums text-[var(--text-muted)]">
                       {new Date(e.start).toLocaleTimeString(intlLocale(i18n.language), { hour: '2-digit', minute: '2-digit' })}
                     </span>
@@ -178,6 +190,32 @@ export function TrainerDashboardPage() {
             </div>
           </section>
         </div>
+
+        <section className="saas-panel saas-dash-activity hidden lg:flex lg:flex-col">
+          <div className="saas-panel__header">
+            <div>
+              <h2 className="saas-panel__title">{t('dashboard.activity.title')}</h2>
+              <p className="saas-panel__sub">{t('dashboard.activity.subtitle')}</p>
+            </div>
+          </div>
+          <div className="saas-panel__body saas-panel__body--flush flex-1 overflow-y-auto p-0">
+            {activityItems.length === 0 ? (
+              <p className="px-4 py-3 text-sm text-[var(--text-muted)]">{t('dashboard.activity.empty')}</p>
+            ) : (
+              activityItems.map((item) => (
+                <div key={item.id} className="saas-activity-item">
+                  <time className="saas-activity-item__time" dateTime={item.createdAt}>
+                    {formatActivityTime(item.createdAt, i18n.language)}
+                  </time>
+                  <div className="min-w-0">
+                    <p className="saas-activity-item__title">{item.title}</p>
+                    <p className="saas-activity-item__body line-clamp-2">{item.body}</p>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </section>
       </div>
     </div>
   )

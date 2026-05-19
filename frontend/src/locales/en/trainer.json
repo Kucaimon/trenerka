@@ -123,6 +123,11 @@
       "subtitle": "Upcoming sessions",
       "empty": "No events"
     },
+    "activity": {
+      "title": "Activity",
+      "subtitle": "Payments, messages, reminders",
+      "empty": "No recent activity"
+    },
     "eventTypeDefault": "training"
   },
   "clients": {

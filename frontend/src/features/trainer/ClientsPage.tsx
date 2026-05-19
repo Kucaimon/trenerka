@@ -26,13 +26,8 @@ const STATUS_VARIANTS: Record<ClientStatus, 'success' | 'warning' | 'secondary'>
   archive: 'secondary',
 }
 
-function avatarGradient(name: string) {
-  const hues = [
-    'from-[var(--accent)] to-[var(--accent2)]',
-    'from-[var(--accent2)] to-[rgba(184,245,61,0.6)]',
-    'from-[rgba(184,245,61,0.35)] to-[var(--accent)]',
-  ]
-  return hues[name.charCodeAt(0) % hues.length]
+function avatarClass() {
+  return 'border border-[var(--border-strong)] bg-[var(--accent-dim)] text-[var(--accent)]'
 }
 
 
@@ -77,7 +72,7 @@ export function ClientsPage() {
         <aside className="crm-list">
           <div className="flex items-center justify-between border-b border-[var(--border)] px-[18px] py-4">
             <div>
-              <h1 className="font-display text-base font-extrabold">{t('clients.title')}</h1>
+              <h1 className="page-title">{t('clients.title')}</h1>
               <p className="text-[11px] text-[var(--text-muted)]">{t('clients.inDatabase', { count: filtered.length })}</p>
             </div>
             <div className="flex gap-1">
@@ -90,30 +85,32 @@ export function ClientsPage() {
             </div>
           </div>
 
-          <div className="border-b border-[var(--border)] px-3.5 py-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
-              <Input
-                className="h-9 border-[var(--border)] bg-[var(--surface2)] pl-9 text-[13px]"
-                placeholder={t('clients.searchPlaceholder')}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <div className="crm-list__filters">
+            <div className="border-b border-[var(--border)] px-3.5 py-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
+                <Input
+                  className="h-9 border-[var(--border)] bg-[var(--surface2)] pl-9 text-[13px]"
+                  placeholder={t('clients.searchPlaceholder')}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="flex gap-1 overflow-x-auto border-b border-[var(--border)] px-3.5 py-2.5">
-            {filters.map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                onClick={() => setStatus(f.id)}
-                className={cn('filter-pill', status === f.id && 'active')}
-              >
-                {f.label}
-                {f.id === 'all' ? ` (${clients.length})` : ''}
-              </button>
-            ))}
+            <div className="flex gap-1 overflow-x-auto border-b border-[var(--border)] px-3.5 py-2.5">
+              {filters.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setStatus(f.id)}
+                  className={cn('filter-pill', status === f.id && 'active')}
+                >
+                  {f.label}
+                  {f.id === 'all' ? ` (${clients.length})` : ''}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="flex-1 overflow-y-auto">
@@ -153,8 +150,8 @@ export function ClientsPage() {
                           <div className="flex items-center gap-2.5">
                             <div
                               className={cn(
-                                'flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-[12px] font-bold text-[#111]',
-                                avatarGradient(c.name),
+                                'flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[12px] font-bold',
+                                avatarClass(),
                               )}
                             >
                               {c.name.slice(0, 1)}
@@ -271,8 +268,8 @@ function ClientListItem({
       <div className="mb-1.5 flex items-center gap-2.5">
         <div
           className={cn(
-            'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-[13px] font-bold text-[#111]',
-            avatarGradient(client.name),
+            'flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[13px] font-bold',
+            avatarClass(),
           )}
         >
           {client.name.slice(0, 1)}
@@ -315,14 +312,14 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
         <div className="flex flex-wrap items-start gap-5">
           <div
             className={cn(
-              'flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-xl font-bold text-[#111]',
-              avatarGradient(client.name),
+              'flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold',
+              avatarClass(),
             )}
           >
             {client.name.slice(0, 1)}
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="font-display text-xl font-extrabold">{client.name}</h2>
+            <h2 className="page-title">{client.name}</h2>
             <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
               {client.email} · {client.phone}
             </p>
@@ -352,19 +349,19 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
 
       <div className="space-y-6 p-4 sm:p-8">
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface2)] p-3">
             <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.balance')}</p>
-            <p className="font-display mt-1.5 text-2xl font-extrabold tabular-nums">{client.packageBalance}</p>
+            <p className="font-display mt-1 text-xl font-extrabold tabular-nums">{client.packageBalance}</p>
             <p className="mt-1 text-[11px] text-[var(--text-secondary)]">{t('clients.stats.sessionsInPackage')}</p>
           </div>
-          <div className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface2)] p-3">
             <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.lastSession')}</p>
-            <p className="font-display mt-1.5 text-lg font-extrabold">{client.lastSession ?? '—'}</p>
+            <p className="font-display mt-1 text-base font-extrabold">{client.lastSession ?? '—'}</p>
             <CalendarCheck2 className="mt-2 h-4 w-4 text-[var(--accent)]" />
           </div>
-          <div className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4">
+          <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface2)] p-3">
             <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.focus')}</p>
-            <p className="font-display mt-1.5 text-lg font-extrabold">{client.goal ?? '—'}</p>
+            <p className="font-display mt-1 text-base font-extrabold">{client.goal ?? '—'}</p>
             <Dumbbell className="mt-2 h-4 w-4 text-[var(--text-muted)]" />
           </div>
         </div>

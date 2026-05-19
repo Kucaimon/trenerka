@@ -207,11 +207,7 @@ export function TrainerLayout() {
           <nav className="flex-1 overflow-y-auto py-3">
             {navGroups.map((group) => (
               <div key={group.label} className="mb-2">
-                {!collapsed && (
-                  <p className="px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)]">
-                    {group.label}
-                  </p>
-                )}
+                {!collapsed && <p className="snav-label">{group.label}</p>}
                 <div className="space-y-0.5 px-2">
                   {group.items.map((item) => (
                     <NavLink
