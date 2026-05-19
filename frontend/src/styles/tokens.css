@@ -1,0 +1,62 @@
+/**
+ * Trenerka — design tokens (1:1 from trenerka_platform_concept.html :root)
+ */
+:root {
+  --black: #080808;
+  --graphite: #111111;
+  --surface: #161616;
+  --surface2: #1c1c1c;
+  --surface3: #222222;
+  --border: rgba(255, 255, 255, 0.07);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --text-primary: #f0ede8;
+  --text-secondary: rgba(240, 237, 232, 0.55);
+  --text-tertiary: rgba(240, 237, 232, 0.3);
+  --text-muted: rgba(240, 237, 232, 0.3);
+  --accent: #b8f53d;
+  --accent2: #95d425;
+  --accent-dim: rgba(184, 245, 61, 0.12);
+  --accent-glow: rgba(184, 245, 61, 0.06);
+  --accent-soft: rgba(184, 245, 61, 0.2);
+  --red: #ff4d4d;
+  --blue: #4d9eff;
+  --purple: #a78bfa;
+  --orange: #ff8c42;
+
+  /* Aliases used across the app */
+  --bg-base: var(--black);
+  --bg-elevated: var(--surface);
+  --bg-muted: var(--surface2);
+  --bg-soft: var(--surface3);
+  --bg-hover: var(--surface2);
+  --glass: rgba(8, 8, 8, 0.85);
+  --success: var(--accent);
+  --warning: var(--orange);
+  --danger: var(--red);
+  --accent-muted: var(--accent2);
+
+  --font-display: 'Syne', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  --sidebar-width: 220px;
+  --header-height: 60px;
+  --content-max: 1200px;
+
+  --shadow-soft: 0 24px 80px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 8px 30px rgba(184, 245, 61, 0.25);
+  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.4);
+}

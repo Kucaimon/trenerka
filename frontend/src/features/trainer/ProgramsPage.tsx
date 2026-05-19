@@ -1,0 +1,61 @@
+import { Link } from 'react-router-dom'
+import { Layers, ChevronRight } from 'lucide-react'
+import { PageHeader } from '@/components/shared/page-header'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { usePrograms } from '@/features/api/hooks'
+
+export function ProgramsPage() {
+  const { data: programs = [], isLoading } = usePrograms()
+
+  return (
+    <div className="page-container">
+      <PageHeader
+        title="Программы"
+        description="Библиотека тренировочных программ и шаблоны циклов."
+        actions={
+          <Button variant="secondary" size="sm" asChild>
+            <Link to="/trainer/workouts/builder">Конструктор</Link>
+          </Button>
+        }
+      />
+
+      {isLoading ? (
+        <p className="text-sm text-[var(--text-muted)]">Загрузка…</p>
+      ) : programs.length === 0 ? (
+        <div className="glass-panel flex flex-col items-center justify-center px-6 py-16 text-center">
+          <Layers className="h-8 w-8 text-[var(--text-muted)]" />
+          <p className="mt-4 text-sm text-[var(--text-secondary)]">Пока нет программ</p>
+          <Button className="mt-4" asChild>
+            <Link to="/trainer/workouts/builder">Создать в конструкторе</Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {programs.map((program) => (
+            <div
+              key={program.id}
+              className="group rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 transition-colors hover:border-[var(--border-strong)] hover:bg-[var(--surface2)]"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[var(--accent)]/20 bg-[var(--accent-dim)]">
+                  <Layers className="h-5 w-5 text-[var(--accent)]" />
+                </div>
+                <Badge variant="secondary">{program.weeks} нед.</Badge>
+              </div>
+              <h3 className="mt-4 font-display text-lg font-bold tracking-tight">{program.name}</h3>
+              {program.description && (
+                <p className="mt-1.5 line-clamp-2 text-sm text-[var(--text-secondary)]">{program.description}</p>
+              )}
+              <Button variant="ghost" size="sm" className="mt-4 w-full justify-between gap-2" asChild>
+                <Link to={`/trainer/workouts/builder?id=${program.id}`}>
+                  Открыть <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}

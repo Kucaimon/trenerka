@@ -1,0 +1,43 @@
+export const wpEndpoints = {
+  auth: {
+    login: '/jwt-auth/v1/token',
+    validate: '/jwt-auth/v1/token/validate',
+    me: '/trenerka/v1/auth/me',
+    registerTrainer: '/trenerka/v1/auth/register-trainer',
+    resetPassword: '/trenerka/v1/auth/reset-password',
+  },
+  clients: '/trenerka/v1/clients',
+  exercises: '/trenerka/v1/exercises',
+  programs: '/trenerka/v1/programs',
+  clientPrograms: '/trenerka/v1/client-programs',
+  clientProgress: (clientId: string) => `/trenerka/v1/clients/${clientId}/progress`,
+  events: '/trenerka/v1/events',
+  payments: '/trenerka/v1/payments',
+  paymentReports: '/trenerka/v1/payments/reports',
+  messages: '/trenerka/v1/messages',
+  notifications: '/trenerka/v1/notifications',
+  upload: '/trenerka/v1/upload',
+  client: {
+    dashboard: '/trenerka/v1/client/dashboard',
+    workouts: '/trenerka/v1/client/workouts',
+    progress: '/trenerka/v1/client/progress',
+  },
+  analytics: {
+    trainer: '/trenerka/v1/analytics/trainer',
+    clientPdf: (id: string) => `/trenerka/v1/analytics/client/${id}/pdf`,
+  },
+  admin: {
+    stats: '/trenerka/v1/admin/stats',
+    users: '/trenerka/v1/admin/users',
+    user: (id: string) => `/trenerka/v1/admin/users/${id}`,
+  },
+  news: '/trenerka/v1/news',
+  posts: {
+    exercises: '/wp/v2/trenerka_exercise',
+    clients: '/wp/v2/trenerka_client',
+    programs: '/wp/v2/trenerka_program',
+    events: '/wp/v2/trenerka_event',
+    payments: '/wp/v2/trenerka_payment',
+    messages: '/wp/v2/trenerka_message',
+  },
+} as const

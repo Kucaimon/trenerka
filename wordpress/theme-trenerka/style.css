@@ -1,0 +1,13 @@
+/*
+Theme Name: Trenerka
+Description: Minimal WordPress theme for Trenerka React SPA. Loads Vite build or redirects to app subdomain.
+Version: 1.0.0
+Author: Trenerka
+*/
+
+body {
+  margin: 0;
+  background: #050816;
+  color: #f8fafc;
+  font-family: Inter, system-ui, sans-serif;
+}
