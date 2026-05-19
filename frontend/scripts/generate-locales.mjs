@@ -560,6 +560,15 @@ const T = {
         equipment: 'Оборудование',
         level: 'Уровень',
         difficulty: { beginner: 'Начальный', intermediate: 'Средний', advanced: 'Продвинутый' },
+        filters: {
+          muscle: 'Группа мышц',
+          equipment: 'Оборудование',
+          difficulty: 'Уровень',
+          all: 'Все',
+          clear: 'Сбросить',
+        },
+        results: 'Показано {{shown}} из {{total}}',
+        pagination: { prev: 'Назад', next: 'Далее', page: 'Стр. {{current}} / {{total}}' },
       },
       exerciseDetail: {
         notFound: 'Упражнение не найдено.',
@@ -613,6 +622,15 @@ const T = {
         equipment: 'Equipment',
         level: 'Level',
         difficulty: { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' },
+        filters: {
+          muscle: 'Muscle group',
+          equipment: 'Equipment',
+          difficulty: 'Level',
+          all: 'All',
+          clear: 'Clear',
+        },
+        results: 'Showing {{shown}} of {{total}}',
+        pagination: { prev: 'Previous', next: 'Next', page: 'Page {{current}} / {{total}}' },
       },
       exerciseDetail: {
         notFound: 'Exercise not found.',
@@ -763,6 +781,33 @@ for (const lang of ['de', 'pt', 'ja', 'it', 'es', 'fr', 'ar', 'zh-CN']) {
         : lang === 'ar' ? { beginner: 'مبتدئ', intermediate: 'متوسط', advanced: 'متقدم' }
         : lang === 'zh-CN' ? { beginner: '初级', intermediate: '中级', advanced: '高级' }
         : base.exercisesPage.difficulty,
+      filters: lang === 'de'
+        ? { muscle: 'Muskelgruppe', equipment: 'Gerät', difficulty: 'Niveau', all: 'Alle', clear: 'Zurücksetzen' }
+        : lang === 'ar'
+          ? { muscle: 'مجموعة العضلات', equipment: 'المعدات', difficulty: 'المستوى', all: 'الكل', clear: 'مسح' }
+          : lang === 'zh-CN'
+            ? { muscle: '肌群', equipment: '器械', difficulty: '级别', all: '全部', clear: '清除' }
+            : lang === 'ja'
+              ? { muscle: '筋肉', equipment: '器具', difficulty: 'レベル', all: 'すべて', clear: 'クリア' }
+              : lang === 'pt'
+                ? { muscle: 'Grupo muscular', equipment: 'Equipamento', difficulty: 'Nível', all: 'Todos', clear: 'Limpar' }
+                : lang === 'es'
+                  ? { muscle: 'Grupo muscular', equipment: 'Equipo', difficulty: 'Nivel', all: 'Todos', clear: 'Borrar' }
+                  : lang === 'fr'
+                    ? { muscle: 'Groupe musculaire', equipment: 'Équipement', difficulty: 'Niveau', all: 'Tous', clear: 'Effacer' }
+                    : lang === 'it'
+                      ? { muscle: 'Gruppo muscolare', equipment: 'Attrezzo', difficulty: 'Livello', all: 'Tutti', clear: 'Cancella' }
+                      : base.exercisesPage.filters,
+      results: lang === 'de' ? '{{shown}} von {{total}}' : lang === 'ar' ? '{{shown}} من {{total}}' : lang === 'zh-CN' ? '显示 {{shown}} / {{total}}' : lang === 'ja' ? '{{shown}} / {{total}} 件' : 'Showing {{shown}} of {{total}}',
+      pagination: lang === 'de'
+        ? { prev: 'Zurück', next: 'Weiter', page: 'S. {{current}} / {{total}}' }
+        : lang === 'ar'
+          ? { prev: 'السابق', next: 'التالي', page: '{{current}} / {{total}}' }
+          : lang === 'zh-CN'
+            ? { prev: '上一页', next: '下一页', page: '第 {{current}} / {{total}} 页' }
+            : lang === 'ja'
+              ? { prev: '前へ', next: '次へ', page: '{{current}} / {{total}}' }
+              : base.exercisesPage.pagination,
     },
     exerciseDetail: {
       notFound: lang === 'de' ? 'Übung nicht gefunden.' : lang === 'ar' ? 'التمرين غير موجود.' : lang === 'zh-CN' ? '未找到练习。' : 'Exercise not found.',

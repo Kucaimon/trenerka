@@ -41,6 +41,19 @@
       "beginner": "مبتدئ",
       "intermediate": "متوسط",
       "advanced": "متقدم"
+    },
+    "filters": {
+      "muscle": "مجموعة العضلات",
+      "equipment": "المعدات",
+      "difficulty": "المستوى",
+      "all": "الكل",
+      "clear": "مسح"
+    },
+    "results": "{{shown}} من {{total}}",
+    "pagination": {
+      "prev": "السابق",
+      "next": "التالي",
+      "page": "{{current}} / {{total}}"
     }
   },
   "exerciseDetail": {

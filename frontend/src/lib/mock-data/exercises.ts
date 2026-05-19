@@ -22,30 +22,94 @@ export const romanianDeadliftSample: Exercise = {
   technique: 'Держите спину прямой на всей амплитуде.',
 }
 
-const muscles = ['Грудь', 'Спина', 'Ноги', 'Плечи', 'Руки', 'Кор', 'Кардио']
-const equipment = ['Штанга', 'Гантели', 'Тренажёр', 'Собственный вес', 'Кабель', 'Резина']
+const muscles = ['Грудь', 'Спина', 'Ноги', 'Плечи', 'Руки', 'Кор', 'Кардио'] as const
+const equipmentList = ['Штанга', 'Гантели', 'Тренажёр', 'Собственный вес', 'Кабель', 'Резина'] as const
+const difficulties = ['beginner', 'intermediate', 'advanced'] as const
 
-const names = [
-  'Жим лёжа', 'Приседания со штангой', 'Становая тяга', 'Подтягивания', 'Жим стоя',
-  'Тяга штанги в наклоне', 'Выпады с гантелями', 'Жим гантелей на наклонной',
-  'Разгибания на трицепс', 'Сгибания на бицепс', 'Планка', 'Берпи',
-  'Румынская тяга', 'Жим ногами', 'Тяга верхнего блока', 'Отжимания на брусьях',
-  'Махи гантелями в стороны', 'Скручивания', 'Гиперэкстензия', 'Беговая дорожка',
-  'Эллипс', 'Велосипед', 'Боковые выпады', 'Ягодичный мост', 'Тяга гантели одной рукой',
-  'Жим Арнольда', 'Французский жим', 'Молотки', 'Подъём на носки', 'Сгибание ног',
-  'Разгибание ног', 'Пуловер', 'Рывок гири', 'Трастеры', 'Фермерская прогулка',
-  'Боковая планка', 'Скалолаз', 'Прыжки на скакалке',
+type Seed = {
+  slug: string
+  name: string
+  muscle: (typeof muscles)[number]
+  equipment: (typeof equipmentList)[number]
+  difficulty: (typeof difficulties)[number]
+  isPublic?: boolean
+}
+
+const catalog: Seed[] = [
+  { slug: 'bench-press', name: 'Жим лёжа', muscle: 'Грудь', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'squat', name: 'Приседания со штангой', muscle: 'Ноги', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'deadlift', name: 'Становая тяга', muscle: 'Спина', equipment: 'Штанга', difficulty: 'advanced' },
+  { slug: 'pull-ups', name: 'Подтягивания', muscle: 'Спина', equipment: 'Собственный вес', difficulty: 'intermediate' },
+  { slug: 'ohp', name: 'Жим стоя', muscle: 'Плечи', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'barbell-row', name: 'Тяга штанги в наклоне', muscle: 'Спина', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'lunges-db', name: 'Выпады с гантелями', muscle: 'Ноги', equipment: 'Гантели', difficulty: 'beginner' },
+  { slug: 'incline-db-press', name: 'Жим гантелей на наклонной', muscle: 'Грудь', equipment: 'Гантели', difficulty: 'beginner' },
+  { slug: 'tricep-ext', name: 'Разгибания на трицепс', muscle: 'Руки', equipment: 'Кабель', difficulty: 'beginner' },
+  { slug: 'bicep-curl', name: 'Сгибания на бицепс', muscle: 'Руки', equipment: 'Гантели', difficulty: 'beginner' },
+  { slug: 'plank', name: 'Планка', muscle: 'Кор', equipment: 'Собственный вес', difficulty: 'beginner' },
+  { slug: 'burpee', name: 'Берпи', muscle: 'Кардио', equipment: 'Собственный вес', difficulty: 'advanced' },
+  { slug: 'leg-press', name: 'Жим ногами', muscle: 'Ноги', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'lat-pulldown', name: 'Тяга верхнего блока', muscle: 'Спина', equipment: 'Кабель', difficulty: 'beginner' },
+  { slug: 'dips', name: 'Отжимания на брусьях', muscle: 'Грудь', equipment: 'Собственный вес', difficulty: 'intermediate' },
+  { slug: 'lateral-raise', name: 'Махи гантелями в стороны', muscle: 'Плечи', equipment: 'Гантели', difficulty: 'beginner' },
+  { slug: 'crunch', name: 'Скручивания', muscle: 'Кор', equipment: 'Собственный вес', difficulty: 'beginner' },
+  { slug: 'hyperextension', name: 'Гиперэкстензия', muscle: 'Спина', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'treadmill', name: 'Беговая дорожка', muscle: 'Кардио', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'elliptical', name: 'Эллипс', muscle: 'Кардио', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'bike', name: 'Велосипед', muscle: 'Кардио', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'lateral-lunge', name: 'Боковые выпады', muscle: 'Ноги', equipment: 'Гантели', difficulty: 'beginner' },
+  { slug: 'glute-bridge', name: 'Ягодичный мост', muscle: 'Ноги', equipment: 'Собственный вес', difficulty: 'beginner' },
+  { slug: 'one-arm-row', name: 'Тяга гантели одной рукой', muscle: 'Спина', equipment: 'Гантели', difficulty: 'intermediate' },
+  { slug: 'arnold-press', name: 'Жим Арнольда', muscle: 'Плечи', equipment: 'Гантели', difficulty: 'intermediate' },
+  { slug: 'skull-crusher', name: 'Французский жим', muscle: 'Руки', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'hammer-curl', name: 'Молотки', muscle: 'Руки', equipment: 'Гантели', difficulty: 'beginner' },
+  { slug: 'calf-raise', name: 'Подъём на носки', muscle: 'Ноги', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'leg-curl', name: 'Сгибание ног', muscle: 'Ноги', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'leg-extension', name: 'Разгибание ног', muscle: 'Ноги', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'pullover', name: 'Пуловер', muscle: 'Грудь', equipment: 'Гантели', difficulty: 'intermediate' },
+  { slug: 'kettlebell-swing', name: 'Мах гири', muscle: 'Кор', equipment: 'Гантели', difficulty: 'intermediate' },
+  { slug: 'thruster', name: 'Трастеры', muscle: 'Ноги', equipment: 'Штанга', difficulty: 'advanced' },
+  { slug: 'farmers-walk', name: 'Фермерская прогулка', muscle: 'Кор', equipment: 'Гантели', difficulty: 'intermediate' },
+  { slug: 'side-plank', name: 'Боковая планка', muscle: 'Кор', equipment: 'Собственный вес', difficulty: 'beginner' },
+  { slug: 'mountain-climber', name: 'Скалолаз', muscle: 'Кардио', equipment: 'Собственный вес', difficulty: 'intermediate' },
+  { slug: 'jump-rope', name: 'Прыжки на скакалке', muscle: 'Кардио', equipment: 'Собственный вес', difficulty: 'beginner' },
+  { slug: 'push-up', name: 'Отжимания от пола', muscle: 'Грудь', equipment: 'Собственный вес', difficulty: 'beginner' },
+  { slug: 'cable-fly', name: 'Сведение в кроссовере', muscle: 'Грудь', equipment: 'Кабель', difficulty: 'intermediate' },
+  { slug: 'face-pull', name: 'Тяга к лицу', muscle: 'Плечи', equipment: 'Кабель', difficulty: 'beginner' },
+  { slug: 'hip-thrust', name: 'Ягодичный мост со штангой', muscle: 'Ноги', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'bulgarian-split', name: 'Болгарские выпады', muscle: 'Ноги', equipment: 'Гантели', difficulty: 'intermediate' },
+  { slug: 'seated-row', name: 'Тяга горизонтального блока', muscle: 'Спина', equipment: 'Кабель', difficulty: 'beginner' },
+  { slug: 'pec-deck', name: 'Бабочка', muscle: 'Грудь', equipment: 'Тренажёр', difficulty: 'beginner' },
+  { slug: 'reverse-fly', name: 'Разведение в наклоне', muscle: 'Плечи', equipment: 'Гантели', difficulty: 'beginner' },
+  { slug: 'preacher-curl', name: 'Сгибания на скамье Скотта', muscle: 'Руки', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'cable-kickback', name: 'Отведение ноги в кроссовере', muscle: 'Ноги', equipment: 'Кабель', difficulty: 'beginner' },
+  { slug: 'band-pull-apart', name: 'Разведение резинки', muscle: 'Плечи', equipment: 'Резина', difficulty: 'beginner' },
+  { slug: 'band-squat', name: 'Присед с резинкой', muscle: 'Ноги', equipment: 'Резина', difficulty: 'beginner' },
+  { slug: 'box-jump', name: 'Прыжки на тумбу', muscle: 'Кардио', equipment: 'Собственный вес', difficulty: 'advanced' },
+  { slug: 'battle-rope', name: 'Канаты', muscle: 'Кардио', equipment: 'Кабель', difficulty: 'intermediate' },
+  { slug: 'ab-wheel', name: 'Ролик для пресса', muscle: 'Кор', equipment: 'Собственный вес', difficulty: 'advanced' },
+  { slug: 'hanging-leg-raise', name: 'Подъём ног в висе', muscle: 'Кор', equipment: 'Собственный вес', difficulty: 'advanced' },
+  { slug: 'chin-up', name: 'Подтягивания обратным хватом', muscle: 'Руки', equipment: 'Собственный вес', difficulty: 'intermediate' },
+  { slug: 'close-grip-bench', name: 'Жим узким хватом', muscle: 'Руки', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'sumo-deadlift', name: 'Становая сумо', muscle: 'Ноги', equipment: 'Штанга', difficulty: 'advanced' },
+  { slug: 'front-squat', name: 'Фронтальные приседания', muscle: 'Ноги', equipment: 'Штанга', difficulty: 'advanced' },
+  { slug: 'incline-barbell', name: 'Жим штанги на наклонной', muscle: 'Грудь', equipment: 'Штанга', difficulty: 'intermediate' },
+  { slug: 'cable-crunch', name: 'Скручивания в блоке', muscle: 'Кор', equipment: 'Кабель', difficulty: 'beginner' },
+  { slug: 'walking-lunge', name: 'Шагающие выпады', muscle: 'Ноги', equipment: 'Гантели', difficulty: 'intermediate' },
+  { slug: 'rower', name: 'Гребной тренажёр', muscle: 'Кардио', equipment: 'Тренажёр', difficulty: 'intermediate' },
+  { slug: 'stair-climber', name: 'Степпер', muscle: 'Кардио', equipment: 'Тренажёр', difficulty: 'beginner' },
 ]
 
-const generated: Exercise[] = names.map((name, i) => ({
-  id: `ex-${i + 1}`,
-  name,
-  muscleGroup: muscles[i % muscles.length]!,
-  equipment: equipment[i % equipment.length]!,
-  difficulty: (['beginner', 'intermediate', 'advanced'] as const)[i % 3]!,
+const generated: Exercise[] = catalog.map((item) => ({
+  id: `ex-${item.slug}`,
+  name: item.name,
+  muscleGroup: item.muscle,
+  equipment: item.equipment,
+  difficulty: item.difficulty,
+  isPublic: item.isPublic ?? true,
 }))
 
 export const mockExercises: Exercise[] = [
-  ...generated.filter((e) => e.id !== 'ex-13'),
+  ...generated.filter((e) => e.id !== 'ex-rdl'),
   romanianDeadliftSample,
 ]

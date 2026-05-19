@@ -41,6 +41,19 @@
       "beginner": "Anfänger",
       "intermediate": "Mittel",
       "advanced": "Fortgeschritten"
+    },
+    "filters": {
+      "muscle": "Muskelgruppe",
+      "equipment": "Gerät",
+      "difficulty": "Niveau",
+      "all": "Alle",
+      "clear": "Zurücksetzen"
+    },
+    "results": "{{shown}} von {{total}}",
+    "pagination": {
+      "prev": "Zurück",
+      "next": "Weiter",
+      "page": "S. {{current}} / {{total}}"
     }
   },
   "exerciseDetail": {

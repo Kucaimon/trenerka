@@ -41,6 +41,19 @@
       "beginner": "Beginner",
       "intermediate": "Intermediate",
       "advanced": "Advanced"
+    },
+    "filters": {
+      "muscle": "Muscle group",
+      "equipment": "Equipment",
+      "difficulty": "Level",
+      "all": "All",
+      "clear": "Clear"
+    },
+    "results": "Showing {{shown}} of {{total}}",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {{current}} / {{total}}"
     }
   },
   "exerciseDetail": {

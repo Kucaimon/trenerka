@@ -41,6 +41,19 @@
       "beginner": "Beginner",
       "intermediate": "Intermediate",
       "advanced": "Advanced"
+    },
+    "filters": {
+      "muscle": "Grupo muscular",
+      "equipment": "Equipo",
+      "difficulty": "Nivel",
+      "all": "Todos",
+      "clear": "Borrar"
+    },
+    "results": "Showing {{shown}} of {{total}}",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {{current}} / {{total}}"
     }
   },
   "exerciseDetail": {

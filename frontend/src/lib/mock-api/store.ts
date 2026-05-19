@@ -15,6 +15,8 @@ import {
   mockWeekdayActivity,
   mockSubscriptionMix,
 } from '@/lib/mock-data'
+import { listExercisesFrom } from '@/lib/mock-data/exercise-list'
+import type { ExerciseListParams } from '@/features/api/exercise-list'
 import type {
   CalendarEvent,
   Client,
@@ -152,7 +154,11 @@ export const mockApi = {
   },
 
   exercises: {
-    list(): Exercise[] {
+    list(params: ExerciseListParams = {}) {
+      refresh()
+      return listExercisesFrom(store.exercises, params)
+    },
+    listAll(): Exercise[] {
       refresh()
       return [...store.exercises]
     },

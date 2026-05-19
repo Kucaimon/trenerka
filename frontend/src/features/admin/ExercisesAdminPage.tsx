@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { useCreateExercise, useDeleteExercise, useExercises, useUpdateExercise } from '@/features/api/hooks'
+import { useCreateExercise, useDeleteExercise, useExercisesAll, useUpdateExercise } from '@/features/api/hooks'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -23,7 +23,7 @@ type FormValues = z.infer<typeof schema>
 
 export function ExercisesAdminPage() {
   const { t } = useTranslation(['admin', 'common'])
-  const { data: exercises = [] } = useExercises()
+  const { data: exercises = [] } = useExercisesAll()
   const createEx = useCreateExercise()
   const updateEx = useUpdateExercise()
   const deleteEx = useDeleteExercise()

@@ -41,6 +41,19 @@
       "beginner": "初级",
       "intermediate": "中级",
       "advanced": "高级"
+    },
+    "filters": {
+      "muscle": "肌群",
+      "equipment": "器械",
+      "difficulty": "级别",
+      "all": "全部",
+      "clear": "清除"
+    },
+    "results": "显示 {{shown}} / {{total}}",
+    "pagination": {
+      "prev": "上一页",
+      "next": "下一页",
+      "page": "第 {{current}} / {{total}} 页"
     }
   },
   "exerciseDetail": {

@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import * as clientsApi from './clients-service'
 import * as exercisesApi from './exercises-service'
+import type { ExerciseListParams } from './exercise-list'
+import { EXERCISE_PAGE_SIZE } from './exercise-list'
+import { displayExercise } from '@/lib/exercise-i18n'
 import * as programsApi from './programs-service'
 import { saveClientProgress } from './client-cabinet-service'
 import * as calendarApi from './calendar-service'
@@ -16,6 +20,7 @@ export const queryKeys = {
   clients: ['clients'] as const,
   client: (id: string) => ['clients', id] as const,
   exercises: ['exercises'] as const,
+  exercisesList: (params: ExerciseListParams) => ['exercises', 'list', params] as const,
   programs: ['programs'] as const,
   program: (id: string) => ['programs', id] as const,
   events: ['events'] as const,
@@ -60,8 +65,32 @@ export function useUpdateClient() {
   })
 }
 
-export function useExercises() {
+export function useExercisesAll() {
   return useQuery({ queryKey: queryKeys.exercises, queryFn: exercisesApi.getExercises })
+}
+
+export function useExercises(filters: ExerciseListParams = {}) {
+  const { t } = useTranslation('trainer')
+  const params: ExerciseListParams = {
+    page: 1,
+    limit: EXERCISE_PAGE_SIZE,
+    ...filters,
+  }
+
+  return useQuery({
+    queryKey: queryKeys.exercisesList(params),
+    queryFn: async () => {
+      const { search, ...apiParams } = params
+      if (search?.trim()) {
+        const all = await exercisesApi.getExercises()
+        const q = search.trim().toLowerCase()
+        return exercisesApi.applyExerciseListFilters(all, params, (ex) =>
+          displayExercise(ex, t).name.toLowerCase().includes(q),
+        )
+      }
+      return exercisesApi.listExercises(apiParams)
+    },
+  })
 }
 
 export function useExercise(id: string | undefined) {
@@ -200,11 +229,16 @@ export function useAssignProgram() {
   })
 }
 
+function invalidateExercises(qc: ReturnType<typeof useQueryClient>) {
+  qc.invalidateQueries({ queryKey: queryKeys.exercises })
+  qc.invalidateQueries({ queryKey: ['exercises', 'list'] })
+}
+
 export function useCreateExercise() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: exercisesApi.createExercise,
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.exercises }),
+    onSuccess: () => invalidateExercises(qc),
   })
 }
 
@@ -212,7 +246,7 @@ export function useUpdateExercise() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<Exercise> }) => exercisesApi.updateExercise(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.exercises }),
+    onSuccess: () => invalidateExercises(qc),
   })
 }
 
@@ -220,7 +254,7 @@ export function useDeleteExercise() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: exercisesApi.deleteExercise,
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.exercises }),
+    onSuccess: () => invalidateExercises(qc),
   })
 }
 

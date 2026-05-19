@@ -41,6 +41,19 @@
       "beginner": "Beginner",
       "intermediate": "Intermediate",
       "advanced": "Advanced"
+    },
+    "filters": {
+      "muscle": "Gruppo muscolare",
+      "equipment": "Attrezzo",
+      "difficulty": "Livello",
+      "all": "Tutti",
+      "clear": "Cancella"
+    },
+    "results": "Showing {{shown}} of {{total}}",
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {{current}} / {{total}}"
     }
   },
   "exerciseDetail": {

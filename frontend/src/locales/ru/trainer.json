@@ -41,6 +41,19 @@
       "beginner": "Начальный",
       "intermediate": "Средний",
       "advanced": "Продвинутый"
+    },
+    "filters": {
+      "muscle": "Группа мышц",
+      "equipment": "Оборудование",
+      "difficulty": "Уровень",
+      "all": "Все",
+      "clear": "Сбросить"
+    },
+    "results": "Показано {{shown}} из {{total}}",
+    "pagination": {
+      "prev": "Назад",
+      "next": "Далее",
+      "page": "Стр. {{current}} / {{total}}"
     }
   },
   "exerciseDetail": {

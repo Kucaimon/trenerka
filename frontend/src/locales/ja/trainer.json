@@ -41,6 +41,19 @@
       "beginner": "Beginner",
       "intermediate": "Intermediate",
       "advanced": "Advanced"
+    },
+    "filters": {
+      "muscle": "筋肉",
+      "equipment": "器具",
+      "difficulty": "レベル",
+      "all": "すべて",
+      "clear": "クリア"
+    },
+    "results": "{{shown}} / {{total}} 件",
+    "pagination": {
+      "prev": "前へ",
+      "next": "次へ",
+      "page": "{{current}} / {{total}}"
     }
   },
   "exerciseDetail": {
