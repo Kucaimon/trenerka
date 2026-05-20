@@ -8,6 +8,15 @@ export interface User {
   avatar?: string
 }
 
+export interface TrainerProfile {
+  userId: string
+  fullName: string
+  specialization: string
+  experience: string
+  phone: string
+  avatarUrl?: string
+}
+
 export type ClientStatus = 'active' | 'pause' | 'archive'
 export type PaymentState = 'paid' | 'pending' | 'overdue'
 

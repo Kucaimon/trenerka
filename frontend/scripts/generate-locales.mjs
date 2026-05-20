@@ -504,7 +504,6 @@ const T = {
       register: {
         title: 'Регистрация тренера',
         subtitle: '14 дней бесплатно',
-        name: 'Имя',
         confirmTitle: 'Подтвердите email',
         confirmText: 'Ссылка отправлена на',
         backToLogin: 'Ко входу',
@@ -517,7 +516,6 @@ const T = {
         email: 'Введите корректный email',
         passwordMin6: 'Минимум 6 символов',
         passwordMin8: 'Минимум 8 символов',
-        name: 'Введите имя',
       },
     },
     en: {
@@ -537,7 +535,6 @@ const T = {
       register: {
         title: 'Trainer registration',
         subtitle: '14 days free',
-        name: 'Name',
         confirmTitle: 'Confirm your email',
         confirmText: 'Link sent to',
         backToLogin: 'Back to sign in',
@@ -550,7 +547,6 @@ const T = {
         email: 'Enter a valid email',
         passwordMin6: 'At least 6 characters',
         passwordMin8: 'At least 8 characters',
-        name: 'Enter your name',
       },
     },
   },

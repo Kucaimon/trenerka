@@ -379,13 +379,31 @@
   "profile": {
     "title": "Profile",
     "description": "Trainer account and display name in CRM and chats.",
+    "setupDescription": "Complete your profile so clients see you in chats and CRM.",
+    "setupBanner": "Before you start, add your name, specialization, experience, and contacts.",
+    "cardTitle": "Trainer details",
+    "cardDescription": "Full name, specialization, experience, phone, and avatar per spec §4.2.1.",
     "badgePro": "Pro",
     "defaultName": "Trainer",
     "fields": {
-      "name": "Name",
-      "specialization": "Specialization"
+      "fullName": "Full name",
+      "specialization": "Specialization",
+      "experience": "Experience",
+      "phone": "Phone",
+      "email": "Email"
     },
-    "specializationPlaceholder": "Strength training, weight loss…"
+    "specializationPlaceholder": "Strength training, weight loss…",
+    "experiencePlaceholder": "e.g. 5 years, ACE certified",
+    "uploadAvatar": "Upload avatar",
+    "avatarMockHint": "MVP: local preview (UploadThing when VITE_UPLOADTHING_APP_ID is set).",
+    "avatarUploadThing": "Upload via UploadThing on save.",
+    "avatarTooLarge": "File is larger than 5 MB",
+    "saved": "Profile saved",
+    "validation": {
+      "specialization": "Enter specialization",
+      "experience": "Enter experience",
+      "phone": "Enter phone number"
+    }
   },
   "notifications": {
     "title": "Notifications",

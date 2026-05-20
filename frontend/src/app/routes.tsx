@@ -5,6 +5,7 @@ import { AuthLayout } from '@/features/auth/AuthLayout'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { RegisterPage } from '@/features/auth/RegisterPage'
 import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage'
+import { VerifyEmailPage } from '@/features/auth/VerifyEmailPage'
 import { TrainerLayout } from '@/components/layout/trainer-layout'
 import { ClientShell } from '@/components/layout/client-shell'
 import { AdminLayout } from '@/components/layout/admin-layout'
@@ -62,6 +63,7 @@ export const router = createBrowserRouter([
       { path: '/login/client', element: <LoginPage role="client" /> },
       { path: '/login/admin', element: <LoginPage role="admin" /> },
       { path: '/register/trainer', element: <RegisterPage /> },
+      { path: '/verify-email', element: <VerifyEmailPage /> },
       { path: '/reset-password', element: <ResetPasswordPage /> },
     ],
   },

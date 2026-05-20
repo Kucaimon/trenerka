@@ -10,31 +10,47 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { registerTrainer } from '@/features/api/auth-service'
+import { config } from '@/lib/config'
 import { Mail } from 'lucide-react'
 
-type FormData = { name: string; email: string; password: string }
+type FormData = { email: string; password: string; confirmPassword: string }
 
 export function RegisterPage() {
   const { t } = useTranslation(['auth', 'common'])
   const [step, setStep] = useState<'form' | 'confirm'>('form')
   const [email, setEmail] = useState('')
+  const [verifyLink, setVerifyLink] = useState<string | null>(null)
 
-  const schema = z.object({
-    name: z.string().min(2, t('validation.name')),
-    email: z.string().email(t('validation.email')),
-    password: z.string().min(8, t('validation.passwordMin8')),
-  })
+  const schema = z
+    .object({
+      email: z.string().email(t('validation.email')),
+      password: z.string().min(8, t('validation.passwordMin8')),
+      confirmPassword: z.string().min(8, t('validation.passwordMin8')),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('validation.passwordMismatch'),
+      path: ['confirmPassword'],
+    })
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({ resolver: zodResolver(schema) })
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({ resolver: zodResolver(schema) })
 
   const onSubmit = async (data: FormData) => {
     try {
-      await registerTrainer(data)
+      const result = await registerTrainer({ email: data.email, password: data.password })
       setEmail(data.email)
+      if (config.useMockData && result.verifyToken) {
+        setVerifyLink(`/verify-email?token=${encodeURIComponent(result.verifyToken)}`)
+      } else {
+        setVerifyLink(null)
+      }
       setStep('confirm')
       toast.success(t('register.checkEmail'))
-    } catch {
-      toast.error(t('register.error'))
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : t('register.error'))
     }
   }
 
@@ -44,8 +60,17 @@ export function RegisterPage() {
         <Mail className="mx-auto h-10 w-10 text-[var(--text-muted)]" />
         <h2 className="mt-4 text-lg font-semibold">{t('register.confirmTitle')}</h2>
         <p className="mt-2 text-sm text-[var(--text-secondary)]">
-          {t('register.confirmText')} <strong className="text-[var(--text-primary)]">{email}</strong>
+          {t('register.confirmText')}{' '}
+          <strong className="text-[var(--text-primary)]">{email}</strong>
         </p>
+        {verifyLink && config.useMockData && (
+          <p className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--surface2)] px-3 py-2 text-xs text-[var(--text-secondary)]">
+            {t('register.mockVerifyHint')}{' '}
+            <Link to={verifyLink} className="font-medium text-[var(--accent)] hover:underline">
+              {t('register.mockVerifyLink')}
+            </Link>
+          </p>
+        )}
         <Button className="mt-6" variant="secondary" asChild>
           <Link to="/login/trainer">{t('register.backToLogin')}</Link>
         </Button>
@@ -62,22 +87,29 @@ export function RegisterPage() {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
-            <Label>{t('register.name')}</Label>
-            <Input {...register('name')} />
-            {errors.name && <p className="text-xs text-red-400">{errors.name.message}</p>}
-          </div>
-          <div className="space-y-1.5">
-            <Label>Email</Label>
-            <Input type="email" {...register('email')} />
+            <Label htmlFor="email">{t('login.email')}</Label>
+            <Input id="email" type="email" autoComplete="email" {...register('email')} />
             {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
           </div>
           <div className="space-y-1.5">
-            <Label>{t('login.password')}</Label>
-            <Input type="password" {...register('password')} />
+            <Label htmlFor="password">{t('login.password')}</Label>
+            <Input id="password" type="password" autoComplete="new-password" {...register('password')} />
             {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
           </div>
-          <Button type="submit" className="w-full">
-            {t('register.create')}
+          <div className="space-y-1.5">
+            <Label htmlFor="confirmPassword">{t('register.confirmPassword')}</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              {...register('confirmPassword')}
+            />
+            {errors.confirmPassword && (
+              <p className="text-xs text-red-400">{errors.confirmPassword.message}</p>
+            )}
+          </div>
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? t('register.submitting') : t('register.create')}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">

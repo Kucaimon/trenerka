@@ -379,13 +379,31 @@
   "profile": {
     "title": "Профиль",
     "description": "Аккаунт тренера и отображаемое имя в CRM и чатах.",
+    "setupDescription": "Заполните профиль — так клиенты увидят вас в чатах и CRM.",
+    "setupBanner": "Перед началом работы укажите ФИО, специализацию, опыт и контакты.",
+    "cardTitle": "Данные тренера",
+    "cardDescription": "ФИО, специализация, опыт, телефон и аватар по ТЗ §4.2.1.",
     "badgePro": "Pro",
     "defaultName": "Тренер",
     "fields": {
-      "name": "Имя",
-      "specialization": "Специализация"
+      "fullName": "ФИО",
+      "specialization": "Специализация",
+      "experience": "Опыт",
+      "phone": "Телефон",
+      "email": "Email"
     },
-    "specializationPlaceholder": "Силовой тренинг, похудение…"
+    "specializationPlaceholder": "Силовой тренинг, похудение…",
+    "experiencePlaceholder": "Например: 5 лет, сертификат ACE",
+    "uploadAvatar": "Загрузить аватар",
+    "avatarMockHint": "MVP: превью локально (UploadThing — когда задан VITE_UPLOADTHING_APP_ID).",
+    "avatarUploadThing": "Загрузка через UploadThing при сохранении.",
+    "avatarTooLarge": "Файл больше 5 МБ",
+    "saved": "Профиль сохранён",
+    "validation": {
+      "specialization": "Укажите специализацию",
+      "experience": "Укажите опыт",
+      "phone": "Укажите телефон"
+    }
   },
   "notifications": {
     "title": "Уведомления",

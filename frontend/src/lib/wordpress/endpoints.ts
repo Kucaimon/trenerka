@@ -5,6 +5,7 @@ export const wpEndpoints = {
     me: '/trenerka/v1/auth/me',
     registerTrainer: '/trenerka/v1/auth/register-trainer',
     resetPassword: '/trenerka/v1/auth/reset-password',
+    trainerProfile: '/trenerka/v1/trainer/profile',
   },
   clients: '/trenerka/v1/clients',
   exercises: '/trenerka/v1/exercises',

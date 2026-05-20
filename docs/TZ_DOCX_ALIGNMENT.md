@@ -28,13 +28,24 @@
 
 | Подраздел | Статус |
 |-----------|--------|
-| 4.2.1 Auth + профиль | pending |
+| 4.2.1 Auth + профиль | **done** (MVP) |
 | 4.2.2 CRM | pending |
 | 4.2.3 Упражнения + конструктор | pending |
 | 4.2.4 Календарь + напоминания | pending |
 | 4.2.5 Финансы | pending |
 | 4.2.6 Коммуникация | pending |
 | 4.2.7 Отчёты и аналитика | pending |
+
+### 4.2.1 Авторизация и профиль (детали)
+
+| Пункт DOCX | Статус | Реализация |
+|------------|--------|------------|
+| Регистрация: email + пароль | **done** | `RegisterPage`: email, password, confirmPassword, zod + RHF |
+| Подтверждение через почту | **partial** | MVP: шаг «Проверьте почту» + mock-ссылка `/verify-email?token=`; WP SMTP — при `VITE_USE_MOCK_DATA=false` |
+| Профиль: ФИО, специализация, опыт, контакты, аватар | **done** | `/trainer/profile`: RHF-форма, email read-only, аватар (local preview / UploadThing stub) |
+| Восстановление пароля | **done** | `/reset-password` (запрос) + `?token=` (новый пароль), mock-токены в localStorage |
+
+После первого входа тренера с неполным профилем — редирект на `/trainer/profile?setup=1` (`auth-store` + `isTrainerProfileComplete`).
 
 ## 4.3 Личный кабинет клиента
 

@@ -43,9 +43,17 @@ export function LoginPage({ role }: { role: UserRole }) {
     setLoading(true)
     try {
       const result = await login(data.email, data.password, role)
-      authLogin(result.user, result.token)
+      authLogin(result.user, result.token, result.trainerProfile ?? null)
+
+      if (role === 'trainer') {
+        const complete = useAuthStore.getState().isTrainerProfileComplete()
+        toast.success(t('login.welcome'))
+        navigate(complete ? '/trainer' : '/trainer/profile?setup=1')
+        return
+      }
+
       toast.success(t('login.welcome'))
-      navigate(role === 'trainer' ? '/trainer' : role === 'client' ? '/client' : '/admin')
+      navigate(role === 'client' ? '/client' : '/admin')
     } catch (e) {
       toast.error(e instanceof Error ? e.message : t('login.error'))
     } finally {
