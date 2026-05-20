@@ -26,7 +26,13 @@ class Trenerka_Roles {
         if (!$user) {
             return;
         }
-        $user->set_role($role === 'admin' ? 'administrator' : $role);
+        $wp_role = match ($role) {
+            'admin' => 'administrator',
+            'trainer' => self::ROLE_TRAINER,
+            'client' => self::ROLE_CLIENT,
+            default => 'subscriber',
+        };
+        $user->set_role($wp_role);
     }
 
     public static function get_user_role(int $user_id): string {

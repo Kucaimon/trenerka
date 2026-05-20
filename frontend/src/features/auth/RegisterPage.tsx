@@ -9,14 +9,19 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { registerTrainer } from '@/features/api/auth-service'
+import { registerClient, registerTrainer } from '@/features/api/auth-service'
 import { config } from '@/lib/config'
-import { Mail } from 'lucide-react'
+import type { UserRole } from '@/types'
+import { Mail, UserPlus } from 'lucide-react'
 
 type FormData = { email: string; password: string; confirmPassword: string }
 
-export function RegisterPage() {
+export function RegisterPage({ role }: { role: UserRole }) {
   const { t } = useTranslation(['auth', 'common'])
+  const isTrainer = role === 'trainer'
+  const canSelfRegister = isTrainer || config.useMockData
+  const loginPath = isTrainer ? '/login/trainer' : '/login/client'
+
   const [step, setStep] = useState<'form' | 'confirm'>('form')
   const [email, setEmail] = useState('')
   const [verifyLink, setVerifyLink] = useState<string | null>(null)
@@ -40,30 +45,65 @@ export function RegisterPage() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const result = await registerTrainer({ email: data.email, password: data.password })
-      setEmail(data.email)
-      if (config.useMockData && result.verifyToken) {
-        setVerifyLink(`/verify-email?token=${encodeURIComponent(result.verifyToken)}`)
-      } else {
-        setVerifyLink(null)
+      if (isTrainer) {
+        const result = await registerTrainer({ email: data.email, password: data.password })
+        setEmail(data.email)
+        if (config.useMockData && result.verifyToken) {
+          setVerifyLink(`/verify-email?token=${encodeURIComponent(result.verifyToken)}`)
+        } else {
+          setVerifyLink(null)
+        }
+        setStep('confirm')
+        toast.success(t('register.checkEmail'))
+        return
       }
+
+      await registerClient({ email: data.email, password: data.password })
+      setEmail(data.email)
+      setVerifyLink(null)
       setStep('confirm')
-      toast.success(t('register.checkEmail'))
+      toast.success(t('register.clientSuccess'))
     } catch (e) {
       toast.error(e instanceof Error ? e.message : t('register.error'))
     }
+  }
+
+  if (!canSelfRegister) {
+    return (
+      <CardContent className="py-12 text-center">
+        <UserPlus className="mx-auto h-10 w-10 text-[var(--text-muted)]" />
+        <h2 className="mt-4 text-lg font-semibold">{t('register.clientInviteTitle')}</h2>
+        <p className="mt-2 text-sm text-[var(--text-secondary)]">{t('register.clientInviteText')}</p>
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
+          <Button asChild>
+            <Link to={loginPath}>{t('register.clientGoLogin')}</Link>
+          </Button>
+          <Button variant="secondary" asChild>
+            <Link to="/reset-password">{t('login.forgot')}</Link>
+          </Button>
+        </div>
+      </CardContent>
+    )
   }
 
   if (step === 'confirm') {
     return (
       <CardContent className="py-12 text-center">
         <Mail className="mx-auto h-10 w-10 text-[var(--text-muted)]" />
-        <h2 className="mt-4 text-lg font-semibold">{t('register.confirmTitle')}</h2>
+        <h2 className="mt-4 text-lg font-semibold">
+          {isTrainer ? t('register.confirmTitle') : t('register.clientConfirmTitle')}
+        </h2>
         <p className="mt-2 text-sm text-[var(--text-secondary)]">
-          {t('register.confirmText')}{' '}
-          <strong className="text-[var(--text-primary)]">{email}</strong>
+          {isTrainer ? (
+            <>
+              {t('register.confirmText')}{' '}
+              <strong className="text-[var(--text-primary)]">{email}</strong>
+            </>
+          ) : (
+            t('register.clientConfirmText', { email })
+          )}
         </p>
-        {verifyLink && config.useMockData && (
+        {verifyLink && config.useMockData && isTrainer && (
           <p className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--surface2)] px-3 py-2 text-xs text-[var(--text-secondary)]">
             {t('register.mockVerifyHint')}{' '}
             <Link to={verifyLink} className="font-medium text-[var(--accent)] hover:underline">
@@ -72,7 +112,7 @@ export function RegisterPage() {
           </p>
         )}
         <Button className="mt-6" variant="secondary" asChild>
-          <Link to="/login/trainer">{t('register.backToLogin')}</Link>
+          <Link to={loginPath}>{t('register.backToLogin')}</Link>
         </Button>
       </CardContent>
     )
@@ -81,8 +121,10 @@ export function RegisterPage() {
   return (
     <>
       <CardHeader>
-        <CardTitle>{t('register.title')}</CardTitle>
-        <CardDescription>{t('register.subtitle')}</CardDescription>
+        <CardTitle>{isTrainer ? t('register.title') : t('register.clientTitle')}</CardTitle>
+        <CardDescription>
+          {isTrainer ? t('register.subtitle') : t('register.clientSubtitle')}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -114,7 +156,7 @@ export function RegisterPage() {
         </form>
         <p className="mt-4 text-center text-sm text-[var(--text-secondary)]">
           {t('register.hasAccount')}{' '}
-          <Link to="/login/trainer" className="text-[var(--text-primary)] hover:underline">
+          <Link to={loginPath} className="text-[var(--text-primary)] hover:underline">
             {t('common:actions.login')}
           </Link>
         </p>

@@ -30,7 +30,6 @@ import {
   ProfilePage,
   ProgramsPage,
   ProgressPage,
-  RegisterPage,
   ResetPasswordPage,
   SettingsPage,
   SupportPage,
@@ -63,7 +62,20 @@ export const router = createBrowserRouter([
       { path: '/login/trainer', lazy: async () => ({ Component: () => <LoginPage role="trainer" /> }) },
       { path: '/login/client', lazy: async () => ({ Component: () => <LoginPage role="client" /> }) },
       { path: '/login/admin', lazy: async () => ({ Component: () => <LoginPage role="admin" /> }) },
-      { path: '/register/trainer', lazy: async () => ({ Component: RegisterPage }) },
+      {
+        path: '/register/trainer',
+        lazy: async () => {
+          const { RegisterPage } = await import('@/features/auth/RegisterPage')
+          return { Component: () => <RegisterPage role="trainer" /> }
+        },
+      },
+      {
+        path: '/register/client',
+        lazy: async () => {
+          const { RegisterPage } = await import('@/features/auth/RegisterPage')
+          return { Component: () => <RegisterPage role="client" /> }
+        },
+      },
       { path: '/verify-email', lazy: async () => ({ Component: VerifyEmailPage }) },
       { path: '/reset-password', lazy: async () => ({ Component: ResetPasswordPage }) },
     ],

@@ -2,6 +2,7 @@ import i18n from '@/i18n'
 import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
 import { isTrainerProfileComplete } from '@/lib/auth/profile-complete'
+import { mockApi } from '@/lib/mock-api/store'
 import { wpFetch, setAuthToken } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
 import type { TrainerProfile, User, UserRole } from '@/types'
@@ -148,6 +149,43 @@ export async function registerTrainer(data: {
     body: JSON.stringify(data),
   })
   return {}
+}
+
+export async function registerClient(data: {
+  email: string
+  password: string
+  name?: string
+}): Promise<void> {
+  await apiDelay(800)
+  if (config.useMockData) {
+    const email = data.email.toLowerCase()
+    if (mockUsers[email]) {
+      throw new Error(i18n.t('auth:errors.emailExists'))
+    }
+    const name = data.name?.trim() || email.split('@')[0] || email
+    const userId = `cl-${Date.now()}`
+    const { client } = mockApi.clients.create({
+      name,
+      email,
+      phone: '',
+      status: 'active',
+      packageBalance: 0,
+      goal: '',
+      notes: '',
+    })
+    mockUsers[email] = {
+      password: data.password,
+      user: {
+        id: userId,
+        email,
+        name,
+        role: 'client',
+        clientProfileId: client.id,
+      },
+    }
+    return
+  }
+  throw new Error(i18n.t('auth:register.clientInviteOnly'))
 }
 
 export async function verifyEmail(token: string): Promise<void> {

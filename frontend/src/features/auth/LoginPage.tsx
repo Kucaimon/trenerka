@@ -94,6 +94,11 @@ export function LoginPage({ role }: { role: UserRole }) {
               {t('login.registerTrainer')}
             </Link>
           )}
+          {role === 'client' && (
+            <Link to="/register/client" className="block hover:text-[var(--text-primary)]">
+              {t('login.clientAccess')}
+            </Link>
+          )}
         </div>
       </CardContent>
     </>
