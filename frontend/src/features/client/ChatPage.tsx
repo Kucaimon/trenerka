@@ -1,13 +1,14 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Loader2, Paperclip } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useClientDashboard, useSendMessage } from '@/features/api/hooks'
+import { useQueryClient } from '@tanstack/react-query'
+import { useClientDashboard, useSendMessage, queryKeys } from '@/features/api/hooks'
 import { useClientProfileId } from '@/features/api/client-id'
 import { useClientMessages } from '@/features/api/use-client-messages'
-import { uploadAttachment } from '@/features/api/messages-service'
+import { markMessageRead, uploadAttachment } from '@/features/api/messages-service'
 import { cn } from '@/lib/utils'
 import { MobileListItem, MobileListStagger } from '@/components/mobile'
 
@@ -15,19 +16,30 @@ export function ChatPage() {
   const { t } = useTranslation(['client', 'common'])
   const { data: dashboard } = useClientDashboard()
   const clientId = useClientProfileId()
+  const threadKey = clientId || 'self'
   const { data: messages = [], isLoading, isError, refetch } = useClientMessages()
   const sendMessage = useSendMessage()
+  const qc = useQueryClient()
   const [text, setText] = useState('')
   const [attachmentUrl, setAttachmentUrl] = useState<string | undefined>()
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
   const unreadTrainer = messages.filter((m) => m.sender === 'trainer' && !m.read).length
 
+  useEffect(() => {
+    const unread = messages.filter((m) => m.sender === 'trainer' && !m.read)
+    if (!unread.length) return
+    void (async () => {
+      await Promise.all(unread.map((m) => markMessageRead(m.id)))
+      void qc.invalidateQueries({ queryKey: queryKeys.messages(threadKey) })
+    })()
+  }, [messages, qc, threadKey])
+
   const handleSend = async () => {
     if (!text.trim() || sendMessage.isPending) return
     try {
       await sendMessage.mutateAsync({
-        clientId: clientId || 'self',
+        clientId: clientId || threadKey,
         sender: 'client',
         text,
         attachmentUrl,

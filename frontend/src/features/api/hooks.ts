@@ -160,7 +160,8 @@ export function useSendMessage() {
   return useMutation({
     mutationFn: messagesApi.sendMessage,
     onSuccess: (_, vars) => {
-      qc.invalidateQueries({ queryKey: queryKeys.messages(vars.clientId) })
+      const threadKey = vars.clientId || 'self'
+      qc.invalidateQueries({ queryKey: queryKeys.messages(threadKey) })
       qc.invalidateQueries({ queryKey: queryKeys.messageUnreadCounts })
       qc.invalidateQueries({ queryKey: queryKeys.trainerAnalytics })
     },

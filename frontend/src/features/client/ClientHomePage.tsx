@@ -40,7 +40,7 @@ export function ClientHomePage() {
   const measurementSeries = progressData.filter((m) => m.weight > 0)
   const notifications = dashboard?.notifications?.slice(0, 3) ?? []
   const nextSession = dashboard?.nextSession
-  const history = [...workouts].reverse().slice(0, 5)
+  const history = workouts.filter((w) => w.status === 'done').slice(-5).reverse()
   const weekProgress = {
     completed: workouts.filter((w) => w.status === 'done').length,
     planned: Math.max(workouts.length, 1),

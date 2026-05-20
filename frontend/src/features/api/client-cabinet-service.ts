@@ -21,42 +21,48 @@ function resolveClientId(): string | null {
 
 export async function getClientDashboard(): Promise<ClientDashboard> {
   await apiDelay()
-  const clientId = resolveClientId()
-  if (!clientId) return emptyClientDashboard
-  if (config.useMockData) return mockApi.client.dashboard(clientId)
+  if (config.useMockData) {
+    const clientId = resolveClientId()
+    if (!clientId) return emptyClientDashboard
+    return mockApi.client.dashboard(clientId)
+  }
   return wpFetch<ClientDashboard>(wpEndpoints.client.dashboard)
 }
 
 export async function getClientWorkouts(): Promise<ClientWorkoutDay[]> {
   await apiDelay()
-  const clientId = resolveClientId()
-  if (!clientId) return []
-  if (config.useMockData) return mockApi.client.workouts(clientId)
+  if (config.useMockData) {
+    const clientId = resolveClientId()
+    if (!clientId) return []
+    return mockApi.client.workouts(clientId)
+  }
   const res = await wpFetch<{ workouts: ClientWorkoutDay[] }>(wpEndpoints.client.workouts)
   return res.workouts
 }
 
 export async function getClientProgress(): Promise<ProgressMeasurement[]> {
   await apiDelay()
-  const clientId = resolveClientId()
-  if (!clientId) return []
-  if (config.useMockData) return mockApi.client.progress(clientId)
+  if (config.useMockData) {
+    const clientId = resolveClientId()
+    if (!clientId) return []
+    return mockApi.client.progress(clientId)
+  }
   const res = await wpFetch<{ measurements: ProgressMeasurement[] }>(wpEndpoints.client.progress)
   return res.measurements
 }
 
 export async function saveClientProgress(data: ProgressMeasurement): Promise<void> {
   await apiDelay()
-  const clientId = resolveClientId()
-  if (!clientId) throw new Error('Client profile is not linked')
   if (config.useMockData) {
+    const clientId = resolveClientId()
+    if (!clientId) throw new Error('Client profile is not linked')
     mockApi.client.saveProgress({ ...data, clientId: data.clientId ?? clientId })
     return
   }
-  const { date, weight, bodyFat, waist } = data
+  const { date, weight, bodyFat, waist, hips, chest, arms, legs, notes, photos } = data
   await wpFetch(wpEndpoints.client.progress, {
     method: 'POST',
-    body: JSON.stringify({ date, weight, bodyFat, waist }),
+    body: JSON.stringify({ date, weight, bodyFat, waist, hips, chest, arms, legs, notes, photos }),
   })
 }
 
@@ -70,8 +76,10 @@ export async function completeClientWorkout(workoutId: string): Promise<void> {
 
 export async function getClientPayments(): Promise<Payment[]> {
   await apiDelay()
-  const clientId = resolveClientId()
-  if (!clientId) return []
-  if (config.useMockData) return mockApi.client.payments(clientId)
+  if (config.useMockData) {
+    const clientId = resolveClientId()
+    if (!clientId) return []
+    return mockApi.client.payments(clientId)
+  }
   return wpFetch<Payment[]>(wpEndpoints.payments)
 }

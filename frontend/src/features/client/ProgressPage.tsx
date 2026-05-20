@@ -37,6 +37,8 @@ export function ProgressPage() {
   const [waist, setWaist] = useState('')
   const [hips, setHips] = useState('')
   const [chest, setChest] = useState('')
+  const [arms, setArms] = useState('')
+  const [legs, setLegs] = useState('')
   const [notes, setNotes] = useState('')
   const [photoPreview, setPhotoPreview] = useState<string | undefined>()
   const [photoFile, setPhotoFile] = useState<File | undefined>()
@@ -202,6 +204,14 @@ export function ProgressPage() {
             <Label>{t('progress.form.chest')}</Label>
             <Input inputMode="numeric" placeholder="88" value={chest} onChange={(e) => setChest(e.target.value)} />
           </div>
+          <div className="space-y-1.5">
+            <Label>{t('progress.form.arms')}</Label>
+            <Input inputMode="numeric" placeholder="28" value={arms} onChange={(e) => setArms(e.target.value)} />
+          </div>
+          <div className="space-y-1.5">
+            <Label>{t('progress.form.legs')}</Label>
+            <Input inputMode="numeric" placeholder="54" value={legs} onChange={(e) => setLegs(e.target.value)} />
+          </div>
         </div>
         <div className="mt-3 space-y-1.5">
           <Label>{t('progress.form.wellbeing')}</Label>
@@ -266,6 +276,8 @@ export function ProgressPage() {
                 waist: waist ? Number(waist) : undefined,
                 hips: hips ? Number(hips) : undefined,
                 chest: chest ? Number(chest) : undefined,
+                arms: arms ? Number(arms) : undefined,
+                legs: legs ? Number(legs) : undefined,
                 notes,
                 photos,
               })
@@ -274,6 +286,8 @@ export function ProgressPage() {
               setWaist('')
               setHips('')
               setChest('')
+              setArms('')
+              setLegs('')
               setNotes('')
               clearPhoto()
             } catch {
