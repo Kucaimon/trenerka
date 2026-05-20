@@ -14,6 +14,7 @@ trenerka/
     ├── API.md
     ├── TZ_DESIGN_ALIGNMENT.md
     ├── DEPLOYMENT.md
+    ├── BEGET.md
     ├── VERCEL.md
     └── ACCEPTANCE.md
 ```

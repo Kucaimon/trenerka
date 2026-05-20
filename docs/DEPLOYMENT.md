@@ -27,6 +27,10 @@ Env templates:
 | `.env.production` | Production WP backend |
 | `.env.local` | Local dev against WP (`VITE_USE_MOCK_DATA=false`) |
 
+### Beget (WordPress backend, RU)
+
+Пошаговая инструкция для хостинга Beget (поддомен API, FTP, JWT, SSL, Vercel env): **[BEGET.md](./BEGET.md)**.
+
 ### Static hosting
 
 Deploy `frontend/dist/` to Netlify, Vercel, or S3. Set SPA fallback to `index.html`.
