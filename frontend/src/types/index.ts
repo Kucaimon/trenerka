@@ -9,6 +9,7 @@ export interface User {
 }
 
 export type ClientStatus = 'active' | 'pause' | 'archive'
+export type PaymentState = 'paid' | 'pending' | 'overdue'
 
 export interface Client {
   id: string
@@ -22,6 +23,11 @@ export interface Client {
   goal?: string
   notes?: string
   dateOfBirth?: string | null
+  paymentState?: PaymentState
+  lastActivityMinutesAgo?: number
+  workoutCompletionPct?: number
+  sessionsThisWeek?: number
+  upcomingSessionAt?: string
 }
 
 export interface Exercise {

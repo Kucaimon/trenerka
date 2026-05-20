@@ -19,6 +19,8 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import type { Client, ClientStatus } from '@/types'
+import { getClientRecentActivity } from '@/lib/client-activity-mock'
+import { formatRelativeActivity } from '@/lib/client-crm'
 import { formatRub, formatDate } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
@@ -312,7 +314,7 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
         </div>
       </div>
 
-      <div className="space-y-6 p-4 sm:p-8">
+      <div className="space-y-4 p-4 sm:p-8">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface2)] p-3">
             <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.balance')}</p>
@@ -329,6 +331,11 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
             <p className="font-display mt-1 text-base font-extrabold">{client.goal ?? '—'}</p>
             <Dumbbell className="mt-2 h-4 w-4 text-[var(--text-muted)]" />
           </div>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <ClientRecentActivityCard clientId={clientId} />
+          <ClientNotesSnippetCard notes={notes} />
         </div>
 
         <Card>
@@ -379,5 +386,53 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
         </Card>
       </div>
     </div>
+  )
+}
+
+function ClientRecentActivityCard({ clientId }: { clientId: string }) {
+  const { t } = useTranslation('trainer')
+  const items = getClientRecentActivity(clientId)
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-semibold">{t('clients.recentActivity.title')}</CardTitle>
+      </CardHeader>
+      <CardContent className="divide-y divide-[var(--border)] p-0">
+        {items.length === 0 ? (
+          <p className="px-4 py-6 text-sm text-[var(--text-muted)]">{t('clients.recentActivity.empty')}</p>
+        ) : (
+          items.map((item) => (
+            <div key={item.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
+              <span>{t(`clients.recentActivity.${item.type}`)}</span>
+              <span className="text-[11px] text-[var(--text-muted)]">
+                {formatRelativeActivity(
+                  Math.max(1, Math.floor((Date.now() - new Date(item.at).getTime()) / 60000)),
+                  t,
+                )}
+              </span>
+            </div>
+          ))
+        )}
+      </CardContent>
+    </Card>
+  )
+}
+
+function ClientNotesSnippetCard({ notes }: { notes: string }) {
+  const { t } = useTranslation('trainer')
+  const snippet = notes.trim().slice(0, 160)
+
+  return (
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-semibold">{t('clients.notesSnippet.title')}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="line-clamp-4 text-sm text-[var(--text-secondary)]">
+          {snippet || t('clients.notesSnippet.empty')}
+        </p>
+      </CardContent>
+    </Card>
   )
 }

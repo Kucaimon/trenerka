@@ -130,3 +130,17 @@
 | Mobile | Metrics 2×2 compact на xs; client-card padding уплотнён |
 
 *Pass 2: май 2026. `#b8f53d`, `#080808` в `tokens.css` без изменений.*
+
+---
+
+## Experience refinement pass 3 (product maturity)
+
+| Область | Что изменено |
+|---------|----------------|
+| Landing | Ровно 5 секций: hero → workflow (5 шагов, иконки) → trainer preview (CRM + schedule/analytics) → client mobile preview → CTA; удалены dashboard showcase, ecosystem tabs, mobile duplicate |
+| Spacing | Секции `py-16 md:py-20`, hero padding в `concept.css` −30%, `page-container` `space-y-4` |
+| CRM | Колонки: оплата (badge), активность (relative), прогресс %, engagement dot, следующая сессия; TanStack sort + payment filter; recent activity + notes snippet в профиле |
+| Client hub | Mobile-first: today + next session top, weekly strip, streak, weight chart, history ×5, chat/notifications/calendar ниже |
+| Trainer dashboard | Лёгкое уплотнение метрик (`mb-3`), без дублирования лендинговых превью |
+
+*Pass 3: май 2026. Палитра `tokens.css` без изменений.*

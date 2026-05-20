@@ -125,7 +125,7 @@ export function TrainerDashboardPage() {
         ]}
       />
 
-      <div className="saas-metric-grid mb-4">
+      <div className="saas-metric-grid mb-3">
         {stats.map((stat) => (
           <div key={stat.label} className="saas-metric-cell">
             <p className="saas-metric-cell__label">{stat.label}</p>

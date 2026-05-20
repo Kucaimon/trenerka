@@ -87,6 +87,8 @@ export const completedWorkouts = [
   { id: 'done-1', title: 'Силовая A', date: '17 мая', duration: 54 },
   { id: 'done-2', title: 'Кардио + мобилити', date: '14 мая', duration: 41 },
   { id: 'done-3', title: 'Силовая B', date: '12 мая', duration: 58 },
+  { id: 'done-4', title: 'Силовая A', date: '10 мая', duration: 52 },
+  { id: 'done-5', title: 'Мобилити', date: '8 мая', duration: 35 },
 ]
 
 export const clientCalendarMini = [

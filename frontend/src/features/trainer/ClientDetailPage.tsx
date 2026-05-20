@@ -17,6 +17,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AssignProgramDialog } from '@/components/trainer/AssignProgramDialog'
 import { ClientFormDialog, type ClientFormValues } from '@/components/trainer/ClientFormDialog'
+import { getClientRecentActivity } from '@/lib/client-activity-mock'
+import { formatRelativeActivity } from '@/lib/client-crm'
 import { formatRub, formatDate } from '@/lib/utils'
 import type { ClientStatus } from '@/types'
 
@@ -57,7 +59,7 @@ export function ClientDetailPage() {
         <ArrowLeft className="h-4 w-4" /> {t('clients.back')}
       </Link>
 
-      <div className="rounded-xl border border-[var(--border)] bg-[linear-gradient(135deg,rgba(184,245,61,0.08),rgba(22,22,22,0.85)_35%,rgba(8,8,8,0.95))] p-5 shadow-[var(--shadow-soft)]">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-soft)]">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">{client.name}</h1>
@@ -137,6 +139,34 @@ export function ClientDetailPage() {
               ) : (
                 <p className="text-sm text-[var(--text-muted)]">{t('clients.measurements.empty')}</p>
               )}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('clients.recentActivity.title')}</CardTitle>
+            </CardHeader>
+            <CardContent className="divide-y divide-[var(--border)] p-0">
+              {getClientRecentActivity(client.id).map((item) => (
+                <div key={item.id} className="flex justify-between px-5 py-2.5 text-sm">
+                  <span>{t(`clients.recentActivity.${item.type}`)}</span>
+                  <span className="text-[11px] text-[var(--text-muted)]">
+                    {formatRelativeActivity(
+                      Math.max(1, Math.floor((Date.now() - new Date(item.at).getTime()) / 60000)),
+                      t,
+                    )}
+                  </span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('clients.notesSnippet.title')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="line-clamp-4 text-sm text-[var(--text-secondary)]">
+                {notes.trim().slice(0, 200) || t('clients.notesSnippet.empty')}
+              </p>
             </CardContent>
           </Card>
         </TabsContent>

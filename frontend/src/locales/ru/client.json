@@ -32,6 +32,18 @@
       "done": "{{done}} из {{total}} тренировок",
       "streak": "{{count}} дней подряд"
     },
+    "weekStrip": {
+      "label": "Цель недели"
+    },
+    "streak": {
+      "label": "Стрик"
+    },
+    "weightChart": {
+      "title": "Динамика веса"
+    },
+    "history": {
+      "title": "История тренировок"
+    },
     "measurements": {
       "title": "Замеры",
       "weight": "Вес",

@@ -1,9 +1,7 @@
 {
   "hero": {
-    "badge": "Platform for trainers",
-    "title1": "Manage workouts",
-    "title2": "and clients",
-    "titleAccent": "in one place",
+    "headline": "Manage workouts and clients",
+    "headlineAccent": "in one place",
     "subtitle": "CRM, workout builder, calendar and analytics — no spreadsheets or lost chats.",
     "ctaPrimary": "Start for free →",
     "ctaSecondary": "Watch demo",
@@ -23,83 +21,55 @@
       "Analytics"
     ],
     "stats": {
-      "activeClients": [
-        "Active clients",
-        "32",
-        "+3 this week"
-      ],
-      "monthlyIncome": [
-        "Monthly income",
-        "₽127,400",
-        "+18% vs last"
-      ],
-      "sessions": [
-        "Sessions",
-        "52",
-        "this week"
-      ],
-      "retention": [
-        "Retention",
-        "94%",
-        "+2 pp"
-      ]
+      "activeClients": ["Active clients", "32", "+3 this week"],
+      "monthlyIncome": ["Monthly income", "₽127,400", "+18% vs last"],
+      "sessions": ["Sessions", "52", "this week"],
+      "retention": ["Retention", "94%", "+2 pp"]
     },
-    "activeClientsTitle": "Active clients",
     "scheduleTitle": "Today's schedule"
   },
   "workflow": {
     "eyebrow": "Workflow",
     "title": "From client to report — one flow",
-    "text": "Four connected modules in one interface.",
+    "text": "Five connected steps in one interface.",
     "steps": [
-      {
-        "title": "CRM",
-        "text": "Client card, status, payments and notes"
-      },
-      {
-        "title": "Builder",
-        "text": "Programs, exercises, sets and assignment"
-      },
-      {
-        "title": "Calendar",
-        "text": "Session schedule and reminders"
-      },
-      {
-        "title": "Analytics",
-        "text": "Revenue, retention and attendance"
-      }
+      { "title": "CRM", "text": "Client card, status, payments and notes" },
+      { "title": "Workouts", "text": "Programs, exercises, sets and assignment" },
+      { "title": "Calendar", "text": "Session schedule and reminders" },
+      { "title": "Analytics", "text": "Revenue, retention and attendance" },
+      { "title": "Client progress", "text": "Measurements, compliance and chat" }
     ]
   },
-  "showcase": {
-    "eyebrow": "Dashboard",
-    "title": "Trainer workspace",
-    "text": "Active clients, schedule and metrics without extra screens."
+  "trainerPreview": {
+    "eyebrow": "Trainer app",
+    "title": "CRM and schedule in one view",
+    "text": "Client list with payments, today's sessions and key metrics — no duplicate dashboards.",
+    "windowTitle": "Trenerka · Clients",
+    "crmTitle": "Active clients",
+    "analyticsTitle": "This week",
+    "rows": [
+      { "name": "Anna S.", "payment": "Paid", "paymentKey": "paid", "next": "Tomorrow 10:00" },
+      { "name": "Dmitry K.", "payment": "Pending", "paymentKey": "pending", "next": "Thu 18:00" },
+      { "name": "Elena V.", "payment": "Overdue", "paymentKey": "overdue", "next": "Sat 11:00" }
+    ]
   },
-  "ecosystem": {
-    "eyebrow": "Ecosystem",
-    "title": "Trainer and client connected",
-    "text": "Trainer runs the practice; client sees program and progress in the app.",
-    "trainerTab": "Trainer app",
-    "clientTab": "Client app",
-    "trainerGreeting": "Good morning, Maria",
-    "clientGreeting": "Hi, Anna"
-  },
-  "mobile": {
-    "eyebrow": "Mobile app",
-    "title": "Client opens the workout on their phone",
-    "text": "Today's session, week view and trainer chat — no clutter.",
+  "clientPreview": {
+    "eyebrow": "Client app",
+    "title": "Workout and progress on the phone",
+    "text": "Today's session, weekly goal, streak and trainer chat — mobile-first.",
+    "greeting": "Hi, Anna",
+    "widgets": ["Today", "Week", "Chat"],
+    "streakLabel": "Streak",
+    "streakValue": "4 days",
+    "weekLabel": "This week",
+    "weekValue": "2 / 3",
     "today": "Today",
     "workoutTitle": "Strength A",
     "workoutMeta": "4 exercises · 56 min",
-    "exercises": [
-      "Bench press",
-      "Squat",
-      "Row",
-      "Plank"
-    ]
+    "exercises": ["Bench press", "Squat", "Row", "Plank"],
+    "chatHint": "Message from coach"
   },
   "cta": {
-    "eyebrow": "Get started",
     "title": "Start coaching clients in Trenerka",
     "text": "14 days free. Demo account is ready.",
     "create": "Create account",
