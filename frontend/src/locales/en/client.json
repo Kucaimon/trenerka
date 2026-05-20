@@ -51,6 +51,9 @@
       "waist": "Waist",
       "view": "Trends"
     },
+    "weightChart": {
+      "title": "Weight trend"
+    },
     "history": {
       "title": "Workout history",
       "done": "done"

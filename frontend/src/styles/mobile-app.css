@@ -37,7 +37,8 @@
   background: var(--bg-base);
 }
 
-@media (min-width: 640px) {
+/* Phone-frame preview only on narrow tablet widths; desktop uses full content width */
+@media (min-width: 640px) and (max-width: 767px) {
   .app-shell--client {
     max-width: 430px;
     min-height: min(900px, calc(100dvh - 2rem));
@@ -47,6 +48,29 @@
     border: 1px solid var(--border);
     border-radius: 28px;
     box-shadow: 0 28px 120px rgba(0, 0, 0, 0.45);
+  }
+}
+
+@media (min-width: 768px) {
+  .app-shell--client {
+    width: 100%;
+    max-width: 48rem;
+    min-height: 100dvh;
+    max-height: none;
+    margin: 0 auto;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .app-shell--client .app-content {
+    padding-bottom: calc(var(--mobile-padding) + var(--safe-area-bottom) + 1rem);
+  }
+}
+
+@media (min-width: 1280px) {
+  .app-shell--client {
+    max-width: 56rem;
   }
 }
 

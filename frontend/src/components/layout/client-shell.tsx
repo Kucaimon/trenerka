@@ -35,7 +35,7 @@ export function ClientShell() {
   const isHome = isClientHome(location.pathname)
 
   return (
-    <div className="flex min-h-dvh justify-center overflow-x-hidden bg-[var(--bg-base)] sm:items-center sm:p-4">
+    <div className="flex min-h-dvh justify-center overflow-x-hidden bg-[var(--bg-base)] sm:items-center sm:p-4 md:items-stretch md:p-0">
       <div className="app-shell app-shell--client app-shell--bleed relative">
         <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-64 bg-[radial-gradient(circle_at_50%_0%,rgba(184,245,61,0.08),transparent_18rem)]" />
         <header

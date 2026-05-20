@@ -20,7 +20,18 @@
     "todayWorkout": {
       "label": "Today",
       "start": "Start workout",
+      "viewPlan": "View program",
       "meta": "{{count}} exercises · {{min}} min"
+    },
+    "packageBalance": {
+      "label": "Session balance",
+      "view": "Payments"
+    },
+    "weekStrip": {
+      "label": "This week"
+    },
+    "streak": {
+      "label": "Streak"
     },
     "upcoming": {
       "title": "Upcoming session",
@@ -37,6 +48,13 @@
       "weight": "Weight",
       "waist": "Waist",
       "view": "Trends"
+    },
+    "weightChart": {
+      "title": "Weight trend"
+    },
+    "history": {
+      "title": "Workout history",
+      "done": "done"
     },
     "completed": {
       "title": "Completed"
