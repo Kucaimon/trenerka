@@ -32,18 +32,6 @@
       "done": "{{done}} of {{total}} workouts",
       "streak": "{{count}} day streak"
     },
-    "weekStrip": {
-      "label": "Weekly goal"
-    },
-    "streak": {
-      "label": "Streak"
-    },
-    "weightChart": {
-      "title": "Weight trend"
-    },
-    "history": {
-      "title": "Workout history"
-    },
     "measurements": {
       "title": "Measurements",
       "weight": "Weight",

@@ -6,11 +6,11 @@ import {
   BarChart3,
   Calendar,
   Check,
-  Dumbbell,
   Flame,
   MessageSquare,
   TrendingUp,
   Users,
+  Wallet,
 } from 'lucide-react'
 import { SiteHeader } from '@/components/layout/site-header'
 import { SiteFooter } from '@/components/layout/site-footer'
@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { mockCalendarEvents } from '@/lib/mock-data'
 import { formatLongDate } from '@/lib/i18n-format'
-import { cn } from '@/lib/utils'
+import { cn, formatRub } from '@/lib/utils'
 
 const fade = {
   initial: { opacity: 0, y: 14 },
@@ -28,7 +28,10 @@ const fade = {
 } as const
 
 const SECTION_PY = 'px-5 py-16 md:py-20 sm:px-10'
-const WORKFLOW_ICONS = [Users, Dumbbell, Calendar, BarChart3, TrendingUp] as const
+const WORKFLOW_ICONS = [Users, Activity, Calendar, BarChart3, TrendingUp] as const
+const BENEFIT_ICONS = [Calendar, TrendingUp, Wallet, MessageSquare] as const
+const PLAN_KEYS = ['basic', 'pro', 'vip'] as const
+const PLAN_PRICES = { basic: 0, pro: 2490, vip: 5990 } as const
 const PREVIEW_STAT_KEYS = ['activeClients', 'monthlyIncome', 'sessions', 'retention'] as const
 
 function asStringArray(value: unknown): string[] {
@@ -53,9 +56,11 @@ export function LandingPage() {
       <SiteHeader />
       <main className="pt-[60px]">
         <HeroSection />
+        <BenefitsSection />
         <WorkflowSection />
         <TrainerExperienceSection />
         <ClientExperienceSection />
+        <PricingSection />
         <CtaSection />
       </main>
       <SiteFooter />
@@ -155,6 +160,116 @@ function HeroProductMock() {
         </motion.div>
       </motion.div>
     </motion.div>
+  )
+}
+
+function BenefitsSection() {
+  const { t } = useTranslation('landing')
+  const cards = t('benefits.cards', { returnObjects: true }) as Array<{ title: string; text: string }>
+
+  return (
+    <section id="benefits" className={SECTION_PY}>
+      <motion.div {...fade} className="mx-auto max-w-[1200px]">
+        <SectionIntro eyebrow={t('benefits.eyebrow')} title={t('benefits.title')} text={t('benefits.text')} />
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.map((card, index) => {
+            const Icon = BENEFIT_ICONS[index] ?? Activity
+            return (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05, duration: 0.35 }}
+                className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4"
+              >
+                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-[8px] border border-[var(--border)] bg-[var(--surface2)]">
+                  <Icon className="h-4 w-4 text-[var(--accent)]" />
+                </div>
+                <p className="text-sm font-semibold">{card.title}</p>
+                <p className="ds-caption mt-1 text-[var(--text-secondary)]">{card.text}</p>
+              </motion.div>
+            )
+          })}
+        </div>
+      </motion.div>
+    </section>
+  )
+}
+
+function PricingSection() {
+  const { t } = useTranslation('landing')
+
+  return (
+    <section id="pricing" className={cn('border-y border-[var(--border)] bg-[var(--graphite)]', SECTION_PY)}>
+      <motion.div {...fade} className="mx-auto max-w-[1000px] text-center">
+        <SectionIntro
+          eyebrow={t('pricing.eyebrow')}
+          title={t('pricing.title')}
+          text={t('pricing.text')}
+          center
+        />
+        <div className="mt-10 grid gap-3 text-left lg:grid-cols-3">
+          {PLAN_KEYS.map((key) => {
+            const price = PLAN_PRICES[key]
+            const popular = key === 'pro'
+            const priceLabel = t(`pricing.plans.${key}.priceLabel`, { defaultValue: '' })
+            const features = asStringArray(t(`pricing.plans.${key}.features`, { returnObjects: true }))
+            const disabledRaw = t(`pricing.plans.${key}.disabled`, { returnObjects: true, defaultValue: [] })
+            const disabled = asStringArray(disabledRaw)
+
+            return (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className={cn(
+                  'relative rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-6',
+                  popular && 'border-[var(--border-strong)] bg-[#0d1a07]',
+                )}
+              >
+                {popular ? (
+                  <Badge variant="accent" className="absolute right-4 top-4 uppercase">
+                    {t('pricing.popular')}
+                  </Badge>
+                ) : null}
+                <p className="text-sm font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">
+                  {t(`pricing.plans.${key}.name`)}
+                </p>
+                <p className="font-display mt-4 text-4xl font-extrabold leading-none tracking-tight">
+                  {priceLabel || formatRub(price)}
+                </p>
+                <p className="mt-1 text-sm text-[var(--text-muted)]">{t(`pricing.plans.${key}.period`)}</p>
+                <ul className="mt-6 space-y-0">
+                  {features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2.5 border-b border-[var(--border)] py-2 text-[13px] text-[var(--text-secondary)]"
+                    >
+                      <Check className="h-3.5 w-3.5 shrink-0 text-[var(--accent)]" />
+                      {feature}
+                    </li>
+                  ))}
+                  {disabled.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-center gap-2.5 border-b border-[var(--border)] py-2 text-[13px] text-[var(--text-muted)]"
+                    >
+                      <span>—</span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Button className="mt-6 w-full" variant={popular ? 'default' : 'secondary'} asChild>
+                  <Link to="/register/trainer">{t(`pricing.plans.${key}.cta`)}</Link>
+                </Button>
+              </motion.div>
+            )
+          })}
+        </div>
+      </motion.div>
+    </section>
   )
 }
 

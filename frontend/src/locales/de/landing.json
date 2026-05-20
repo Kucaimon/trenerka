@@ -2,10 +2,36 @@
   "hero": {
     "headline": "Manage workouts and clients",
     "headlineAccent": "in one place",
-    "subtitle": "CRM, workout builder, calendar and analytics — no spreadsheets or lost chats.",
-    "ctaPrimary": "Start for free →",
-    "ctaSecondary": "Watch demo",
-    "note": "Free up to 10 clients · No card"
+    "subtitle": "Plattform der nächsten Generation für Personal Trainer.",
+    "ctaPrimary": "Kostenlos starten →",
+    "ctaSecondary": "Demo ansehen",
+    "note": "Kostenlos bis 10 Kunden · Keine Kreditkarte",
+    "title1": "Trainings",
+    "title2": "und Kunden",
+    "titleAccent": "an einem Ort"
+  },
+  "benefits": {
+    "eyebrow": "Benefits",
+    "title": "Everything to run your practice",
+    "text": "Four core modules — no spreadsheets or lost chats.",
+    "cards": [
+      {
+        "title": "Schedule automation",
+        "text": "Calendar plus reminders for trainer and client 2 hours and 30 minutes before a session."
+      },
+      {
+        "title": "Progress tracking",
+        "text": "Measurements, completed workouts and client reports for any period."
+      },
+      {
+        "title": "Financial accounting",
+        "text": "Payments, package balances and revenue reports by day, week and month."
+      },
+      {
+        "title": "Client chat",
+        "text": "In-app messaging, quick templates and attachments up to 10 MB."
+      }
+    ]
   },
   "preview": {
     "windowTitle": "Trenerka · Dashboard",
@@ -21,10 +47,26 @@
       "Analytics"
     ],
     "stats": {
-      "activeClients": ["Active clients", "32", "+3 this week"],
-      "monthlyIncome": ["Monthly income", "₽127,400", "+18% vs last"],
-      "sessions": ["Sessions", "52", "this week"],
-      "retention": ["Retention", "94%", "+2 pp"]
+      "activeClients": [
+        "Active clients",
+        "32",
+        "+3 this week"
+      ],
+      "monthlyIncome": [
+        "Monthly income",
+        "₽127,400",
+        "+18% vs last"
+      ],
+      "sessions": [
+        "Sessions",
+        "52",
+        "this week"
+      ],
+      "retention": [
+        "Retention",
+        "94%",
+        "+2 pp"
+      ]
     },
     "scheduleTitle": "Today's schedule"
   },
@@ -33,11 +75,26 @@
     "title": "From client to report — one flow",
     "text": "Five connected steps in one interface.",
     "steps": [
-      { "title": "CRM", "text": "Client card, status, payments and notes" },
-      { "title": "Workouts", "text": "Programs, exercises, sets and assignment" },
-      { "title": "Calendar", "text": "Session schedule and reminders" },
-      { "title": "Analytics", "text": "Revenue, retention and attendance" },
-      { "title": "Client progress", "text": "Measurements, compliance and chat" }
+      {
+        "title": "CRM",
+        "text": "Client card, status, payments and notes"
+      },
+      {
+        "title": "Workouts",
+        "text": "Programs, exercises, sets and assignment"
+      },
+      {
+        "title": "Calendar",
+        "text": "Session schedule and reminders"
+      },
+      {
+        "title": "Analytics",
+        "text": "Revenue, retention and attendance"
+      },
+      {
+        "title": "Client progress",
+        "text": "Measurements, compliance and chat"
+      }
     ]
   },
   "trainerPreview": {
@@ -48,9 +105,24 @@
     "crmTitle": "Active clients",
     "analyticsTitle": "This week",
     "rows": [
-      { "name": "Anna S.", "payment": "Paid", "paymentKey": "paid", "next": "Tomorrow 10:00" },
-      { "name": "Dmitry K.", "payment": "Pending", "paymentKey": "pending", "next": "Thu 18:00" },
-      { "name": "Elena V.", "payment": "Overdue", "paymentKey": "overdue", "next": "Sat 11:00" }
+      {
+        "name": "Anna S.",
+        "payment": "Paid",
+        "paymentKey": "paid",
+        "next": "Tomorrow 10:00"
+      },
+      {
+        "name": "Dmitry K.",
+        "payment": "Pending",
+        "paymentKey": "pending",
+        "next": "Thu 18:00"
+      },
+      {
+        "name": "Elena V.",
+        "payment": "Overdue",
+        "paymentKey": "overdue",
+        "next": "Sat 11:00"
+      }
     ]
   },
   "clientPreview": {
@@ -58,7 +130,11 @@
     "title": "Workout and progress on the phone",
     "text": "Today's session, weekly goal, streak and trainer chat — mobile-first.",
     "greeting": "Hi, Anna",
-    "widgets": ["Today", "Week", "Chat"],
+    "widgets": [
+      "Today",
+      "Week",
+      "Chat"
+    ],
     "streakLabel": "Streak",
     "streakValue": "4 days",
     "weekLabel": "This week",
@@ -66,8 +142,63 @@
     "today": "Today",
     "workoutTitle": "Strength A",
     "workoutMeta": "4 exercises · 56 min",
-    "exercises": ["Bench press", "Squat", "Row", "Plank"],
+    "exercises": [
+      "Bench press",
+      "Squat",
+      "Row",
+      "Plank"
+    ],
     "chatHint": "Message from coach"
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "title": "Simple, transparent pricing",
+    "text": "Start free, upgrade to Pro when you're ready. No hidden fees.",
+    "popular": "Popular",
+    "plans": {
+      "basic": {
+        "name": "Basic",
+        "priceLabel": "Free",
+        "period": "Up to 10 clients",
+        "features": [
+          "Up to 10 active clients",
+          "Workout builder",
+          "Exercise catalog",
+          "Basic calendar"
+        ],
+        "disabled": [
+          "Financial tracking",
+          "AI assistant"
+        ],
+        "cta": "Start for free"
+      },
+      "pro": {
+        "name": "Pro",
+        "period": "per month · up to 50 clients",
+        "features": [
+          "Up to 50 active clients",
+          "Full builder features",
+          "Full CRM access",
+          "Financial tracking",
+          "Analytics and reports",
+          "AI assistant"
+        ],
+        "cta": "Try Pro →"
+      },
+      "vip": {
+        "name": "VIP",
+        "period": "per month · unlimited",
+        "features": [
+          "Unlimited clients",
+          "White-label branding",
+          "Priority support",
+          "Group courses",
+          "API access",
+          "Dedicated manager"
+        ],
+        "cta": "Contact for VIP"
+      }
+    }
   },
   "cta": {
     "title": "Start coaching clients in Trenerka",

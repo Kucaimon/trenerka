@@ -142,34 +142,7 @@
       "name": "Имя",
       "status": "Статус",
       "goal": "Цель",
-      "sessions": "Занятия",
-      "payment": "Оплата",
-      "activity": "Активность",
-      "completion": "Прогресс",
-      "completionPct": "{{pct}}%",
-      "sessionsWeek": "{{count}} / нед",
-      "nextSession": "След. · {{date}}"
-    },
-    "paymentState": {
-      "paid": "Оплачено",
-      "pending": "Ожидает",
-      "overdue": "Просрочено"
-    },
-    "activity": {
-      "minutesAgo": "{{count}} мин назад",
-      "hoursAgo": "{{count}} ч назад",
-      "daysAgo": "{{count}} дн назад"
-    },
-    "recentActivity": {
-      "title": "Недавняя активность",
-      "empty": "Нет событий",
-      "workout": "Тренировка выполнена",
-      "message": "Новое сообщение",
-      "payment": "Оплата получена"
-    },
-    "notesSnippet": {
-      "title": "Заметки",
-      "empty": "Заметок пока нет"
+      "sessions": "Занятия"
     },
     "empty": "Клиенты не найдены",
     "selectPrompt": "Выберите клиента из списка",

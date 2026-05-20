@@ -4,6 +4,8 @@ export const extensions = {
     ru: {
       status: { active: 'Активен', pause: 'Пауза', archive: 'Архив' },
       actions: {
+        loginTrainer: 'Вход для тренеров',
+        loginClient: 'Вход для клиентов',
         send: 'Отправить',
         back: 'Назад',
         backToList: 'К списку',
@@ -54,10 +56,20 @@ export const extensions = {
         paymentsHeader: 'Клиент,Сумма,Дата,Способ,Комментарий',
       },
       days: { mon: 'Пн', tue: 'Вт', wed: 'Ср', thu: 'Чт', fri: 'Пт', sat: 'Сб', sun: 'Вс' },
+      footer: {
+        contactEmail: 'hello@trenerka.ru',
+        contactPhone: '+7 (000) 000-00-00',
+        policy: 'Политика конфиденциальности',
+        social: 'Соцсети',
+        socialTelegram: 'Telegram',
+        socialVk: 'ВКонтакте',
+      },
     },
     en: {
       status: { active: 'Active', pause: 'Pause', archive: 'Archive' },
       actions: {
+        loginTrainer: 'Trainer sign in',
+        loginClient: 'Client sign in',
         send: 'Send',
         back: 'Back',
         backToList: 'Back to list',
@@ -108,6 +120,14 @@ export const extensions = {
         paymentsHeader: 'Client,Amount,Date,Method,Note',
       },
       days: { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', sat: 'Sat', sun: 'Sun' },
+      footer: {
+        contactEmail: 'hello@trenerka.ru',
+        contactPhone: '+7 (000) 000-00-00',
+        policy: 'Privacy policy',
+        social: 'Social',
+        socialTelegram: 'Telegram',
+        socialVk: 'VK',
+      },
     },
   },
   auth: {

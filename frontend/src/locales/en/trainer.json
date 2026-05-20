@@ -142,34 +142,7 @@
       "name": "Name",
       "status": "Status",
       "goal": "Goal",
-      "sessions": "Sessions",
-      "payment": "Payment",
-      "activity": "Activity",
-      "completion": "Progress",
-      "completionPct": "{{pct}}%",
-      "sessionsWeek": "{{count}} / wk",
-      "nextSession": "Next · {{date}}"
-    },
-    "paymentState": {
-      "paid": "Paid",
-      "pending": "Pending",
-      "overdue": "Overdue"
-    },
-    "activity": {
-      "minutesAgo": "{{count}}m ago",
-      "hoursAgo": "{{count}}h ago",
-      "daysAgo": "{{count}}d ago"
-    },
-    "recentActivity": {
-      "title": "Recent activity",
-      "empty": "No recent events",
-      "workout": "Completed workout",
-      "message": "New message",
-      "payment": "Payment received"
-    },
-    "notesSnippet": {
-      "title": "Notes",
-      "empty": "No notes yet"
+      "sessions": "Sessions"
     },
     "empty": "No clients found",
     "selectPrompt": "Select a client from the list",

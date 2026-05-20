@@ -12,9 +12,8 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   const nav = [
-    { href: '#product', label: t('nav.product') },
-    { href: '#workouts', label: t('nav.builder') },
-    { href: '#analytics', label: t('nav.analytics') },
+    { href: '#benefits', label: t('nav.product') },
+    { href: '#product', label: t('nav.builder') },
     { href: '#pricing', label: t('nav.pricing') },
   ]
 
@@ -41,8 +40,11 @@ export function SiteHeader() {
         </nav>
         <div className="concept-nav-actions hidden shrink-0 items-center gap-2 lg:flex">
           <LanguageSwitcher showLabel />
+          <Button variant="ghost" size="sm" className="hidden xl:inline-flex" asChild>
+            <Link to="/login/client">{t('actions.loginClient')}</Link>
+          </Button>
           <Button variant="outline" size="sm" className="hidden sm:inline-flex" asChild>
-            <Link to="/login/trainer">{t('actions.login')}</Link>
+            <Link to="/login/trainer">{t('actions.loginTrainer')}</Link>
           </Button>
           <Button size="sm" asChild>
             <Link to="/register/trainer">{t('actions.startFree')}</Link>
@@ -117,7 +119,12 @@ export function SiteHeader() {
             <div className="concept-nav-drawer__footer">
               <Button variant="outline" size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
                 <Link to="/login/trainer" onClick={closeMenu}>
-                  {t('actions.login')}
+                  {t('actions.loginTrainer')}
+                </Link>
+              </Button>
+              <Button variant="secondary" size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
+                <Link to="/login/client" onClick={closeMenu}>
+                  {t('actions.loginClient')}
                 </Link>
               </Button>
               <Button size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>

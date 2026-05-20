@@ -2,7 +2,7 @@
  * Generates locale JSON files for all supported languages.
  * Run: node scripts/generate-locales.mjs
  */
-import { writeFileSync, mkdirSync } from 'fs'
+import { writeFileSync, mkdirSync, readFileSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { extensions, deepMerge } from './locale-extensions.mjs'
@@ -857,8 +857,11 @@ const adminExtras = {
 }
 Object.assign(T.admin, adminExtras)
 
-// Landing - comprehensive EN and RU, others derived from EN with key translations
-const landingRu = {
+// Landing — source of truth: committed ru/en JSON (keeps trainerPreview, benefits, pricing in sync)
+const landingRu = JSON.parse(readFileSync(join(localesDir, 'ru/landing.json'), 'utf8'))
+const landingEn = JSON.parse(readFileSync(join(localesDir, 'en/landing.json'), 'utf8'))
+
+const _legacyLandingRu = {
   hero: {
     badge: 'Платформа для тренеров',
     title1: 'Управляй тренировками',
@@ -926,7 +929,7 @@ const landingRu = {
   },
 }
 
-const landingEn = {
+const _legacyLandingEn = {
   hero: {
     badge: 'Platform for trainers',
     title1: 'Manage workouts',
@@ -996,7 +999,7 @@ const landingEn = {
 
 T.landing = { ru: landingRu, en: landingEn }
 
-// For other langs use English landing (machine-translated quality via en base - acceptable for MVP)
+// For other langs use English landing (acceptable for MVP; patch hero per locale below)
 for (const lang of ['de', 'pt', 'ja', 'it', 'es', 'fr', 'ar', 'zh-CN']) {
   T.landing[lang] = structuredClone(landingEn)
   // Patch hero for native feel

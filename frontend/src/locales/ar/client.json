@@ -55,18 +55,6 @@
     "fallback": {
       "program": "Strength A",
       "exercise": "Bench press"
-    },
-    "weekStrip": {
-      "label": "Weekly goal"
-    },
-    "streak": {
-      "label": "Streak"
-    },
-    "weightChart": {
-      "title": "Weight trend"
-    },
-    "history": {
-      "title": "Workout history"
     }
   },
   "workouts": {
