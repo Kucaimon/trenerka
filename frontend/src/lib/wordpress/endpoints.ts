@@ -16,6 +16,7 @@ export const wpEndpoints = {
   payments: '/trenerka/v1/payments',
   paymentReports: '/trenerka/v1/payments/reports',
   messages: '/trenerka/v1/messages',
+  messageUnreadCounts: '/trenerka/v1/messages/unread-counts',
   notifications: '/trenerka/v1/notifications',
   upload: '/trenerka/v1/upload',
   client: {

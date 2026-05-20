@@ -26,6 +26,7 @@ import {
   getSubscriptionMixChart,
   getWeekdayActivityChart,
 } from '@/features/api/analytics-service'
+import { config } from '@/lib/config'
 import { useTrainerAnalytics } from '@/features/api/hooks'
 import { formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
@@ -68,6 +69,7 @@ export function AnalyticsPage() {
       </div>
 
       <div className="grid gap-4 overflow-x-hidden xl:grid-cols-2">
+        {(config.useMockData || mockRevenueData.length > 0) && (
         <Card className="chart-grid-bg">
           <CardHeader>
             <CardTitle>{t('analytics.charts.revenueByMonth')}</CardTitle>
@@ -84,7 +86,9 @@ export function AnalyticsPage() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+        )}
 
+        {config.useMockData && (
         <Card>
           <CardHeader>
             <CardTitle>{t('analytics.charts.retention')}</CardTitle>
@@ -101,7 +105,9 @@ export function AnalyticsPage() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+        )}
 
+        {config.useMockData && (
         <Card>
           <CardHeader>
             <CardTitle>{t('analytics.charts.weekdayActivity')}</CardTitle>
@@ -118,7 +124,9 @@ export function AnalyticsPage() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+        )}
 
+        {config.useMockData && (
         <Card>
           <CardHeader>
             <CardTitle>{t('analytics.charts.subscriptionMix')}</CardTitle>
@@ -144,7 +152,9 @@ export function AnalyticsPage() {
             </div>
           </CardContent>
         </Card>
+        )}
 
+        {config.useMockData && (
         <Card className="xl:col-span-2">
           <CardHeader>
             <CardTitle>{t('analytics.charts.attendance')}</CardTitle>
@@ -161,6 +171,7 @@ export function AnalyticsPage() {
             </ResponsiveContainer>
           </CardContent>
         </Card>
+        )}
       </div>
     </div>
   )

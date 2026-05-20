@@ -37,16 +37,19 @@ export async function sendMessage(data: {
 }): Promise<Message> {
   await apiDelay()
   if (config.useMockData) return mockApi.messages.send(data)
-  await wpFetch(wpEndpoints.messages, { method: 'POST', body: JSON.stringify(data) })
-  return {
-    id: `tmp-${Date.now()}`,
-    clientId: data.clientId,
-    sender: data.sender,
-    text: data.text,
-    createdAt: new Date().toISOString(),
-    read: false,
-    attachmentUrl: data.attachmentUrl,
+  return wpFetch<Message>(wpEndpoints.messages, { method: 'POST', body: JSON.stringify(data) })
+}
+
+export async function getUnreadCountsByClient(): Promise<Record<string, number>> {
+  if (config.useMockData) {
+    const clients = mockApi.clients.list()
+    const counts: Record<string, number> = {}
+    for (const c of clients) {
+      counts[c.id] = mockApi.messages.list(c.id).filter((m) => m.sender === 'client' && !m.read).length
+    }
+    return counts
   }
+  return wpFetch<Record<string, number>>(wpEndpoints.messageUnreadCounts)
 }
 
 export async function markMessageRead(id: string): Promise<void> {

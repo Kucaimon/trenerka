@@ -12,7 +12,11 @@ WordPress plugin for Trenerka fitness SaaS backend.
 ```php
 define('JWT_AUTH_SECRET_KEY', 'your-secret-key-here');
 define('JWT_AUTH_CORS_ENABLE', true);
+define('TRENERKA_FRONTEND_URL', 'http://localhost:5173'); // ссылки в письмах verify/reset
 ```
+
+5. В **Настройки → Общие** или через опцию `trenerka_frontend_url` укажите URL SPA (если не задан `TRENERKA_FRONTEND_URL`).
+6. Настройте SMTP для `wp_mail` (сброс пароля, подтверждение email).
 
 ## Custom Post Types
 
@@ -25,7 +29,9 @@ define('JWT_AUTH_CORS_ENABLE', true);
 
 ## REST API
 
-- `GET /wp-json/trenerka/v1/clients` — list clients (requires auth)
+- `GET/PATCH /wp-json/trenerka/v1/trainer/profile` — профиль тренера
+- `GET /wp-json/trenerka/v1/clients` — CRM клиентов (JWT)
+- `POST /wp-json/trenerka/v1/auth/register-trainer`, `verify-email`, `reset-password`
 - Standard WP REST: `/wp-json/wp/v2/trenerka_exercise`, etc.
 
 ## Extension

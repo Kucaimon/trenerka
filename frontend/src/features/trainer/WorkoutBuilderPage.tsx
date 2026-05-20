@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, Plus, Search, Sparkles, Timer, Trash2 } from 'lucide-react'
+import { GripVertical, Plus, Save, Search, Timer, Trash2 } from 'lucide-react'
 import { getExercises } from '@/features/api/exercises-service'
 import { getProgram, saveProgram } from '@/features/api/programs-service'
 import type { Program, ProgramWorkout, WorkoutExerciseItem } from '@/types'
@@ -300,16 +300,6 @@ export function WorkoutBuilderPage() {
         <aside className="hidden w-[280px] shrink-0 flex-col border-l border-[var(--border)] bg-[var(--surface)] xl:flex">
           <div className="border-b border-[var(--border)] px-5 py-4 text-[13px] font-semibold">{t('builder.summary.title')}</div>
           <div className="flex-1 overflow-y-auto p-5 space-y-4">
-            <div className="rounded-[10px] border border-[var(--border)] bg-[var(--surface3)] p-4">
-              <p className="mb-3 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.06em] text-[var(--accent)]">
-                <Sparkles className="h-3 w-3" /> AI
-              </p>
-              <p className="text-[13px] leading-relaxed text-[var(--text-secondary)]">{t('builder.ai.hint')}</p>
-              <Button variant="secondary" size="sm" className="mt-3 w-full border-[rgba(184,245,61,0.2)] text-[var(--accent)]">
-                {t('builder.ai.suggest')}
-              </Button>
-            </div>
-
             <div className="rounded-[10px] bg-[var(--surface2)] p-3.5">
               {[
                 [t('builder.summary.exercises'), String(selected.length)],
@@ -328,7 +318,7 @@ export function WorkoutBuilderPage() {
             </div>
 
             <Button className="w-full" onClick={handleSave} disabled={saving}>
-              <Sparkles className="h-4 w-4" /> {saving ? t('common:actions.saving') : t('builder.save')}
+              <Save className="h-4 w-4" /> {saving ? t('common:actions.saving') : t('builder.save')}
             </Button>
           </div>
         </aside>

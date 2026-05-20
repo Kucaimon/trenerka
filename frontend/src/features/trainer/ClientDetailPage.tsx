@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, CalendarCheck2, CreditCard, Dumbbell, FileText, MessageSquare, Pencil } from 'lucide-react'
+import { ArrowLeft, CalendarCheck2, CreditCard, Dumbbell, MessageSquare, Pencil } from 'lucide-react'
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { toast } from 'sonner'
 import {
@@ -13,7 +13,6 @@ import {
   usePayments,
   useUpdateClient,
 } from '@/features/api/hooks'
-import { mockApi } from '@/lib/mock-api/store'
 import { CHART } from '@/lib/chart-theme'
 import { intlLocale } from '@/lib/i18n-format'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -23,7 +22,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AssignProgramDialog } from '@/components/trainer/AssignProgramDialog'
 import { ClientFormDialog, type ClientFormValues } from '@/components/trainer/ClientFormDialog'
-import { getClientRecentActivity } from '@/lib/client-activity-mock'
+import { buildClientRecentActivity } from '@/lib/client-activity'
 import { formatRelativeActivity } from '@/lib/client-crm'
 import { formatRub, formatDate } from '@/lib/utils'
 import type { ClientStatus } from '@/types'
@@ -51,7 +50,10 @@ export function ClientDetailPage() {
     () => events.filter((e) => e.clientId === id).sort((a, b) => b.start.localeCompare(a.start)),
     [events, id],
   )
-  const clientFiles = useMemo(() => mockApi.files.byClient(id!), [id])
+  const recentActivity = useMemo(
+    () => buildClientRecentActivity(id!, clientEvents, messages, payments),
+    [id, clientEvents, messages, payments],
+  )
   const measurementChart = useMemo(
     () => progress.map((m) => ({ date: formatDate(m.date), weight: m.weight })),
     [progress],
@@ -167,7 +169,10 @@ export function ClientDetailPage() {
               <CardTitle>{t('clients.recentActivity.title')}</CardTitle>
             </CardHeader>
             <CardContent className="divide-y divide-[var(--border)] p-0">
-              {getClientRecentActivity(client.id).map((item) => (
+              {recentActivity.length === 0 ? (
+                <p className="px-5 py-6 text-center text-sm text-[var(--text-muted)]">{t('common:empty.noData')}</p>
+              ) : (
+              recentActivity.map((item) => (
                 <div key={item.id} className="flex justify-between px-5 py-2.5 text-sm">
                   <span>{t(`clients.recentActivity.${item.type}`)}</span>
                   <span className="text-[11px] text-[var(--text-muted)]">
@@ -177,7 +182,7 @@ export function ClientDetailPage() {
                     )}
                   </span>
                 </div>
-              ))}
+              )))}
             </CardContent>
           </Card>
           <Card>
@@ -313,21 +318,7 @@ export function ClientDetailPage() {
               <CardTitle>{t('clients.files.title')}</CardTitle>
             </CardHeader>
             <CardContent className="divide-y divide-[var(--border)] p-0">
-              {clientFiles.length === 0 ? (
-                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.files.empty')}</p>
-              ) : (
-                clientFiles.map((f) => (
-                  <div key={f.id} className="flex items-center gap-3 px-5 py-3 text-sm">
-                    <FileText className="h-4 w-4 text-[var(--accent)]" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-medium">{f.name}</p>
-                      <p className="text-[11px] text-[var(--text-muted)]">
-                        {f.size} · {formatDate(f.uploadedAt)}
-                      </p>
-                    </div>
-                  </div>
-                ))
-              )}
+              <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.files.empty')}</p>
             </CardContent>
           </Card>
         </TabsContent>

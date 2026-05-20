@@ -36,7 +36,7 @@
 
 | Имя | Значение | Зачем |
 |-----|----------|--------|
-| `VITE_USE_MOCK_DATA` | `true` | Демо без WordPress (логин trainer@trenerka.ru / demo123) |
+| `VITE_USE_MOCK_DATA` | `false` | `true` — демо без WordPress (trainer@trenerka.ru / demo123) |
 | `VITE_WP_API_URL` | *(не обязательно для демо)* | Нужен только при `VITE_USE_MOCK_DATA=false` |
 
 После изменения env vars сделайте **Redeploy** (Deployments → … → Redeploy).

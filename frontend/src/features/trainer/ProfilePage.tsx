@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { config } from '@/lib/config'
+import { uploadMedia } from '@/lib/wordpress/upload'
 
 type FormData = {
   fullName: string
@@ -90,8 +91,10 @@ export function ProfilePage() {
     try {
       let avatarUrl = trainerProfile?.avatarUrl
       if (avatarFile) {
-        if (config.useMockData || !import.meta.env.VITE_UPLOADTHING_APP_ID) {
+        if (config.useMockData) {
           avatarUrl = avatarPreview
+        } else {
+          avatarUrl = await uploadMedia(avatarFile)
         }
       }
       const saved = await updateTrainerProfile(user.id, { ...data, avatarUrl })

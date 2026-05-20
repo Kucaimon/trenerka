@@ -59,10 +59,12 @@ export async function getClientPayments(): Promise<Payment[]> {
 
 export async function getAchievements(): Promise<Achievement[]> {
   await apiDelay()
-  return mockApi.achievements()
+  if (config.useMockData) return mockApi.achievements()
+  return []
 }
 
 export async function getMealPlan(): Promise<MealPlan[]> {
   await apiDelay()
-  return mockApi.mealPlan()
+  if (config.useMockData) return mockApi.mealPlan()
+  return []
 }

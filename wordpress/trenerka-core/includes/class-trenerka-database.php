@@ -19,6 +19,11 @@ class Trenerka_Database {
                 id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                 user_id bigint(20) unsigned NOT NULL,
                 business_name varchar(255) DEFAULT '',
+                full_name varchar(255) DEFAULT '',
+                specialization varchar(255) DEFAULT '',
+                experience varchar(128) DEFAULT '',
+                phone varchar(64) DEFAULT '',
+                avatar_url varchar(512) DEFAULT '',
                 created_at datetime DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY (id),
                 UNIQUE KEY user_id (user_id)

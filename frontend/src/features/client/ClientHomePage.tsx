@@ -12,17 +12,8 @@ import {
 import { Area, AreaChart, ResponsiveContainer } from 'recharts'
 import { useClientDashboard, useClientProgress, useClientWorkouts } from '@/features/api/hooks'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  clientCalendarMini,
-  clientCoachMessages,
-  completedWorkouts,
-  measurements,
-  weekProgress,
-  weeklyWorkouts,
-} from '@/features/client/client-mock'
 import { formatDateTime } from '@/lib/i18n-format'
 import { CHART } from '@/lib/chart-theme'
 import { cn } from '@/lib/utils'
@@ -37,17 +28,16 @@ export function ClientHomePage() {
   const firstName = profile?.name?.split(' ')[0] ?? t('home.defaultName')
   const trainerName = profile?.trainer ?? t('chat.defaultTrainer')
 
-  const todayWorkout =
-    workouts.find((w) => w.status === 'today') ??
-    weeklyWorkouts.find((w) => w.status === 'today') ??
-    workouts[0] ??
-    weeklyWorkouts[0]
-
-  const measurementSeries = progressData.length ? progressData : measurements
+  const todayWorkout = workouts[0]
+  const measurementSeries = progressData
   const notifications = dashboard?.notifications?.slice(0, 3) ?? []
-  const lastMessage = clientCoachMessages[clientCoachMessages.length - 1]
   const nextSession = dashboard?.nextSession
-  const history = completedWorkouts.slice(0, 5)
+  const history = workouts.slice(0, 5)
+  const weekProgress = {
+    completed: workouts.filter((w) => w.status === 'done').length,
+    planned: Math.max(workouts.length, 1),
+    streakDays: 0,
+  }
 
   return (
     <motion.div
@@ -223,7 +213,9 @@ export function ClientHomePage() {
             <MessageCircle className="h-4 w-4 text-[var(--text-muted)]" aria-hidden />
           </CardHeader>
           <CardContent>
-            <p className="line-clamp-2 text-sm text-[var(--text-secondary)]">{lastMessage?.text}</p>
+            <p className="line-clamp-2 text-sm text-[var(--text-secondary)]">
+              {notifications[0]?.body ?? t('home.chat.empty')}
+            </p>
             <Link
               to="/client/chat"
               className="mt-3 inline-flex items-center gap-0.5 text-sm font-medium text-[var(--accent)]"
@@ -261,34 +253,17 @@ export function ClientHomePage() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold">{t('home.calendar.title')}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-3 gap-2">
-            {clientCalendarMini.map((day) => (
-              <div
-                key={day.date}
-                className={cn(
-                  'rounded-[8px] border p-3 text-center',
-                  day.hasEvent ? 'border-[var(--accent)]/40 bg-[var(--accent-dim)]' : 'border-[var(--border)]',
-                )}
-              >
-                <p className="text-[10px] font-semibold uppercase text-[var(--text-muted)]">{day.day}</p>
-                <p className="mt-1 text-lg font-bold">{day.date}</p>
-                {day.hasEvent ? (
-                  <Badge variant="secondary" className="mt-2 w-full justify-center text-[10px]">
-                    {day.label}
-                  </Badge>
-                ) : (
-                  <p className="mt-2 text-[10px] text-[var(--text-muted)]">—</p>
-                )}
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      {nextSession ? (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold">{t('home.calendar.title')}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm font-medium">{nextSession.title}</p>
+            <p className="ds-caption mt-1 text-[var(--text-secondary)]">{formatDateTime(nextSession.start)}</p>
+          </CardContent>
+        </Card>
+      ) : null}
     </motion.div>
   )
 }

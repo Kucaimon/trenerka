@@ -61,7 +61,7 @@ npm run build
 | Переменная | Описание |
 |------------|----------|
 | `VITE_WP_API_URL` | URL WordPress REST API |
-| `VITE_USE_MOCK_DATA` | `true` — mock, `false` — WordPress |
+| `VITE_USE_MOCK_DATA` | `false` по умолчанию — WordPress; `true` — локальное демо |
 
 ## Маршруты
 

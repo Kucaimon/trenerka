@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import {
   BarChart3,
   Bell,
-  Bot,
   Calendar,
   ChevronLeft,
   CreditCard,
@@ -80,7 +79,6 @@ function useMobileMoreNav(): NavItem[] {
     { to: '/trainer/finance', icon: CreditCard, label: t('nav.finance') },
     { to: '/trainer/analytics', icon: BarChart3, label: t('nav.analytics') },
     { to: '/trainer/settings', icon: Settings, label: t('nav.settings') },
-    { to: '/trainer/ai-coach', icon: Bot, label: t('nav.aiCoach') },
     { to: '/trainer/files', icon: FolderOpen, label: t('nav.files') },
     { to: '/trainer/notifications', icon: Bell, label: t('nav.notifications') },
   ]
@@ -93,7 +91,6 @@ const moreRoutePrefixes = [
   '/trainer/finance',
   '/trainer/analytics',
   '/trainer/settings',
-  '/trainer/ai-coach',
   '/trainer/files',
   '/trainer/notifications',
 ]
@@ -139,7 +136,6 @@ function useNavGroups(): NavGroup[] {
     {
       label: t('groups.other'),
       items: [
-        { to: '/trainer/ai-coach', icon: Bot, label: t('nav.aiCoach') },
         { to: '/trainer/files', icon: FolderOpen, label: t('nav.files') },
         { to: '/trainer/notifications', icon: Bell, label: t('nav.notifications') },
         { to: '/trainer/settings', icon: Settings, label: t('nav.settings') },
@@ -356,13 +352,6 @@ export function TrainerLayout() {
       </MobileBottomSheet>
 
       <CommandPalette />
-      <Link
-        to="/trainer/ai-coach"
-        className="trainer-fab trainer-fab--subtle fixed bottom-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] opacity-90 transition-colors hover:bg-[var(--surface2)] hover:text-[var(--accent)] max-md:bottom-[calc(var(--tab-bar-height)+var(--safe-area-bottom)+12px)]"
-        title={t('nav.aiCoach')}
-      >
-        <Bot className="h-5 w-5" />
-      </Link>
     </AppShell>
   )
 }

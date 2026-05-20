@@ -10,6 +10,7 @@ import { saveClientProgress } from './client-cabinet-service'
 import * as calendarApi from './calendar-service'
 import * as paymentsApi from './payments-service'
 import * as messagesApi from './messages-service'
+import { getUnreadCountsByClient } from './messages-service'
 import * as notificationsApi from './notifications-service'
 import * as clientApi from './client-cabinet-service'
 import * as analyticsApi from './analytics-service'
@@ -26,6 +27,7 @@ export const queryKeys = {
   events: ['events'] as const,
   payments: ['payments'] as const,
   messages: (clientId: string) => ['messages', clientId] as const,
+  messageUnreadCounts: ['messages', 'unread'] as const,
   notifications: ['notifications'] as const,
   clientDashboard: ['client', 'dashboard'] as const,
   clientWorkouts: ['client', 'workouts'] as const,
@@ -144,11 +146,22 @@ export function useMessages(clientId: string) {
   })
 }
 
+export function useMessageUnreadCounts() {
+  return useQuery({
+    queryKey: queryKeys.messageUnreadCounts,
+    queryFn: getUnreadCountsByClient,
+  })
+}
+
 export function useSendMessage() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: messagesApi.sendMessage,
-    onSuccess: (_, vars) => qc.invalidateQueries({ queryKey: queryKeys.messages(vars.clientId) }),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: queryKeys.messages(vars.clientId) })
+      qc.invalidateQueries({ queryKey: queryKeys.messageUnreadCounts })
+      qc.invalidateQueries({ queryKey: queryKeys.trainerAnalytics })
+    },
   })
 }
 

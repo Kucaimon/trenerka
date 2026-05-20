@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { SaasPageHeader } from '@/components/saas'
-import { useClients, useMessages, useSendMessage } from '@/features/api/hooks'
-import { mockApi } from '@/lib/mock-api/store'
+import { useClients, useMessageUnreadCounts, useMessages, useSendMessage } from '@/features/api/hooks'
 import { uploadAttachment } from '@/features/api/messages-service'
 import { useIsMobile } from '@/components/mobile'
 import { cn } from '@/lib/utils'
@@ -19,6 +18,7 @@ export function MessagesPage() {
   const { t } = useTranslation(['trainer', 'common'])
   const isMobile = useIsMobile()
   const { data: clients = [] } = useClients()
+  const { data: unreadCounts = {} } = useMessageUnreadCounts()
   const [activeClient, setActiveClient] = useState(clients[0]?.id ?? '')
   const [showList, setShowList] = useState(true)
   const { data: msgs = [] } = useMessages(activeClient)
@@ -75,7 +75,7 @@ export function MessagesPage() {
         <Card className={cn('flex flex-col overflow-hidden p-0', isMobile && !showMobileList && 'hidden', isMobile && showMobileList && 'flex-1')}>
           <ScrollArea className="flex-1">
             {clients.map((c) => {
-              const unread = mockApi.messages.list(c.id).filter((m) => m.sender === 'client' && !m.read).length
+              const unread = unreadCounts[c.id] ?? 0
               return (
                 <button
                   key={c.id}

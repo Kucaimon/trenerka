@@ -21,7 +21,6 @@ import { CalendarPage } from '@/features/trainer/CalendarPage'
 import { AnalyticsPage } from '@/features/trainer/AnalyticsPage'
 import { FinancePage } from '@/features/trainer/FinancePage'
 import { MessagesPage } from '@/features/trainer/MessagesPage'
-import { AICoachPage } from '@/features/trainer/AICoachPage'
 import { FilesPage } from '@/features/trainer/FilesPage'
 import { SettingsPage } from '@/features/trainer/SettingsPage'
 import { NotificationsPage } from '@/features/trainer/NotificationsPage'
@@ -82,7 +81,6 @@ export const router = createBrowserRouter([
       { path: 'analytics', element: <AnalyticsPage /> },
       { path: 'finance', element: <FinancePage /> },
       { path: 'messages', element: <MessagesPage /> },
-      { path: 'ai-coach', element: <AICoachPage /> },
       { path: 'files', element: <FilesPage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: 'notifications', element: <NotificationsPage /> },

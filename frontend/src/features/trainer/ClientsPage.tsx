@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
 import { Search, Download, UserPlus, MessageSquare, CreditCard, CalendarCheck2, Dumbbell } from 'lucide-react'
 import { exportClientsSpreadsheet, getClient, getClients } from '@/features/api/clients-service'
-import { useCreateClient, usePayments, useUpdateClient } from '@/features/api/hooks'
+import { useCreateClient, useEvents, useMessages, usePayments, useUpdateClient } from '@/features/api/hooks'
 import { SaasPageHeader } from '@/components/saas'
 import { ClientFormDialog, type ClientFormValues } from '@/components/trainer/ClientFormDialog'
 import { ClientsDataTable } from '@/features/trainer/ClientsDataTable'
@@ -19,7 +19,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import type { Client, ClientStatus } from '@/types'
-import { getClientRecentActivity } from '@/lib/client-activity-mock'
+import { buildClientRecentActivity } from '@/lib/client-activity'
 import { formatRelativeActivity } from '@/lib/client-crm'
 import { formatRub, formatDate } from '@/lib/utils'
 import { cn } from '@/lib/utils'
@@ -391,7 +391,15 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
 
 function ClientRecentActivityCard({ clientId }: { clientId: string }) {
   const { t } = useTranslation('trainer')
-  const items = getClientRecentActivity(clientId)
+  const { data: events = [] } = useEvents()
+  const { data: messages = [] } = useMessages(clientId)
+  const { data: payments = [] } = usePayments()
+  const items = buildClientRecentActivity(
+    clientId,
+    events,
+    messages,
+    payments.filter((p) => p.clientId === clientId),
+  )
 
   return (
     <Card>

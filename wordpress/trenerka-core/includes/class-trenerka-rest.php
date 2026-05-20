@@ -9,7 +9,14 @@ class Trenerka_REST {
 
         register_rest_route($ns, '/auth/me', ['methods' => 'GET', 'callback' => [__CLASS__, 'auth_me'], 'permission_callback' => '__return_true']);
         register_rest_route($ns, '/auth/register-trainer', ['methods' => 'POST', 'callback' => [__CLASS__, 'register_trainer'], 'permission_callback' => '__return_true']);
+        register_rest_route($ns, '/auth/verify-email', ['methods' => 'POST', 'callback' => [__CLASS__, 'verify_email'], 'permission_callback' => '__return_true']);
         register_rest_route($ns, '/auth/reset-password', ['methods' => 'POST', 'callback' => [__CLASS__, 'reset_password'], 'permission_callback' => '__return_true']);
+        register_rest_route($ns, '/auth/reset-password/confirm', ['methods' => 'POST', 'callback' => [__CLASS__, 'confirm_reset_password'], 'permission_callback' => '__return_true']);
+
+        register_rest_route($ns, '/trainer/profile', [
+            ['methods' => 'GET', 'callback' => [__CLASS__, 'get_trainer_profile'], 'permission_callback' => [__CLASS__, 'trainer_only']],
+            ['methods' => 'PATCH', 'callback' => [__CLASS__, 'update_trainer_profile'], 'permission_callback' => [__CLASS__, 'trainer_only']],
+        ]);
 
         register_rest_route($ns, '/clients', [
             ['methods' => 'GET', 'callback' => [__CLASS__, 'list_clients'], 'permission_callback' => [__CLASS__, 'trainer_only']],
@@ -21,8 +28,13 @@ class Trenerka_REST {
             ['methods' => 'DELETE', 'callback' => [__CLASS__, 'delete_client'], 'permission_callback' => [__CLASS__, 'trainer_only']],
         ]);
         register_rest_route($ns, '/clients/(?P<id>\d+)/progress', [
+            ['methods' => 'GET', 'callback' => [__CLASS__, 'trainer_client_progress'], 'permission_callback' => [__CLASS__, 'trainer_only']],
+            ['methods' => 'POST', 'callback' => [__CLASS__, 'save_client_progress'], 'permission_callback' => [__CLASS__, 'trainer_only']],
+        ]);
+
+        register_rest_route($ns, '/messages/unread-counts', [
             'methods' => 'GET',
-            'callback' => [__CLASS__, 'trainer_client_progress'],
+            'callback' => [__CLASS__, 'message_unread_counts'],
             'permission_callback' => [__CLASS__, 'trainer_only'],
         ]);
 
@@ -140,14 +152,17 @@ class Trenerka_REST {
     }
 
     public static function register_trainer(WP_REST_Request $request): WP_REST_Response|WP_Error {
-        $name = sanitize_text_field($request->get_param('name') ?? '');
         $email = sanitize_email($request->get_param('email') ?? '');
         $password = (string) ($request->get_param('password') ?? '');
-        if (!$name || !$email || strlen($password) < 6) {
-            return new WP_Error('trenerka_invalid', 'Заполните все поля', ['status' => 400]);
+        $name = sanitize_text_field($request->get_param('name') ?? '');
+        if (!$email || strlen($password) < 8) {
+            return new WP_Error('trenerka_invalid', 'Укажите email и пароль (мин. 8 символов)', ['status' => 400]);
         }
         if (email_exists($email)) {
             return new WP_Error('trenerka_exists', 'Email уже зарегистрирован', ['status' => 409]);
+        }
+        if (!$name) {
+            $name = strstr($email, '@', true) ?: $email;
         }
         $user_id = wp_create_user($email, $password, $email);
         if (is_wp_error($user_id)) {
@@ -156,17 +171,154 @@ class Trenerka_REST {
         wp_update_user(['ID' => $user_id, 'display_name' => $name]);
         Trenerka_Roles::set_user_role($user_id, 'trainer');
         global $wpdb;
-        $wpdb->insert(Trenerka_Database::table('trainer_profiles'), ['user_id' => $user_id, 'business_name' => $name]);
+        $wpdb->insert(Trenerka_Database::table('trainer_profiles'), [
+            'user_id' => $user_id,
+            'business_name' => $name,
+            'full_name' => $name,
+        ]);
+        $verify_token = wp_generate_password(32, false);
+        update_user_meta($user_id, 'trenerka_verify_token', $verify_token);
+        $frontend = self::frontend_base_url();
+        if ($frontend) {
+            Trenerka_Email::send(
+                $user_id,
+                'Подтвердите email',
+                "Перейдите по ссылке для подтверждения: {$frontend}/verify-email?token={$verify_token}\n\nИли войдите сразу — аккаунт уже создан.",
+            );
+        }
         return new WP_REST_Response(['success' => true], 201);
+    }
+
+    public static function verify_email(WP_REST_Request $request): WP_REST_Response|WP_Error {
+        $token = sanitize_text_field($request->get_param('token') ?? '');
+        if (!$token) {
+            return new WP_Error('trenerka_invalid', 'Неверный токен', ['status' => 400]);
+        }
+        $users = get_users([
+            'meta_key' => 'trenerka_verify_token',
+            'meta_value' => $token,
+            'number' => 1,
+            'fields' => 'ID',
+        ]);
+        if (!$users) {
+            return new WP_Error('trenerka_invalid', 'Неверный или устаревший токен', ['status' => 400]);
+        }
+        $user_id = (int) $users[0];
+        delete_user_meta($user_id, 'trenerka_verify_token');
+        update_user_meta($user_id, 'trenerka_email_verified', 1);
+        return new WP_REST_Response(['success' => true], 200);
     }
 
     public static function reset_password(WP_REST_Request $request): WP_REST_Response|WP_Error {
         $email = sanitize_email($request->get_param('email') ?? '');
         $user = get_user_by('email', $email);
         if ($user) {
-            retrieve_password($user->user_login);
+            $token = wp_generate_password(32, false);
+            update_user_meta($user->ID, 'trenerka_reset_token', $token);
+            update_user_meta($user->ID, 'trenerka_reset_expires', time() + 3600);
+            $frontend = self::frontend_base_url();
+            $link = $frontend ? "{$frontend}/reset-password?token={$token}" : '';
+            Trenerka_Email::send(
+                $user->ID,
+                'Сброс пароля',
+                $link
+                    ? "Откройте ссылку для сброса пароля (действует 1 час):\n{$link}"
+                    : 'Запрос на сброс пароля получен. Обратитесь к администратору сайта.',
+            );
         }
         return new WP_REST_Response(['success' => true], 200);
+    }
+
+    public static function confirm_reset_password(WP_REST_Request $request): WP_REST_Response|WP_Error {
+        $token = sanitize_text_field($request->get_param('token') ?? '');
+        $password = (string) ($request->get_param('password') ?? '');
+        if (!$token || strlen($password) < 8) {
+            return new WP_Error('trenerka_invalid', 'Неверные данные', ['status' => 400]);
+        }
+        $users = get_users([
+            'meta_key' => 'trenerka_reset_token',
+            'meta_value' => $token,
+            'number' => 1,
+        ]);
+        if (!$users) {
+            return new WP_Error('trenerka_invalid', 'Неверный или устаревший токен', ['status' => 400]);
+        }
+        $user = $users[0];
+        $expires = (int) get_user_meta($user->ID, 'trenerka_reset_expires', true);
+        if ($expires && $expires < time()) {
+            return new WP_Error('trenerka_invalid', 'Срок действия ссылки истёк', ['status' => 400]);
+        }
+        wp_set_password($password, $user->ID);
+        delete_user_meta($user->ID, 'trenerka_reset_token');
+        delete_user_meta($user->ID, 'trenerka_reset_expires');
+        return new WP_REST_Response(['success' => true], 200);
+    }
+
+    private static function frontend_base_url(): string {
+        if (defined('TRENERKA_FRONTEND_URL') && TRENERKA_FRONTEND_URL) {
+            return rtrim((string) TRENERKA_FRONTEND_URL, '/');
+        }
+        return rtrim((string) get_option('trenerka_frontend_url', ''), '/');
+    }
+
+    public static function get_trainer_profile(): WP_REST_Response|WP_Error {
+        $uid = self::trainer_id();
+        $profile = self::fetch_trainer_profile_row($uid);
+        if (!$profile) {
+            return new WP_REST_Response(self::format_trainer_profile($uid, []), 200);
+        }
+        return new WP_REST_Response(self::format_trainer_profile($uid, $profile), 200);
+    }
+
+    public static function update_trainer_profile(WP_REST_Request $request): WP_REST_Response|WP_Error {
+        $uid = self::trainer_id();
+        $body = $request->get_json_params() ?: [];
+        global $wpdb;
+        $table = Trenerka_Database::table('trainer_profiles');
+        $data = [
+            'full_name' => sanitize_text_field($body['fullName'] ?? ''),
+            'specialization' => sanitize_text_field($body['specialization'] ?? ''),
+            'experience' => sanitize_text_field($body['experience'] ?? ''),
+            'phone' => sanitize_text_field($body['phone'] ?? ''),
+            'avatar_url' => esc_url_raw($body['avatarUrl'] ?? ''),
+        ];
+        $exists = self::fetch_trainer_profile_row($uid);
+        if ($exists) {
+            $wpdb->update($table, $data, ['user_id' => $uid]);
+        } else {
+            $user = get_user_by('id', $uid);
+            $wpdb->insert($table, array_merge($data, [
+                'user_id' => $uid,
+                'business_name' => $user ? $user->display_name : '',
+            ]));
+        }
+        if (!empty($data['full_name'])) {
+            wp_update_user(['ID' => $uid, 'display_name' => $data['full_name']]);
+        }
+        $row = self::fetch_trainer_profile_row($uid) ?: [];
+        return new WP_REST_Response(self::format_trainer_profile($uid, $row), 200);
+    }
+
+    private static function fetch_trainer_profile_row(int $user_id): ?array {
+        global $wpdb;
+        $row = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM " . Trenerka_Database::table('trainer_profiles') . " WHERE user_id = %d",
+            $user_id
+        ), ARRAY_A);
+        return $row ?: null;
+    }
+
+    private static function format_trainer_profile(int $user_id, array $row): array {
+        $user = get_user_by('id', $user_id);
+        $full_name = $row['full_name'] ?? ($user ? $user->display_name : '');
+        return [
+            'userId' => (string) $user_id,
+            'fullName' => $full_name,
+            'specialization' => $row['specialization'] ?? '',
+            'experience' => $row['experience'] ?? '',
+            'phone' => $row['phone'] ?? '',
+            'avatarUrl' => $row['avatar_url'] ?? '',
+        ];
     }
 
     public static function list_clients(): WP_REST_Response {
@@ -596,6 +748,28 @@ class Trenerka_REST {
         ], $rows ?: [])], 200);
     }
 
+    public static function save_client_progress(WP_REST_Request $request): WP_REST_Response|WP_Error {
+        $client_id = (int) $request['id'];
+        if (!Trenerka_Permissions::client_belongs_to_trainer($client_id, self::trainer_id())) {
+            return new WP_Error('forbidden', 'Нет доступа', ['status' => 403]);
+        }
+        $body = $request->get_json_params() ?: [];
+        global $wpdb;
+        $wpdb->insert(Trenerka_Database::table('progress_reports'), [
+            'client_id' => $client_id,
+            'weight' => (float) ($body['weight'] ?? 0),
+            'waist' => (float) ($body['waist'] ?? 0),
+            'hips' => (float) ($body['hips'] ?? 0),
+            'chest' => (float) ($body['chest'] ?? 0),
+            'arms' => (float) ($body['arms'] ?? 0),
+            'legs' => (float) ($body['legs'] ?? 0),
+            'body_fat' => (float) ($body['bodyFat'] ?? 0),
+            'notes' => sanitize_textarea_field($body['notes'] ?? ''),
+            'recorded_at' => sanitize_text_field($body['date'] ?? gmdate('Y-m-d')),
+        ]);
+        return new WP_REST_Response(['success' => true], 201);
+    }
+
     public static function list_events(WP_REST_Request $request): WP_REST_Response {
         global $wpdb;
         $table = Trenerka_Database::table('calendar_events');
@@ -799,12 +973,33 @@ class Trenerka_REST {
             'attachment_url' => esc_url_raw($body['attachmentUrl'] ?? ''),
             'is_read' => 0,
         ]);
+        $message_id = (int) $wpdb->insert_id;
         if ($sender === 'client') {
             self::create_notification($trainer_id, 'message', 'Новое сообщение', sanitize_textarea_field($body['text'] ?? ''));
         } else {
             self::notify_user_by_client($client_id, 'message', 'Сообщение от тренера', sanitize_textarea_field($body['text'] ?? ''));
         }
-        return new WP_REST_Response(['success' => true], 201);
+        $row = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM " . Trenerka_Database::table('messages') . " WHERE id = %d",
+            $message_id
+        ), ARRAY_A);
+        return new WP_REST_Response(self::format_message($row ?: []), 201);
+    }
+
+    public static function message_unread_counts(): WP_REST_Response {
+        global $wpdb;
+        $table = Trenerka_Database::table('messages');
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT client_id, COUNT(*) as cnt FROM {$table}
+             WHERE trainer_user_id = %d AND sender = 'client' AND is_read = 0
+             GROUP BY client_id",
+            self::trainer_id()
+        ), ARRAY_A);
+        $counts = [];
+        foreach ($rows ?: [] as $row) {
+            $counts[(string) $row['client_id']] = (int) $row['cnt'];
+        }
+        return new WP_REST_Response($counts, 200);
     }
 
     public static function mark_message_read(WP_REST_Request $request): WP_REST_Response {

@@ -20,7 +20,6 @@ export function CommandPalette() {
     { label: t('commandPalette.items.analytics'), path: '/trainer/analytics' },
     { label: t('commandPalette.items.finance'), path: '/trainer/finance' },
     { label: t('commandPalette.items.messages'), path: '/trainer/messages' },
-    { label: t('commandPalette.items.aiCoach'), path: '/trainer/ai-coach' },
     { label: t('commandPalette.items.files'), path: '/trainer/files' },
     { label: t('commandPalette.items.settings'), path: '/trainer/settings' },
   ]
