@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:beget": "tsc -b && vite build --mode production && node scripts/zip-beget.mjs",
     "build:staging": "tsc -b && vite build --mode staging",
     "lint": "eslint .",
     "test": "vitest run",

@@ -9,7 +9,7 @@ export const romanianDeadliftSample: Exercise = {
   difficulty: 'beginner',
   level: 'Правильная техника для новичков',
   trainerName: 'Самат Назиров',
-  imageUrl: '/exercises/romanian-deadlift.png',
+  imageUrl: '',
   isPublic: true,
   steps: [
     'Исходное положение: стоя, ноги на ширине плеч, штанга в опущенных руках. Спина прямая, плечи расправлены.',

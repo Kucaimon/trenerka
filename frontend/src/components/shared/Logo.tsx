@@ -1,14 +1,11 @@
 import { cn } from '@/lib/utils'
 
-const LOGO_VERSION = 8
+const LOGO_VERSION = 9
 
 /** Intrinsic dimensions of frontend/public/logo.png */
 const FULL_WIDTH = 941
 const FULL_HEIGHT = 216
 const FULL_ASPECT = FULL_WIDTH / FULL_HEIGHT
-
-/** Intrinsic dimensions of frontend/public/logo-icon.png */
-const ICON_SIZE = 216
 
 const fullHeights = {
   sm: 'h-8',
@@ -36,14 +33,13 @@ type LogoProps = {
 
 export function Logo({ size = 'md', variant = 'full', className }: LogoProps) {
   const isIcon = variant === 'icon'
-  const base = isIcon ? 'logo-icon' : 'logo'
-  const webp = `/${base}.webp?v=${LOGO_VERSION}`
-  const png = `/${base}.png?v=${LOGO_VERSION}`
+  const webp = `/logo.webp?v=${LOGO_VERSION}`
+  const png = `/logo.png?v=${LOGO_VERSION}`
 
   return (
     <picture
       className={cn(
-        'inline-flex shrink-0 items-center',
+        'inline-flex shrink-0 items-center overflow-hidden',
         isIcon ? iconSizes[size] : [fullHeights[size], fullMaxWidths[size]],
         className,
       )}
@@ -53,9 +49,9 @@ export function Logo({ size = 'md', variant = 'full', className }: LogoProps) {
       <img
         src={png}
         alt="Тренерка"
-        width={isIcon ? ICON_SIZE : FULL_WIDTH}
-        height={isIcon ? ICON_SIZE : FULL_HEIGHT}
-        className="h-full w-full object-contain"
+        width={FULL_WIDTH}
+        height={FULL_HEIGHT}
+        className={cn('h-full w-full object-contain', isIcon && 'object-left')}
         loading="eager"
         decoding="async"
       />
