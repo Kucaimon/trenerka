@@ -12,7 +12,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Camera, Download, Loader2, Menu, Ruler, Scale, TrendingDown, X } from 'lucide-react'
+import { Camera, Download, Loader2, Ruler, Scale, TrendingDown, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -83,19 +83,10 @@ export function ProgressPage() {
 
   return (
     <div className="space-y-7">
-      <header className="flex items-start justify-between gap-3">
-        <div>
-          <p className="label-caps">{t('progress.eyebrow')}</p>
-          <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight">{t('progress.title')}</h1>
-          <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('progress.subtitle')}</p>
-        </div>
-        <button
-          type="button"
-          className="touch-target flex shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface2)] text-[var(--text-secondary)]"
-          aria-label={t('common:aria.menu')}
-        >
-          <Menu className="h-5 w-5" />
-        </button>
+      <header>
+        <p className="label-caps">{t('progress.eyebrow')}</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight">{t('progress.title')}</h1>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('progress.subtitle')}</p>
       </header>
 
       <section className="progress-donut-wrap">
