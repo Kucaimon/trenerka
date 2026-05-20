@@ -327,7 +327,10 @@ export const mockApi = {
       const next = store.events
         .filter((e) => e.clientId === clientId)
         .sort((a, b) => a.start.localeCompare(b.start))[0]
+      const programWorkouts = program?.workouts ?? []
+      const doneCount = programWorkouts.filter((w) => store.workoutCompletions.includes(w.id)).length
       return {
+        clientProfileId: clientId,
         profile: {
           name: profile?.name.split(' ')[0] ?? 'Клиент',
           trainer: 'Алексей Тренеров',
@@ -335,6 +338,7 @@ export const mockApi = {
         },
         currentProgram: program?.name ?? 'Не назначена',
         nextSession: next ?? null,
+        streakDays: doneCount > 0 ? Math.min(doneCount, 7) : 0,
         notifications: store.notifications.slice(0, 5),
       }
     },
@@ -347,7 +351,7 @@ export const mockApi = {
         day: w.dayLabel,
         title: w.title,
         duration: 45 + w.exercises.length * 5,
-        status: 'planned',
+        status: store.workoutCompletions.includes(w.id) ? 'done' : 'planned',
         exercises: w.exercises.map((ex) => ({
           name: ex.name ?? '',
           muscle: ex.muscleGroup ?? '',

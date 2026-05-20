@@ -1,35 +1,36 @@
 import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
+import { getClientProfileIdFromStore } from '@/features/api/client-id'
 import { mockApi } from '@/lib/mock-api/store'
 import { wpFetch } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
 import type {
-  Achievement,
   ClientDashboard,
   ClientWorkoutDay,
-  MealPlan,
   Payment,
   ProgressMeasurement,
 } from '@/types'
 
-const MOCK_CLIENT_ID = 'c1'
+function mockClientId(): string {
+  return getClientProfileIdFromStore() || 'c1'
+}
 
 export async function getClientDashboard(): Promise<ClientDashboard> {
   await apiDelay()
-  if (config.useMockData) return mockApi.client.dashboard(MOCK_CLIENT_ID)
+  if (config.useMockData) return mockApi.client.dashboard(mockClientId())
   return wpFetch<ClientDashboard>(wpEndpoints.client.dashboard)
 }
 
 export async function getClientWorkouts(): Promise<ClientWorkoutDay[]> {
   await apiDelay()
-  if (config.useMockData) return mockApi.client.workouts(MOCK_CLIENT_ID)
+  if (config.useMockData) return mockApi.client.workouts(mockClientId())
   const res = await wpFetch<{ workouts: ClientWorkoutDay[] }>(wpEndpoints.client.workouts)
   return res.workouts
 }
 
 export async function getClientProgress(): Promise<ProgressMeasurement[]> {
   await apiDelay()
-  if (config.useMockData) return mockApi.client.progress(MOCK_CLIENT_ID)
+  if (config.useMockData) return mockApi.client.progress(mockClientId())
   const res = await wpFetch<{ measurements: ProgressMeasurement[] }>(wpEndpoints.client.progress)
   return res.measurements
 }
@@ -37,10 +38,11 @@ export async function getClientProgress(): Promise<ProgressMeasurement[]> {
 export async function saveClientProgress(data: ProgressMeasurement): Promise<void> {
   await apiDelay()
   if (config.useMockData) {
-    mockApi.client.saveProgress(data)
+    mockApi.client.saveProgress({ ...data, clientId: data.clientId ?? mockClientId() })
     return
   }
-  await wpFetch(wpEndpoints.client.progress, { method: 'POST', body: JSON.stringify(data) })
+  const { clientId: _omit, ...body } = data
+  await wpFetch(wpEndpoints.client.progress, { method: 'POST', body: JSON.stringify(body) })
 }
 
 export async function completeClientWorkout(workoutId: string): Promise<void> {
@@ -53,18 +55,6 @@ export async function completeClientWorkout(workoutId: string): Promise<void> {
 
 export async function getClientPayments(): Promise<Payment[]> {
   await apiDelay()
-  if (config.useMockData) return mockApi.client.payments(MOCK_CLIENT_ID)
+  if (config.useMockData) return mockApi.client.payments(mockClientId())
   return wpFetch<Payment[]>(wpEndpoints.payments)
-}
-
-export async function getAchievements(): Promise<Achievement[]> {
-  await apiDelay()
-  if (config.useMockData) return mockApi.achievements()
-  return []
-}
-
-export async function getMealPlan(): Promise<MealPlan[]> {
-  await apiDelay()
-  if (config.useMockData) return mockApi.mealPlan()
-  return []
 }

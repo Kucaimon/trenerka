@@ -12,6 +12,7 @@
     "defaultName": "Клиент",
     "filesTitle": "Файлы и ресурсы",
     "filesHint": "Документы тренера и обучающие материалы.",
+    "paymentsLink": "Оплаты и баланс",
     "premium": "Premium client"
   },
   "home": {
@@ -20,7 +21,18 @@
     "todayWorkout": {
       "label": "Сегодня",
       "start": "Начать тренировку",
+      "viewPlan": "Открыть программу",
       "meta": "{{count}} упражнений · {{min}} мин"
+    },
+    "packageBalance": {
+      "label": "Баланс занятий",
+      "view": "Оплаты"
+    },
+    "weekStrip": {
+      "label": "Неделя"
+    },
+    "streak": {
+      "label": "Серия"
     },
     "upcoming": {
       "title": "Ближайшая сессия",
@@ -38,12 +50,14 @@
       "waist": "Талия",
       "view": "Динамика"
     },
-    "completed": {
-      "title": "Завершённые"
+    "history": {
+      "title": "История тренировок",
+      "done": "выполнено"
     },
     "chat": {
       "title": "Чат с тренером",
-      "open": "Открыть чат"
+      "open": "Открыть чат",
+      "empty": "Нет сообщений — напишите тренеру"
     },
     "notifications": {
       "title": "Уведомления"
@@ -61,7 +75,9 @@
     "label": "Программа",
     "trainer": "Тренер: {{name}}",
     "weekProgress": "Выполнение недели",
-    "exerciseCount": "{{count}} упражнений"
+    "exerciseCount": "{{count}} упражнений",
+    "empty": "Программа не назначена",
+    "completed": "выполнено"
   },
   "session": {
     "empty": "Нет назначенной тренировки",
@@ -74,6 +90,7 @@
       "rest": "Отдых"
     },
     "videoTechnique": "Видео техники",
+    "videoUnavailable": "Видео не добавлено",
     "restBetweenSets": "Отдых между подходами",
     "completeWorkout": "Завершить тренировку",
     "nextExercise": "Следующее упражнение",
@@ -114,17 +131,18 @@
       "chest": "Грудь",
       "wellbeing": "Самочувствие",
       "wellbeingPlaceholder": "Как прошла неделя…",
-      "photoUrl": "URL фото (опционально)",
+      "photo": "Фото прогресса",
+      "addPhoto": "Загрузить фото",
+      "removePhoto": "Удалить фото",
       "save": "Сохранить замер"
     },
     "toast": {
-      "saved": "Замер сохранён"
+      "saved": "Замер сохранён",
+      "uploadError": "Не удалось загрузить фото"
     },
     "photos": {
       "title": "Фото прогресса",
-      "before": "До",
-      "week2": "Неделя 2",
-      "after": "После"
+      "empty": "Загрузите фото в новом замере"
     },
     "defaultClient": "Клиент"
   },
@@ -132,9 +150,23 @@
     "label": "Чат",
     "defaultTrainer": "Тренер",
     "placeholder": "Сообщение…",
+    "empty": "Начните диалог с тренером",
+    "unread": "{{count}} новых от тренера",
+    "loadError": "Не удалось загрузить сообщения",
+    "retry": "Повторить",
+    "attached": "Файл прикреплён",
+    "attachment": "Вложение",
     "toast": {
-      "sendError": "Не удалось отправить"
+      "sendError": "Не удалось отправить",
+      "fileAttached": "Файл прикреплён",
+      "uploadError": "Ошибка загрузки"
     }
+  },
+  "payments": {
+    "back": "Профиль",
+    "balanceLabel": "Баланс занятий",
+    "history": "История оплат",
+    "empty": "Платежей пока нет"
   },
   "achievements": {
     "eyebrow": "Награды",

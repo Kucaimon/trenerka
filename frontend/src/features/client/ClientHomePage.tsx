@@ -8,9 +8,11 @@ import {
   Flame,
   MessageCircle,
   Play,
+  Wallet,
 } from 'lucide-react'
 import { Area, AreaChart, ResponsiveContainer } from 'recharts'
 import { useClientDashboard, useClientProgress, useClientWorkouts } from '@/features/api/hooks'
+import { pickTodayWorkout, todayDayKey, weekCompletionPercent } from '@/lib/client-workouts'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -27,17 +29,20 @@ export function ClientHomePage() {
   const profile = dashboard?.profile
   const firstName = profile?.name?.split(' ')[0] ?? t('home.defaultName')
   const trainerName = profile?.trainer ?? t('chat.defaultTrainer')
-
-  const todayWorkout = workouts[0]
-  const measurementSeries = progressData
+  const todayLabel = t(`common:days.${todayDayKey()}`)
+  const todayWorkout = pickTodayWorkout(workouts, todayLabel)
+  const measurementSeries = progressData.filter((m) => m.weight > 0)
   const notifications = dashboard?.notifications?.slice(0, 3) ?? []
   const nextSession = dashboard?.nextSession
-  const history = workouts.slice(0, 5)
+  const history = [...workouts].reverse().slice(0, 5)
   const weekProgress = {
     completed: workouts.filter((w) => w.status === 'done').length,
     planned: Math.max(workouts.length, 1),
-    streakDays: 0,
+    streakDays: dashboard?.streakDays ?? 0,
   }
+  const weekPct = weekCompletionPercent(workouts)
+  const packageBalance = profile?.packageBalance ?? 0
+  const lastMessage = notifications.find((n) => n.type === 'message') ?? notifications[0]
 
   return (
     <motion.div
@@ -60,28 +65,57 @@ export function ClientHomePage() {
         </div>
       </header>
 
+      <Card className="border-[var(--border)] bg-[var(--surface2)]">
+        <CardContent className="flex items-center justify-between gap-4 p-4">
+          <div className="flex items-center gap-3">
+            <Wallet className="h-5 w-5 text-[var(--accent)]" />
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-wide text-[var(--text-muted)]">
+                {t('home.packageBalance.label')}
+              </p>
+              <p className="text-lg font-semibold tabular-nums">
+                {packageBalance} {t('common:units.sessionsShort')}
+              </p>
+            </div>
+          </div>
+          <Link to="/client/payments" className="text-xs font-medium text-[var(--accent)]">
+            {t('home.packageBalance.view')}
+          </Link>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="border-[var(--border-strong)] bg-[var(--surface)]">
           <CardHeader className="flex-row items-start justify-between space-y-0 pb-0">
             <div>
               <p className="ds-label text-[var(--text-muted)]">{t('home.todayWorkout.label')}</p>
-              <CardTitle className="mt-1 text-lg">{todayWorkout?.title ?? t('home.fallback.program')}</CardTitle>
-              <p className="ds-caption mt-1 text-[var(--text-secondary)]">
-                {t('home.todayWorkout.meta', {
-                  count: todayWorkout?.exercises?.length ?? 4,
-                  min: todayWorkout?.duration ?? 45,
-                })}
-              </p>
+              <CardTitle className="mt-1 text-lg">
+                {todayWorkout?.title ?? t('home.upcoming.empty')}
+              </CardTitle>
+              {todayWorkout ? (
+                <p className="ds-caption mt-1 text-[var(--text-secondary)]">
+                  {t('home.todayWorkout.meta', {
+                    count: todayWorkout.exercises?.length ?? 0,
+                    min: todayWorkout.duration ?? 45,
+                  })}
+                </p>
+              ) : null}
             </div>
             <Dumbbell className="h-5 w-5 text-[var(--accent)]" aria-hidden />
           </CardHeader>
           <CardContent className="pt-4">
-            <Button asChild className="w-full">
-              <Link to="/client/workouts/session">
-                <Play className="mr-2 h-4 w-4" />
-                {t('home.todayWorkout.start')}
-              </Link>
-            </Button>
+            {todayWorkout ? (
+              <Button asChild className="w-full">
+                <Link to={`/client/workouts/${todayWorkout.id}/session`}>
+                  <Play className="mr-2 h-4 w-4" />
+                  {t('home.todayWorkout.start')}
+                </Link>
+              </Button>
+            ) : (
+              <Button asChild variant="secondary" className="w-full">
+                <Link to="/client/workouts">{t('home.todayWorkout.viewPlan')}</Link>
+              </Button>
+            )}
           </CardContent>
         </Card>
 
@@ -125,11 +159,12 @@ export function ClientHomePage() {
                   total: weekProgress.planned,
                 })}
               </p>
+              <p className="text-xs text-[var(--text-muted)]">{weekPct}%</p>
             </div>
             <div className="h-2 max-w-[140px] flex-1 overflow-hidden rounded-full bg-[var(--surface3)]">
               <div
                 className="h-full rounded-full bg-[var(--accent)]"
-                style={{ width: `${(weekProgress.completed / weekProgress.planned) * 100}%` }}
+                style={{ width: `${weekPct}%` }}
               />
             </div>
           </CardContent>
@@ -149,62 +184,67 @@ export function ClientHomePage() {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader className="flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-semibold">{t('home.weightChart.title')}</CardTitle>
-          <Link to="/client/progress" className="text-xs font-medium text-[var(--accent)]">
-            {t('home.measurements.view')}
-          </Link>
-        </CardHeader>
-        <CardContent>
-          <div className="h-28">
-            <ResponsiveContainer width="100%" height={112}>
-              <AreaChart data={measurementSeries}>
-                <Area
-                  type="monotone"
-                  dataKey="weight"
-                  stroke={CHART.emerald}
-                  fill="rgba(52,211,153,0.1)"
-                  strokeWidth={2}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex-row items-center justify-between pb-2">
-          <CardTitle className="text-sm font-semibold">{t('home.history.title')}</CardTitle>
-          <Link to="/client/workouts" className="text-xs font-medium text-[var(--accent)]">
-            {t('common:actions.viewAll')}
-          </Link>
-        </CardHeader>
-        <CardContent className="space-y-0 p-0">
-          {history.map((workout, index) => (
-            <Link
-              key={workout.id}
-              to="/client/workouts"
-              className={cn(
-                'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--surface3)]',
-                index < history.length - 1 && 'border-b border-[var(--border)]',
-              )}
-            >
-              <span className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--accent-dim)]">
-                <Dumbbell className="h-4 w-4 text-[var(--accent)]" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{workout.title}</p>
-                <p className="text-xs text-[var(--text-muted)]">
-                  {workout.date} · {workout.duration} {t('common:units.min')}
-                </p>
-              </div>
+      {measurementSeries.length > 0 ? (
+        <Card>
+          <CardHeader className="flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-semibold">{t('home.weightChart.title')}</CardTitle>
+            <Link to="/client/progress" className="text-xs font-medium text-[var(--accent)]">
+              {t('home.measurements.view')}
             </Link>
-          ))}
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            <div className="h-28">
+              <ResponsiveContainer width="100%" height={112}>
+                <AreaChart data={measurementSeries}>
+                  <Area
+                    type="monotone"
+                    dataKey="weight"
+                    stroke={CHART.emerald}
+                    fill="rgba(52,211,153,0.1)"
+                    strokeWidth={2}
+                    dot={false}
+                    isAnimationActive={false}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {history.length > 0 ? (
+        <Card>
+          <CardHeader className="flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-semibold">{t('home.history.title')}</CardTitle>
+            <Link to="/client/workouts" className="text-xs font-medium text-[var(--accent)]">
+              {t('common:actions.viewAll')}
+            </Link>
+          </CardHeader>
+          <CardContent className="space-y-0 p-0">
+            {history.map((workout, index) => (
+              <Link
+                key={workout.id}
+                to={`/client/workouts/${workout.id}/session`}
+                className={cn(
+                  'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--surface3)]',
+                  index < history.length - 1 && 'border-b border-[var(--border)]',
+                )}
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--accent-dim)]">
+                  <Dumbbell className="h-4 w-4 text-[var(--accent)]" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{workout.title}</p>
+                  <p className="text-xs text-[var(--text-muted)]">
+                    {workout.day}
+                    {workout.status === 'done' ? ` · ${t('home.history.done')}` : ''}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
@@ -214,7 +254,7 @@ export function ClientHomePage() {
           </CardHeader>
           <CardContent>
             <p className="line-clamp-2 text-sm text-[var(--text-secondary)]">
-              {notifications[0]?.body ?? t('home.chat.empty')}
+              {lastMessage?.body ?? t('home.chat.empty')}
             </p>
             <Link
               to="/client/chat"
@@ -252,18 +292,6 @@ export function ClientHomePage() {
           </CardContent>
         </Card>
       </div>
-
-      {nextSession ? (
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold">{t('home.calendar.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm font-medium">{nextSession.title}</p>
-            <p className="ds-caption mt-1 text-[var(--text-secondary)]">{formatDateTime(nextSession.start)}</p>
-          </CardContent>
-        </Card>
-      ) : null}
     </motion.div>
   )
 }

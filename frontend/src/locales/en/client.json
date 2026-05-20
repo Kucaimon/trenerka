@@ -12,6 +12,7 @@
     "defaultName": "Client",
     "filesTitle": "Files & resources",
     "filesHint": "Trainer documents and learning materials.",
+    "paymentsLink": "Payments & balance",
     "premium": "Premium client"
   },
   "home": {
@@ -20,7 +21,18 @@
     "todayWorkout": {
       "label": "Today",
       "start": "Start workout",
+      "viewPlan": "View program",
       "meta": "{{count}} exercises · {{min}} min"
+    },
+    "packageBalance": {
+      "label": "Session balance",
+      "view": "Payments"
+    },
+    "weekStrip": {
+      "label": "This week"
+    },
+    "streak": {
+      "label": "Streak"
     },
     "upcoming": {
       "title": "Upcoming session",
@@ -38,12 +50,14 @@
       "waist": "Waist",
       "view": "Trends"
     },
-    "completed": {
-      "title": "Completed"
+    "history": {
+      "title": "Workout history",
+      "done": "done"
     },
     "chat": {
       "title": "Trainer chat",
-      "open": "Open chat"
+      "open": "Open chat",
+      "empty": "No messages yet — say hi to your coach"
     },
     "notifications": {
       "title": "Notifications"
@@ -61,7 +75,9 @@
     "label": "Program",
     "trainer": "Coach: {{name}}",
     "weekProgress": "Weekly completion",
-    "exerciseCount": "{{count}} exercises"
+    "exerciseCount": "{{count}} exercises",
+    "empty": "No program assigned",
+    "completed": "completed"
   },
   "session": {
     "empty": "No assigned workout",
@@ -74,6 +90,7 @@
       "rest": "Rest"
     },
     "videoTechnique": "Technique video",
+    "videoUnavailable": "No video linked",
     "restBetweenSets": "Rest between sets",
     "completeWorkout": "Finish workout",
     "nextExercise": "Next exercise",
@@ -114,17 +131,18 @@
       "chest": "Chest",
       "wellbeing": "How you feel",
       "wellbeingPlaceholder": "How was your week…",
-      "photoUrl": "Photo URL (optional)",
+      "photo": "Progress photo",
+      "addPhoto": "Upload photo",
+      "removePhoto": "Remove photo",
       "save": "Save measurement"
     },
     "toast": {
-      "saved": "Measurement saved"
+      "saved": "Measurement saved",
+      "uploadError": "Photo upload failed"
     },
     "photos": {
       "title": "Progress photos",
-      "before": "Before",
-      "week2": "Week 2",
-      "after": "After"
+      "empty": "Upload a photo with your next measurement"
     },
     "defaultClient": "Client"
   },
@@ -132,9 +150,23 @@
     "label": "Chat",
     "defaultTrainer": "Coach",
     "placeholder": "Message…",
+    "empty": "Start a conversation with your coach",
+    "unread": "{{count}} new from coach",
+    "loadError": "Could not load messages",
+    "retry": "Retry",
+    "attached": "Attachment added",
+    "attachment": "Attachment",
     "toast": {
-      "sendError": "Could not send"
+      "sendError": "Could not send",
+      "fileAttached": "File attached",
+      "uploadError": "Upload failed"
     }
+  },
+  "payments": {
+    "back": "Profile",
+    "balanceLabel": "Session balance",
+    "history": "Payment history",
+    "empty": "No payments yet"
   },
   "achievements": {
     "eyebrow": "Awards",

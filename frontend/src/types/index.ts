@@ -6,6 +6,8 @@ export interface User {
   name: string
   role: UserRole
   avatar?: string
+  /** Client profile row id (WP trenerka_client_profiles), not WP user id. */
+  clientProfileId?: string
 }
 
 export interface TrainerProfile {
@@ -199,6 +201,7 @@ export interface NewsItem {
 }
 
 export interface ClientDashboard {
+  clientProfileId?: string
   profile: {
     name: string
     trainer: string
@@ -206,6 +209,7 @@ export interface ClientDashboard {
   }
   currentProgram: string
   nextSession: CalendarEvent | null
+  streakDays?: number
   notifications: Notification[]
 }
 

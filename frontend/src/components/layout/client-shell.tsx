@@ -10,7 +10,7 @@ import {
 import { LogoLink } from '@/components/shared/LogoLink'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 
-const hideTabBarPaths = ['/client/workouts/session']
+const hideTabBarPaths = ['/client/workouts/']
 
 function isClientHome(pathname: string) {
   return pathname === '/client' || pathname === '/client/'

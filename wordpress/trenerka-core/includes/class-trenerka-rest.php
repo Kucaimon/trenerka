@@ -143,12 +143,20 @@ class Trenerka_REST {
         }
         $uid = Trenerka_Permissions::current_user_id();
         $user = get_user_by('id', $uid);
-        return new WP_REST_Response([
+        $role = Trenerka_Roles::get_user_role($uid);
+        $payload = [
             'id' => (string) $uid,
             'email' => $user->user_email,
             'name' => $user->display_name,
-            'role' => Trenerka_Roles::get_user_role($uid),
-        ], 200);
+            'role' => $role,
+        ];
+        if ($role === 'client') {
+            $profile_id = Trenerka_Permissions::client_profile_for_user($uid);
+            if ($profile_id) {
+                $payload['clientProfileId'] = (string) $profile_id;
+            }
+        }
+        return new WP_REST_Response($payload, 200);
     }
 
     public static function register_trainer(WP_REST_Request $request): WP_REST_Response|WP_Error {
@@ -1093,7 +1101,9 @@ class Trenerka_REST {
             "SELECT * FROM " . Trenerka_Database::table('notifications') . " WHERE user_id = %d ORDER BY created_at DESC LIMIT 5",
             $uid
         ), ARRAY_A);
+        $streak_days = self::client_workout_streak($client_id);
         return new WP_REST_Response([
+            'clientProfileId' => (string) $client_id,
             'profile' => [
                 'name' => $profile['name'] ?? '',
                 'trainer' => $trainer ? $trainer->display_name : '',
@@ -1101,6 +1111,7 @@ class Trenerka_REST {
             ],
             'currentProgram' => $program['name'] ?? 'Не назначена',
             'nextSession' => $next ? self::format_event($next) : null,
+            'streakDays' => $streak_days,
             'notifications' => array_map(static fn ($n) => [
                 'id' => (string) $n['id'],
                 'title' => $n['title'],
@@ -1121,11 +1132,33 @@ class Trenerka_REST {
         if (!$assignment) {
             return new WP_REST_Response(['workouts' => []], 200);
         }
-        $program = self::load_program_for_client((int) $assignment['program_id']);
+        $program = self::load_program_for_client((int) $assignment['program_id'], $client_id);
         return new WP_REST_Response(['workouts' => $program['workouts'] ?? []], 200);
     }
 
-    private static function load_program_for_client(int $program_id): array {
+    private static function client_workout_streak(int $client_id): int {
+        global $wpdb;
+        $dates = $wpdb->get_col($wpdb->prepare(
+            "SELECT DISTINCT DATE(completed_at) AS d FROM " . Trenerka_Database::table('workout_completions') . "
+             WHERE client_id = %d ORDER BY d DESC LIMIT 60",
+            $client_id
+        ));
+        if (!$dates) {
+            return 0;
+        }
+        $streak = 0;
+        $cursor = gmdate('Y-m-d');
+        foreach ($dates as $d) {
+            if ($d !== $cursor) {
+                break;
+            }
+            $streak++;
+            $cursor = gmdate('Y-m-d', strtotime($cursor . ' -1 day'));
+        }
+        return $streak;
+    }
+
+    private static function load_program_for_client(int $program_id, ?int $client_id = null): array {
         global $wpdb;
         $wt = Trenerka_Database::table('workouts');
         $wet = Trenerka_Database::table('workout_exercises');
@@ -1134,6 +1167,14 @@ class Trenerka_REST {
             "SELECT * FROM {$wt} WHERE program_id = %d ORDER BY sort_order ASC",
             $program_id
         ), ARRAY_A);
+        $completed_ids = [];
+        if ($client_id) {
+            $done = $wpdb->get_col($wpdb->prepare(
+                "SELECT workout_id FROM " . Trenerka_Database::table('workout_completions') . " WHERE client_id = %d",
+                $client_id
+            ));
+            $completed_ids = array_flip(array_map('intval', $done ?: []));
+        }
         $formatted = [];
         foreach ($workouts ?: [] as $w) {
             $exercises = $wpdb->get_results($wpdb->prepare(
@@ -1142,10 +1183,12 @@ class Trenerka_REST {
                  WHERE we.workout_id = %d ORDER BY we.sort_order ASC",
                 $w['id']
             ), ARRAY_A);
+            $wid = (int) $w['id'];
             $formatted[] = [
-                'id' => (string) $w['id'],
+                'id' => (string) $wid,
                 'day' => $w['day_label'],
                 'title' => $w['title'],
+                'status' => isset($completed_ids[$wid]) ? 'done' : 'planned',
                 'exercises' => array_map(static fn ($ex) => [
                     'name' => $ex['name'],
                     'muscle' => $ex['muscle_group'],
@@ -1177,6 +1220,7 @@ class Trenerka_REST {
             'legs' => (float) $r['legs'],
             'bodyFat' => (float) $r['body_fat'],
             'notes' => $r['notes'],
+            'photos' => $r['photos_json'] ? json_decode($r['photos_json'], true) : [],
         ], $rows ?: [])], 200);
     }
 
@@ -1184,6 +1228,15 @@ class Trenerka_REST {
         global $wpdb;
         $body = $request->get_json_params() ?: [];
         $client_id = Trenerka_Permissions::client_profile_for_user(Trenerka_Permissions::current_user_id());
+        $photos = [];
+        if (!empty($body['photos']) && is_array($body['photos'])) {
+            foreach ($body['photos'] as $url) {
+                $clean = esc_url_raw((string) $url);
+                if ($clean) {
+                    $photos[] = $clean;
+                }
+            }
+        }
         $wpdb->insert(Trenerka_Database::table('progress_reports'), [
             'client_id' => $client_id,
             'weight' => (float) ($body['weight'] ?? 0),
@@ -1194,6 +1247,7 @@ class Trenerka_REST {
             'legs' => (float) ($body['legs'] ?? 0),
             'body_fat' => (float) ($body['bodyFat'] ?? 0),
             'notes' => sanitize_textarea_field($body['notes'] ?? ''),
+            'photos_json' => $photos ? wp_json_encode($photos) : null,
             'recorded_at' => sanitize_text_field($body['date'] ?? gmdate('Y-m-d')),
         ]);
         return new WP_REST_Response(['success' => true], 201);

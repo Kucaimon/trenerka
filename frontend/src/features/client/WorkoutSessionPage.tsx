@@ -1,29 +1,65 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Check, Timer, Video } from 'lucide-react'
+import { ArrowLeft, Check, ExternalLink, Timer, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/shared/progress-bar'
-import { useClientWorkouts } from '@/features/api/hooks'
-import { completeClientWorkout } from '@/features/api/client-cabinet-service'
+import { useClientWorkouts, useCompleteClientWorkout } from '@/features/api/hooks'
 import { toast } from 'sonner'
+
+function RestCountdown({ seconds }: { seconds: number }) {
+  const [left, setLeft] = useState(seconds)
+
+  useEffect(() => {
+    setLeft(seconds)
+  }, [seconds])
+
+  useEffect(() => {
+    if (left <= 0) return
+    const id = window.setInterval(() => setLeft((v) => v - 1), 1000)
+    return () => window.clearInterval(id)
+  }, [left])
+
+  const mm = Math.floor(Math.max(left, 0) / 60)
+  const ss = Math.max(left, 0) % 60
+
+  return (
+    <p className="mt-3 tabular-nums text-4xl font-semibold">
+      {mm}:{String(ss).padStart(2, '0')}
+    </p>
+  )
+}
 
 export function WorkoutSessionPage() {
   const { t } = useTranslation(['client', 'common'])
-  const { data: workouts = [] } = useClientWorkouts()
-  const workout = workouts[0]
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const { data: workouts = [], isLoading } = useClientWorkouts()
+  const completeWorkout = useCompleteClientWorkout()
+  const workout = workouts.find((w) => w.id === id)
   const [current, setCurrent] = useState(0)
   const [completedSets, setCompletedSets] = useState(0)
   const [rest, setRest] = useState(false)
 
+  if (isLoading) {
+    return <p className="p-6 text-sm text-[var(--text-muted)]">{t('common:actions.loading')}</p>
+  }
+
   if (!workout) {
-    return <p className="p-6 text-sm text-[var(--text-muted)]">{t('session.empty')}</p>
+    return (
+      <div className="space-y-4 p-6">
+        <p className="text-sm text-[var(--text-muted)]">{t('session.empty')}</p>
+        <Button asChild variant="secondary">
+          <Link to="/client/workouts">{t('session.backToPlan')}</Link>
+        </Button>
+      </div>
+    )
   }
 
   const exercise = workout.exercises[current]!
   const totalSteps = workout.exercises.reduce((sum, item) => sum + item.sets, 0)
   const doneBeforeCurrent = workout.exercises.slice(0, current).reduce((sum, item) => sum + item.sets, 0)
-  const progress = ((doneBeforeCurrent + completedSets) / totalSteps) * 100
+  const progress = totalSteps ? ((doneBeforeCurrent + completedSets) / totalSteps) * 100 : 0
 
   const completeSet = () => {
     if (completedSets + 1 >= exercise.sets) {
@@ -51,10 +87,23 @@ export function WorkoutSessionPage() {
       ? t('session.nextExercise')
       : t('session.nextSet')
 
+  const handleFinish = async () => {
+    try {
+      await completeWorkout.mutateAsync(workout.id)
+      toast.success(t('session.toast.completed'))
+      navigate('/client/workouts')
+    } catch {
+      toast.error(t('common:saveError'))
+    }
+  }
+
   return (
     <div className="session-mode space-y-5 px-4 py-4">
       <div className="flex items-center justify-between">
-        <Link to="/client/workouts" className="inline-flex min-h-[44px] items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+        <Link
+          to="/client/workouts"
+          className="inline-flex min-h-[44px] items-center gap-2 text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+        >
           <ArrowLeft className="h-4 w-4" /> {t('session.backToPlan')}
         </Link>
         <span className="text-sm tabular-nums text-[var(--text-muted)]">
@@ -68,7 +117,9 @@ export function WorkoutSessionPage() {
             <p className="label-caps">{workout.title}</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight">{exercise.name}</h1>
           </div>
-          <span className="rounded-md border border-[var(--border)] bg-black/20 px-2 py-1 text-xs text-[var(--text-muted)]">{exercise.muscle}</span>
+          <span className="rounded-md border border-[var(--border)] bg-black/20 px-2 py-1 text-xs text-[var(--text-muted)]">
+            {exercise.muscle}
+          </span>
         </div>
         <Progress value={progress} />
         <p className="mt-2 text-xs text-[var(--text-muted)]">
@@ -84,27 +135,30 @@ export function WorkoutSessionPage() {
           <SessionMetric label={t('session.metrics.rest')} value={`${exercise.rest}${t('common:units.sec')}`} />
         </div>
         <p className="mt-5 text-sm leading-6 text-[var(--text-secondary)]">{exercise.technique}</p>
-        <Button variant="secondary" className="mt-5 w-full">
-          <Video className="h-4 w-4" /> {t('session.videoTechnique')}
-        </Button>
+        {exercise.videoUrl ? (
+          <Button variant="secondary" className="mt-5 w-full" asChild>
+            <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer">
+              <Video className="h-4 w-4" /> {t('session.videoTechnique')}
+              <ExternalLink className="ml-auto h-3.5 w-3.5 opacity-60" />
+            </a>
+          </Button>
+        ) : (
+          <Button variant="secondary" className="mt-5 w-full" disabled>
+            <Video className="h-4 w-4" /> {t('session.videoUnavailable')}
+          </Button>
+        )}
 
         {rest ? (
           <div className="mt-6 rounded-xl border border-[var(--border)] bg-black/20 p-5">
             <Timer className="mx-auto h-7 w-7 text-[var(--accent)]" />
-            <p className="mt-3 tabular-nums text-4xl font-semibold">
-              {exercise.rest ? `1:${String(exercise.rest % 60).padStart(2, '0')}` : '0:00'}
-            </p>
+            <RestCountdown seconds={exercise.rest || 60} />
             <p className="mt-1 text-xs text-[var(--text-muted)]">{t('session.restBetweenSets')}</p>
             <Button
               className="mt-5 w-full"
-              onClick={async () => {
+              disabled={completeWorkout.isPending}
+              onClick={() => {
                 if (finished) {
-                  try {
-                    await completeClientWorkout(workout.id)
-                    toast.success(t('session.toast.completed'))
-                  } catch {
-                    toast.error(t('common:saveError'))
-                  }
+                  void handleFinish()
                   return
                 }
                 nextStep()
@@ -122,10 +176,19 @@ export function WorkoutSessionPage() {
 
       <section className="space-y-2">
         {workout.exercises.map((item, index) => (
-          <div key={item.name} className={`flex items-center justify-between rounded-lg border px-3 py-2.5 ${index === current ? 'border-[var(--accent)]/35 bg-[var(--accent)]/[0.055]' : 'border-[var(--border)] bg-white/[0.03]'}`}>
+          <div
+            key={`${item.name}-${index}`}
+            className={`flex items-center justify-between rounded-lg border px-3 py-2.5 ${
+              index === current
+                ? 'border-[var(--accent)]/35 bg-[var(--accent)]/[0.055]'
+                : 'border-[var(--border)] bg-white/[0.03]'
+            }`}
+          >
             <div>
               <p className="text-sm font-semibold">{item.name}</p>
-              <p className="text-xs text-[var(--text-muted)]">{item.sets} x {item.reps}</p>
+              <p className="text-xs text-[var(--text-muted)]">
+                {item.sets} x {item.reps}
+              </p>
             </div>
             {index < current && <Check className="h-4 w-4 text-emerald-300" />}
           </div>

@@ -40,7 +40,13 @@ const mockUsers: Record<string, { password: string; user: User }> = {
   },
   'client@trenerka.ru': {
     password: 'demo123',
-    user: { id: 'cl1', email: 'client@trenerka.ru', name: 'Анна Смирнова', role: 'client' },
+    user: {
+      id: 'cl1',
+      email: 'client@trenerka.ru',
+      name: 'Анна Смирнова',
+      role: 'client',
+      clientProfileId: 'c1',
+    },
   },
   'admin@trenerka.ru': {
     password: 'demo123',

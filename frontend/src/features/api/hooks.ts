@@ -32,6 +32,7 @@ export const queryKeys = {
   clientDashboard: ['client', 'dashboard'] as const,
   clientWorkouts: ['client', 'workouts'] as const,
   clientProgress: ['client', 'progress'] as const,
+  clientPayments: ['client', 'payments'] as const,
   trainerAnalytics: ['analytics', 'trainer'] as const,
   adminStats: ['admin', 'stats'] as const,
   adminUsers: ['admin', 'users'] as const,
@@ -138,11 +139,12 @@ export function usePayments() {
   return useQuery({ queryKey: queryKeys.payments, queryFn: paymentsApi.getPayments })
 }
 
-export function useMessages(clientId: string) {
+export function useMessages(clientId: string, options?: { enabled?: boolean }) {
+  const threadKey = clientId || 'self'
   return useQuery({
-    queryKey: queryKeys.messages(clientId),
+    queryKey: queryKeys.messages(threadKey),
     queryFn: () => messagesApi.getMessages(clientId),
-    enabled: !!clientId,
+    enabled: options?.enabled ?? !!clientId,
   })
 }
 
@@ -179,6 +181,10 @@ export function useClientWorkouts() {
 
 export function useClientProgress() {
   return useQuery({ queryKey: queryKeys.clientProgress, queryFn: clientApi.getClientProgress })
+}
+
+export function useClientPayments() {
+  return useQuery({ queryKey: queryKeys.clientPayments, queryFn: clientApi.getClientPayments })
 }
 
 export function useTrainerAnalytics() {
@@ -277,7 +283,19 @@ export function useSaveClientProgress() {
     mutationFn: (data: ProgressMeasurement) => saveClientProgress(data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.clientProgress })
+      qc.invalidateQueries({ queryKey: queryKeys.clientDashboard })
       qc.invalidateQueries({ queryKey: ['client-progress-reports'] })
+    },
+  })
+}
+
+export function useCompleteClientWorkout() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: clientApi.completeClientWorkout,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.clientWorkouts })
+      qc.invalidateQueries({ queryKey: queryKeys.clientDashboard })
     },
   })
 }

@@ -30,9 +30,8 @@ import { ClientHomePage } from '@/features/client/ClientHomePage'
 import { ClientWorkoutsPage } from '@/features/client/ClientWorkoutsPage'
 import { WorkoutSessionPage } from '@/features/client/WorkoutSessionPage'
 import { ProgressPage } from '@/features/client/ProgressPage'
-import { NutritionPage } from '@/features/client/NutritionPage'
-import { AchievementsPage } from '@/features/client/AchievementsPage'
 import { ChatPage } from '@/features/client/ChatPage'
+import { ClientPaymentsPage } from '@/features/client/ClientPaymentsPage'
 import { ClientProfilePage } from '@/features/client/ClientProfilePage'
 import { AdminDashboardPage } from '@/features/admin/AdminDashboardPage'
 import { ExercisesAdminPage } from '@/features/admin/ExercisesAdminPage'
@@ -94,10 +93,9 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <ClientHomePage /> },
       { path: 'workouts', element: <ClientWorkoutsPage /> },
-      { path: 'workouts/session', element: <WorkoutSessionPage /> },
+      { path: 'workouts/:id/session', element: <WorkoutSessionPage /> },
       { path: 'progress', element: <ProgressPage /> },
-      { path: 'nutrition', element: <NutritionPage /> },
-      { path: 'achievements', element: <AchievementsPage /> },
+      { path: 'payments', element: <ClientPaymentsPage /> },
       { path: 'chat', element: <ChatPage /> },
       { path: 'profile', element: <ClientProfilePage /> },
     ],
