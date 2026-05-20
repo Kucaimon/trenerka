@@ -31,6 +31,11 @@ class Trenerka_REST {
             ['methods' => 'GET', 'callback' => [__CLASS__, 'trainer_client_progress'], 'permission_callback' => [__CLASS__, 'trainer_only']],
             ['methods' => 'POST', 'callback' => [__CLASS__, 'save_client_progress'], 'permission_callback' => [__CLASS__, 'trainer_only']],
         ]);
+        register_rest_route($ns, '/clients/(?P<id>\d+)/workout-completions', [
+            'methods' => 'GET',
+            'callback' => [__CLASS__, 'client_workout_completions'],
+            'permission_callback' => [__CLASS__, 'trainer_only'],
+        ]);
 
         register_rest_route($ns, '/messages/unread-counts', [
             'methods' => 'GET',
@@ -100,6 +105,10 @@ class Trenerka_REST {
         register_rest_route($ns, '/client/workouts/(?P<id>\d+)/complete', ['methods' => 'POST', 'callback' => [__CLASS__, 'complete_workout'], 'permission_callback' => [__CLASS__, 'client_only']]);
 
         register_rest_route($ns, '/analytics/trainer', ['methods' => 'GET', 'callback' => [__CLASS__, 'trainer_analytics'], 'permission_callback' => [__CLASS__, 'trainer_only']]);
+        register_rest_route($ns, '/analytics/attendance', ['methods' => 'GET', 'callback' => [__CLASS__, 'analytics_attendance'], 'permission_callback' => [__CLASS__, 'trainer_only']]);
+        register_rest_route($ns, '/analytics/weekday', ['methods' => 'GET', 'callback' => [__CLASS__, 'analytics_weekday'], 'permission_callback' => [__CLASS__, 'trainer_only']]);
+        register_rest_route($ns, '/analytics/retention', ['methods' => 'GET', 'callback' => [__CLASS__, 'analytics_retention'], 'permission_callback' => [__CLASS__, 'trainer_only']]);
+        register_rest_route($ns, '/analytics/subscriptions', ['methods' => 'GET', 'callback' => [__CLASS__, 'analytics_subscriptions'], 'permission_callback' => [__CLASS__, 'trainer_only']]);
         register_rest_route($ns, '/analytics/client/(?P<id>\d+)/pdf', ['methods' => 'GET', 'callback' => [__CLASS__, 'client_progress_pdf'], 'permission_callback' => [__CLASS__, 'trainer_only']]);
 
         register_rest_route($ns, '/admin/stats', ['methods' => 'GET', 'callback' => [__CLASS__, 'admin_stats'], 'permission_callback' => [__CLASS__, 'admin_only']]);
@@ -436,8 +445,9 @@ class Trenerka_REST {
     }
 
     private static function format_client(array $row): array {
-        return [
-            'id' => (string) $row['id'],
+        $client_id = (int) $row['id'];
+        $base = [
+            'id' => (string) $client_id,
             'name' => $row['name'],
             'email' => $row['email'],
             'phone' => $row['phone'] ?? '',
@@ -449,6 +459,117 @@ class Trenerka_REST {
             'goal' => $row['goal'] ?? '',
             'notes' => $row['notes'] ?? '',
         ];
+        return array_merge($base, self::client_crm_metrics($client_id, (int) ($row['package_balance'] ?? 0)));
+    }
+
+    /** CRM fields computed from payments, events, messages, completions — never hardcoded. */
+    private static function client_crm_metrics(int $client_id, int $package_balance): array {
+        global $wpdb;
+        $tid = self::trainer_id();
+        $payments_table = Trenerka_Database::table('payments');
+        $events_table = Trenerka_Database::table('calendar_events');
+        $messages_table = Trenerka_Database::table('messages');
+        $completions_table = Trenerka_Database::table('workout_completions');
+
+        $last_payment = $wpdb->get_var($wpdb->prepare(
+            "SELECT MAX(payment_date) FROM {$payments_table} WHERE client_id = %d AND trainer_user_id = %d",
+            $client_id,
+            $tid
+        ));
+        $payment_state = 'paid';
+        if ($package_balance <= 0) {
+            $payment_state = 'overdue';
+        } elseif ($last_payment) {
+            $days_since = (int) floor((time() - strtotime($last_payment . ' 00:00:00 UTC')) / 86400);
+            if ($days_since > 45) {
+                $payment_state = 'pending';
+            }
+        } elseif ($package_balance < 3) {
+            $payment_state = 'pending';
+        }
+
+        $activity_ts = max(
+            (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT UNIX_TIMESTAMP(MAX(created_at)) FROM {$messages_table} WHERE client_id = %d AND trainer_user_id = %d",
+                $client_id,
+                $tid
+            )) ?: 0,
+            (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT UNIX_TIMESTAMP(MAX(start_time)) FROM {$events_table} WHERE client_id = %d AND trainer_user_id = %d",
+                $client_id,
+                $tid
+            )) ?: 0,
+            (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT UNIX_TIMESTAMP(MAX(completed_at)) FROM {$completions_table} WHERE client_id = %d",
+                $client_id
+            )) ?: 0
+        );
+        $last_activity_minutes = $activity_ts > 0 ? (int) floor((time() - $activity_ts) / 60) : null;
+
+        $program_id = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT program_id FROM " . Trenerka_Database::table('client_programs') . " WHERE client_id = %d AND status = 'active' ORDER BY id DESC LIMIT 1",
+            $client_id
+        ));
+        $total_workouts = 0;
+        $completion_pct = null;
+        if ($program_id) {
+            $total_workouts = (int) $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM " . Trenerka_Database::table('workouts') . " WHERE program_id = %d",
+                $program_id
+            ));
+            if ($total_workouts > 0) {
+                $done = (int) $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(DISTINCT wc.workout_id) FROM {$completions_table} wc
+                     INNER JOIN " . Trenerka_Database::table('workouts') . " w ON w.id = wc.workout_id
+                     WHERE wc.client_id = %d AND w.program_id = %d",
+                    $client_id,
+                    $program_id
+                ));
+                $completion_pct = (int) round(($done / $total_workouts) * 100);
+            }
+        }
+
+        $week_start = gmdate('Y-m-d', strtotime('monday this week UTC'));
+        $sessions_this_week = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$events_table}
+             WHERE client_id = %d AND trainer_user_id = %d AND status = 'completed' AND start_time >= %s",
+            $client_id,
+            $tid,
+            $week_start
+        ));
+
+        $upcoming = $wpdb->get_var($wpdb->prepare(
+            "SELECT start_time FROM {$events_table}
+             WHERE client_id = %d AND trainer_user_id = %d AND start_time >= NOW() AND status != 'cancelled'
+             ORDER BY start_time ASC LIMIT 1",
+            $client_id,
+            $tid
+        ));
+        $last_completed = $wpdb->get_var($wpdb->prepare(
+            "SELECT start_time FROM {$events_table}
+             WHERE client_id = %d AND trainer_user_id = %d AND status = 'completed'
+             ORDER BY start_time DESC LIMIT 1",
+            $client_id,
+            $tid
+        ));
+
+        $metrics = [
+            'paymentState' => $payment_state,
+            'sessionsThisWeek' => $sessions_this_week,
+        ];
+        if ($last_activity_minutes !== null) {
+            $metrics['lastActivityMinutesAgo'] = $last_activity_minutes;
+        }
+        if ($completion_pct !== null) {
+            $metrics['workoutCompletionPct'] = $completion_pct;
+        }
+        if ($upcoming) {
+            $metrics['upcomingSessionAt'] = mysql_to_rfc3339($upcoming);
+        }
+        if ($last_completed) {
+            $metrics['lastSession'] = mysql_to_rfc3339($last_completed);
+        }
+        return $metrics;
     }
 
     public static function list_exercises(): WP_REST_Response {
@@ -730,6 +851,19 @@ class Trenerka_REST {
             'status' => 'active',
         ]);
         return new WP_REST_Response(['success' => true, 'id' => (string) $wpdb->insert_id], 201);
+    }
+
+    public static function client_workout_completions(WP_REST_Request $request): WP_REST_Response|WP_Error {
+        $client_id = (int) $request['id'];
+        if (!Trenerka_Permissions::client_belongs_to_trainer($client_id, self::trainer_id())) {
+            return new WP_Error('forbidden', 'Нет доступа', ['status' => 403]);
+        }
+        global $wpdb;
+        $ids = $wpdb->get_col($wpdb->prepare(
+            "SELECT workout_id FROM " . Trenerka_Database::table('workout_completions') . " WHERE client_id = %d",
+            $client_id
+        ));
+        return new WP_REST_Response(['workoutIds' => array_map('strval', $ids ?: [])], 200);
     }
 
     public static function trainer_client_progress(WP_REST_Request $request): WP_REST_Response {
@@ -1275,10 +1409,21 @@ class Trenerka_REST {
             $tid,
             gmdate('Y-m-01')
         ));
-        $sessions = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM " . Trenerka_Database::table('calendar_events') . " WHERE trainer_user_id = %d AND start_time >= %s",
+        $since = gmdate('Y-m-d H:i:s', strtotime('-7 days'));
+        $events_table = Trenerka_Database::table('calendar_events');
+        $completed_events = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$events_table} WHERE trainer_user_id = %d AND status = 'completed' AND start_time >= %s",
             $tid,
-            gmdate('Y-m-d', strtotime('-7 days'))
+            $since
+        ));
+        $completions_table = Trenerka_Database::table('workout_completions');
+        $clients_table = Trenerka_Database::table('client_profiles');
+        $workout_completions = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$completions_table} wc
+             INNER JOIN {$clients_table} cp ON cp.id = wc.client_id
+             WHERE cp.trainer_user_id = %d AND wc.completed_at >= %s",
+            $tid,
+            $since
         ));
         $unread = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM " . Trenerka_Database::table('messages') . " WHERE trainer_user_id = %d AND sender = 'client' AND is_read = 0",
@@ -1287,8 +1432,99 @@ class Trenerka_REST {
         return new WP_REST_Response([
             'activeClients' => $clients,
             'monthlyRevenue' => $revenue,
-            'weeklySessions' => $sessions,
+            'weeklySessions' => $completed_events + $workout_completions,
             'unreadMessages' => $unread,
+        ], 200);
+    }
+
+    public static function analytics_attendance(): WP_REST_Response {
+        global $wpdb;
+        $tid = self::trainer_id();
+        $table = Trenerka_Database::table('calendar_events');
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT YEARWEEK(start_time, 3) AS yw, COUNT(*) AS cnt FROM {$table}
+             WHERE trainer_user_id = %d AND status = 'completed' AND start_time >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 4 WEEK)
+             GROUP BY yw ORDER BY yw ASC LIMIT 4",
+            $tid
+        ), ARRAY_A);
+        $data = [];
+        $i = 1;
+        foreach ($rows ?: [] as $row) {
+            $data[] = ['week' => 'W' . $i, 'sessions' => (int) $row['cnt']];
+            $i++;
+        }
+        return new WP_REST_Response($data, 200);
+    }
+
+    public static function analytics_weekday(): WP_REST_Response {
+        global $wpdb;
+        $tid = self::trainer_id();
+        $table = Trenerka_Database::table('calendar_events');
+        $labels = ['Mon' => 'Пн', 'Tue' => 'Вт', 'Wed' => 'Ср', 'Thu' => 'Чт', 'Fri' => 'Пт', 'Sat' => 'Сб', 'Sun' => 'Вс'];
+        $order = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT DAYNAME(start_time) AS day_name, COUNT(*) AS cnt FROM {$table}
+             WHERE trainer_user_id = %d AND status = 'completed' AND start_time >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 8 WEEK)
+             GROUP BY day_name",
+            $tid
+        ), ARRAY_A);
+        $by_day = [];
+        foreach ($rows ?: [] as $row) {
+            $by_day[$row['day_name']] = (int) $row['cnt'];
+        }
+        $data = [];
+        foreach ($order as $key) {
+            $data[] = ['day' => $labels[$key], 'sessions' => $by_day[$key] ?? 0];
+        }
+        return new WP_REST_Response($data, 200);
+    }
+
+    public static function analytics_retention(): WP_REST_Response {
+        global $wpdb;
+        $tid = self::trainer_id();
+        $events_table = Trenerka_Database::table('calendar_events');
+        $clients_table = Trenerka_Database::table('client_profiles');
+        $active_total = max(1, (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$clients_table} WHERE trainer_user_id = %d AND status = 'active'",
+            $tid
+        )));
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT DATE_FORMAT(start_time, '%%Y-%%m') AS month_key, COUNT(DISTINCT client_id) AS active_cnt
+             FROM {$events_table}
+             WHERE trainer_user_id = %d AND status = 'completed' AND start_time >= DATE_SUB(UTC_TIMESTAMP(), INTERVAL 6 MONTH)
+             GROUP BY month_key ORDER BY month_key ASC",
+            $tid
+        ), ARRAY_A);
+        $data = [];
+        foreach ($rows ?: [] as $row) {
+            $rate = (int) min(100, round(((int) $row['active_cnt'] / $active_total) * 100));
+            $month_label = gmdate('M', strtotime($row['month_key'] . '-01 UTC'));
+            $data[] = ['month' => $month_label, 'rate' => $rate];
+        }
+        return new WP_REST_Response($data, 200);
+    }
+
+    public static function analytics_subscriptions(): WP_REST_Response {
+        global $wpdb;
+        $tid = self::trainer_id();
+        $table = Trenerka_Database::table('client_profiles');
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT
+                SUM(CASE WHEN package_balance BETWEEN 1 AND 4 THEN 1 ELSE 0 END) AS basic_cnt,
+                SUM(CASE WHEN package_balance BETWEEN 5 AND 11 THEN 1 ELSE 0 END) AS standard_cnt,
+                SUM(CASE WHEN package_balance >= 12 THEN 1 ELSE 0 END) AS premium_cnt
+             FROM {$table} WHERE trainer_user_id = %d AND status = 'active'",
+            $tid
+        ), ARRAY_A);
+        $row = $rows[0] ?? ['basic_cnt' => 0, 'standard_cnt' => 0, 'premium_cnt' => 0];
+        $basic = (int) $row['basic_cnt'];
+        $standard = (int) $row['standard_cnt'];
+        $premium = (int) $row['premium_cnt'];
+        $total = max(1, $basic + $standard + $premium);
+        return new WP_REST_Response([
+            ['name' => 'Базовый', 'value' => (int) round(($basic / $total) * 100), 'color' => '#6b7280'],
+            ['name' => 'Стандарт', 'value' => (int) round(($standard / $total) * 100), 'color' => '#b8f53d'],
+            ['name' => 'Премиум', 'value' => (int) round(($premium / $total) * 100), 'color' => '#95d425'],
         ], 200);
     }
 
