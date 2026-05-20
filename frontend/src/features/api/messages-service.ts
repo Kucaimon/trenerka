@@ -72,7 +72,7 @@ export async function uploadAttachment(file: File): Promise<string> {
   const form = new FormData()
   form.append('file', file)
   const token = getAuthToken()
-  const res = await fetch(`${import.meta.env.VITE_WP_API_URL ?? ''}${wpEndpoints.upload}`, {
+  const res = await fetch(`${config.wpApiUrl}${wpEndpoints.upload}`, {
     method: 'POST',
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: form,

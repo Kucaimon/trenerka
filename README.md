@@ -51,25 +51,22 @@ npm run build:staging
 
 **Новый клиент от тренера:** CRM → добавить клиента → в toast будет **временный пароль** → клиент входит на `/login/client`.
 
-## Vercel (staging без WP)
+## Vercel
 
-В **Project → Settings → Environment Variables** (Production + Preview):
+Два режима (переменные в Dashboard, не в `vercel.json`):
 
-| Переменная | Значение |
-|------------|----------|
-| `VITE_USE_MOCK_DATA` | `true` |
-| `VITE_WP_API_URL` | *(пусто или не задавать)* |
-| `VITE_SKILLS_URL` | `https://fitnesakademiya.ru` |
+| Режим | `VITE_USE_MOCK_DATA` | Build |
+|-------|----------------------|-------|
+| Demo | `true` | `npm run build:staging` |
+| WP staging | `false` + `VITE_WP_API_URL` | `npm run build` |
 
-**Root Directory:** `frontend` · **Build Command:** `npm run build:staging` (или `npm run build` при `.env.staging` в репо).
+Подробнее: [docs/VERCEL.md](docs/VERCEL.md) · чеклист WP: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-После смены env — **Redeploy**. Подробнее: [docs/VERCEL.md](docs/VERCEL.md).
-
-## Production build (WordPress)
+## WordPress staging build
 
 ```bash
 cd frontend
-cp .env.production .env   # VITE_USE_MOCK_DATA=false
+cp .env.staging.wp.example .env   # задайте STAGING-DOMAIN
 npm run build
 npm run lint
 npm test
@@ -95,7 +92,7 @@ E2E (mock, поднимает dev-сервер): `npm run test:e2e`
 | `VITE_USE_MOCK_DATA` | `true` — demo/staging; `false` — WordPress |
 | `VITE_SKILLS_URL` | Ссылка на курсы Фитнес Академии |
 
-Файлы: `.env.staging` (demo), `.env.demo`, `.env.production` (WP).
+Файлы: `.env.staging` (demo), `.env.staging.wp.example` (WP staging), `.env.production` (WP prod).
 
 ## Маршруты
 

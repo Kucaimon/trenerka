@@ -3,9 +3,5 @@
   "outputDirectory": "dist",
   "installCommand": "npm ci",
   "framework": "vite",
-  "env": {
-    "VITE_USE_MOCK_DATA": "true",
-    "VITE_SKILLS_URL": "https://fitnesakademiya.ru"
-  },
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 }

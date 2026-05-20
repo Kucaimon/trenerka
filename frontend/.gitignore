@@ -31,3 +31,4 @@ dist-ssr
 !.env.staging
 !.env.local
 !.env.production
+!.env.staging.wp.example

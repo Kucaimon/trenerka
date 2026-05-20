@@ -1,45 +1,64 @@
 # Деплой Trenerka на Vercel
 
-Инструкция для **staging/demo** на Vercel без WordPress (например `trenerka-mu.vercel.app`). Репозиторий: [Kucaimon/trenerka](https://github.com/Kucaimon/trenerka), ветка `main`.
+Два режима — **два набора переменных** (один проект Vercel или два отдельных проекта).
 
-В репозитории:
+| Режим | `VITE_USE_MOCK_DATA` | Build | Назначение |
+|-------|----------------------|-------|------------|
+| **Demo** | `true` | `npm run build:staging` | Preview без WordPress, localStorage |
+| **WP staging** | `false` | `npm run build` | Реальный backend на staging WP |
 
-- `frontend/vercel.json` — SPA rewrites
-- `frontend/.env.staging` — `VITE_USE_MOCK_DATA=true`
-- `npm run build:staging` — сборка в demo-режиме
-
-**Рекомендуется:** Root Directory = `frontend`.
-
-В корне и в `frontend/vercel.json` заданы `build:staging` и `env` (`VITE_USE_MOCK_DATA`, `VITE_SKILLS_URL`) — после push на `main` следующий деплой на Vercel подхватит mock **без** ручного ввода переменных в Dashboard (если в UI не переопределены Build Command / env).
+В `vercel.json` **нет** жёстко прошитого `VITE_USE_MOCK_DATA` — только команда сборки по умолчанию для demo. Для WP staging задайте переменные в Dashboard и смените Build Command на `npm run build`.
 
 ---
 
-## 1. Создать / настроить проект
+## 1. Demo-проект (mock, без WordPress)
+
+Пример: `trenerka-mu.vercel.app`.
 
 | Поле | Значение |
 |------|----------|
-| **Project Name** | `trenerka-mu` (или своё) |
-| **Framework Preset** | **Vite** |
 | **Root Directory** | `frontend` |
 | **Build Command** | `npm run build:staging` |
 | **Output Directory** | `dist` |
 | **Install Command** | `npm ci` |
 
+**Environment Variables** (Production + Preview):
+
+| Имя | Значение |
+|-----|----------|
+| `VITE_USE_MOCK_DATA` | `true` |
+| `VITE_WP_API_URL` | *(пусто)* |
+| `VITE_SKILLS_URL` | `https://fitnesakademiya.ru` |
+
+Локально: `cp .env.staging .env` → `npm run build:staging`.
+
+Демо-аккаунты: `trainer@trenerka.ru` / `demo123` (см. README).
+
 ---
 
-## 2. Environment Variables (обязательно для demo)
+## 2. WP staging-проект (реальный API)
 
-Для **Production**, **Preview**, **Development**:
+Отдельный Vercel-проект **или** отдельная среда Preview с другими env.
 
-| Имя | Значение | Зачем |
-|-----|----------|--------|
-| `VITE_USE_MOCK_DATA` | `true` | Demo без WordPress |
-| `VITE_WP_API_URL` | *(пусто)* | Не используется в mock |
-| `VITE_SKILLS_URL` | `https://fitnesakademiya.ru` | Ссылка на курсы |
+| Поле | Значение |
+|------|----------|
+| **Root Directory** | `frontend` |
+| **Build Command** | `npm run build` |
+| **Output Directory** | `dist` |
 
-> Если задать только переменные в UI и **не** использовать `build:staging`, убедитесь что `VITE_USE_MOCK_DATA=true` в Vercel — иначе приложение попытается ходить в несуществующий WP.
+**Environment Variables**:
 
-После изменения env: **Deployments → … → Redeploy**.
+| Имя | Значение |
+|-----|----------|
+| `VITE_USE_MOCK_DATA` | `false` |
+| `VITE_WP_API_URL` | `https://STAGING-DOMAIN/wp-json` |
+| `VITE_SKILLS_URL` | `https://fitnesakademiya.ru` |
+
+Шаблон: `frontend/.env.staging.wp.example`.
+
+На WordPress staging: JWT, `TRENERKA_FRONTEND_URL` = URL этого Vercel-проекта, CORS, reactivate plugin. См. [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+После смены env: **Deployments → Redeploy**.
 
 ---
 
@@ -51,47 +70,25 @@
 
 ## 4. Проверка
 
-1. Откройте `https://<project>.vercel.app/`
-2. `/login/trainer` → `trainer@trenerka.ru` / `demo123`
-3. Дашборд, CRM, календарь, финансы, чат — данные из localStorage, сохраняются после reload
+**Demo:** `/login/trainer` → demo123 → данные в localStorage.
+
+**WP:** регистрация тренера → CRM → клиент → вход клиента. Чеклист: [DEPLOYMENT.md#staging-smoke-test-wordpress--vercel](./DEPLOYMENT.md#staging-smoke-test-wordpress--vercel).
 
 ---
 
-## 5. Демо-аккаунты
-
-| Роль | Email | Пароль |
-|------|-------|--------|
-| Тренер | trainer@trenerka.ru | demo123 |
-| Клиент | client@trenerka.ru | demo123 |
-| Админ | admin@trenerka.ru | demo123 |
-
-Новый клиент: тренер создаёт в CRM → временный пароль в toast.
-
----
-
-## 6. Локально перед деплоем
+## 5. Локально перед деплоем
 
 ```bash
 cd frontend
-cp .env.staging .env
 npm ci
-npm run build:staging
 npm run lint
 npm test
+# demo:
+cp .env.staging .env && npm run build:staging
+# wp staging:
+cp .env.staging.wp.example .env   # отредактируйте URL
+npm run build
 ```
-
----
-
-## WordPress (не Vercel demo)
-
-Когда backend на WordPress готов:
-
-1. `VITE_USE_MOCK_DATA` = `false`
-2. `VITE_WP_API_URL` = `https://ваш-домен/wp-json`
-3. Build: `npm run build`
-4. Redeploy
-
-Подробнее: [DEPLOYMENT.md](./DEPLOYMENT.md), [WORDPRESS.md](./WORDPRESS.md).
 
 ---
 
@@ -99,7 +96,7 @@ npm test
 
 | Симптом | Решение |
 |---------|---------|
-| 404 на `/trainer/...` после F5 | Root Directory = `frontend`, есть `vercel.json` rewrites |
-| Пустой экран / нет логина | `VITE_USE_MOCK_DATA=true` + Redeploy |
-| Данные не сохраняются | Нормально в приватном режиме / другой браузер — mock в localStorage |
-| Сборка падает | `cd frontend && npm run build:staging` локально |
+| 404 на `/trainer/...` после F5 | Root Directory = `frontend`, rewrites в `vercel.json` |
+| Пустой CRM / ошибки сети | `VITE_USE_MOCK_DATA=false` и верный `VITE_WP_API_URL`; CORS на WP |
+| Demo не логинится | `VITE_USE_MOCK_DATA=true`, `build:staging`, Redeploy |
+| CORS / 401 | JWT secret, `JWT_AUTH_CORS_ENABLE`, plugin active |
