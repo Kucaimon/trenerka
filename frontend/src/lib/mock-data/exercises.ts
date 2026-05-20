@@ -22,16 +22,16 @@ export const romanianDeadliftSample: Exercise = {
   technique: 'Держите спину прямой на всей амплитуде.',
 }
 
-const muscles = ['Грудь', 'Спина', 'Ноги', 'Плечи', 'Руки', 'Кор', 'Кардио'] as const
-const equipmentList = ['Штанга', 'Гантели', 'Тренажёр', 'Собственный вес', 'Кабель', 'Резина'] as const
-const difficulties = ['beginner', 'intermediate', 'advanced'] as const
+type MuscleGroup = 'Грудь' | 'Спина' | 'Ноги' | 'Плечи' | 'Руки' | 'Кор' | 'Кардио'
+type Equipment = 'Штанга' | 'Гантели' | 'Тренажёр' | 'Собственный вес' | 'Кабель' | 'Резина'
+type Difficulty = 'beginner' | 'intermediate' | 'advanced'
 
 type Seed = {
   slug: string
   name: string
-  muscle: (typeof muscles)[number]
-  equipment: (typeof equipmentList)[number]
-  difficulty: (typeof difficulties)[number]
+  muscle: MuscleGroup
+  equipment: Equipment
+  difficulty: Difficulty
   isPublic?: boolean
 }
 

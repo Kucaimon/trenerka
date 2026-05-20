@@ -12,13 +12,10 @@ export function VerifyEmailPage() {
   const { t } = useTranslation(['auth'])
   const [params] = useSearchParams()
   const token = params.get('token') ?? ''
-  const [status, setStatus] = useState<Status>('loading')
+  const [status, setStatus] = useState<Status>(() => (token ? 'loading' : 'error'))
 
   useEffect(() => {
-    if (!token) {
-      setStatus('error')
-      return
-    }
+    if (!token) return
     verifyEmail(token)
       .then(() => setStatus('success'))
       .catch(() => setStatus('error'))

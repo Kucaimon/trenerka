@@ -13,4 +13,15 @@ export default defineConfig({
   server: {
     port: 5173,
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/recharts')) return 'recharts'
+          if (id.includes('node_modules/@tremor')) return 'tremor'
+          if (id.includes('node_modules/@fullcalendar')) return 'fullcalendar'
+        },
+      },
+    },
+  },
 })

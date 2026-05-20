@@ -1,21 +1,8 @@
-import type { Client, PaymentState } from '@/types'
+import type { Client } from '@/types'
 
-const PAYMENT_CYCLE: PaymentState[] = ['paid', 'pending', 'overdue']
-
+/** Pass-through helper; mock/API data should supply CRM fields. */
 export function enrichClient(client: Client): Client {
-  const idx = parseInt(client.id.replace(/\D/g, '') || '0', 10)
-  return {
-    ...client,
-    paymentState: client.paymentState ?? PAYMENT_CYCLE[idx % 3],
-    lastActivityMinutesAgo: client.lastActivityMinutesAgo ?? (idx + 1) * 37,
-    workoutCompletionPct: client.workoutCompletionPct ?? Math.min(95, 55 + (idx * 7) % 40),
-    sessionsThisWeek: client.sessionsThisWeek ?? (client.status === 'active' ? (idx % 3) + 1 : 0),
-    upcomingSessionAt:
-      client.upcomingSessionAt ??
-      (client.status !== 'archive'
-        ? new Date(Date.now() + (idx + 1) * 86400000).toISOString()
-        : undefined),
-  }
+  return { ...client }
 }
 
 export function formatRelativeActivity(

@@ -15,6 +15,7 @@ import { useClientDashboard, useClientProgress, useClientWorkouts } from '@/feat
 import { pickTodayWorkout, todayDayKey, weekCompletionPercent } from '@/lib/client-workouts'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatDateTime } from '@/lib/i18n-format'
 import { CHART } from '@/lib/chart-theme'
@@ -22,8 +23,13 @@ import { cn } from '@/lib/utils'
 
 export function ClientHomePage() {
   const { t } = useTranslation(['client', 'common'])
-  const { data: dashboard } = useClientDashboard()
-  const { data: workouts = [] } = useClientWorkouts()
+  const {
+    data: dashboard,
+    isLoading: dashboardLoading,
+    isError: dashboardError,
+    refetch: refetchDashboard,
+  } = useClientDashboard()
+  const { data: workouts = [], isLoading: workoutsLoading } = useClientWorkouts()
   const { data: progressData = [] } = useClientProgress()
 
   const profile = dashboard?.profile
@@ -64,6 +70,22 @@ export function ClientHomePage() {
           </p>
         </div>
       </header>
+
+      {dashboardLoading || workoutsLoading ? (
+        <div className="flex items-center gap-2 px-1 text-sm text-[var(--text-muted)]">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          {t('common:actions.loading')}
+        </div>
+      ) : null}
+
+      {dashboardError ? (
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--danger)]/30 bg-[var(--danger)]/10 px-4 py-3 text-sm">
+          <span>{t('home.loadError')}</span>
+          <Button type="button" variant="secondary" size="sm" onClick={() => void refetchDashboard()}>
+            {t('common:actions.retry')}
+          </Button>
+        </div>
+      ) : null}
 
       <Card className="border-[var(--border)] bg-[var(--surface2)]">
         <CardContent className="flex items-center justify-between gap-4 p-4">

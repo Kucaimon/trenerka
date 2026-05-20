@@ -152,10 +152,10 @@ export function ClientsDataTable({ clients, activeId, onSelect, paymentFilter = 
         ),
         size: 100,
         cell: ({ row }) => {
-          const mins = enrichClient(row.original).lastActivityMinutesAgo ?? 0
+          const mins = enrichClient(row.original).lastActivityMinutesAgo
           return (
             <span className="text-[12px] text-[var(--text-secondary)]">
-              {formatRelativeActivity(mins, t)}
+              {mins != null ? formatRelativeActivity(mins, t) : '—'}
             </span>
           )
         },
@@ -200,6 +200,7 @@ export function ClientsDataTable({ clients, activeId, onSelect, paymentFilter = 
     [t, i18n.language],
   )
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- TanStack Table instance
   const table = useReactTable({
     data: rows,
     columns,

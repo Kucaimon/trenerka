@@ -11,10 +11,6 @@ function RestCountdown({ seconds }: { seconds: number }) {
   const [left, setLeft] = useState(seconds)
 
   useEffect(() => {
-    setLeft(seconds)
-  }, [seconds])
-
-  useEffect(() => {
     if (left <= 0) return
     const id = window.setInterval(() => setLeft((v) => v - 1), 1000)
     return () => window.clearInterval(id)
@@ -151,7 +147,7 @@ export function WorkoutSessionPage() {
         {rest ? (
           <div className="mt-6 rounded-xl border border-[var(--border)] bg-black/20 p-5">
             <Timer className="mx-auto h-7 w-7 text-[var(--accent)]" />
-            <RestCountdown seconds={exercise.rest || 60} />
+            <RestCountdown key={`${current}-${completedSets}-${exercise.rest || 60}`} seconds={exercise.rest || 60} />
             <p className="mt-1 text-xs text-[var(--text-muted)]">{t('session.restBetweenSets')}</p>
             <Button
               className="mt-5 w-full"

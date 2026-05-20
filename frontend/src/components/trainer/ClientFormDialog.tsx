@@ -79,6 +79,8 @@ export function ClientFormDialog({
     }
   }, [open, initial, reset])
 
+  // react-hook-form watch() is incompatible with React Compiler memoization
+  // eslint-disable-next-line react-hooks/incompatible-library -- RHF watch
   const status = watch('status')
   const statuses: ClientStatus[] = ['active', 'pause', 'archive']
 

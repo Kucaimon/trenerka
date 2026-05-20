@@ -17,6 +17,7 @@
   },
   "home": {
     "greeting": "Hi, {{name}}!",
+    "loadError": "Could not load your dashboard",
     "defaultName": "Client",
     "todayWorkout": {
       "label": "Today",

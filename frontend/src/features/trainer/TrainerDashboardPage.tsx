@@ -1,26 +1,18 @@
-import { useMemo, useState } from 'react'
+import { lazy, Suspense, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
-import { Bar, BarChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
-import { Bell, CalendarPlus, Clock3, CreditCard, MessageSquare, UserPlus, Dumbbell } from 'lucide-react'
+import { Bell, CalendarPlus, Clock3, CreditCard, MessageSquare, UserPlus, Dumbbell, Loader2 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  AnalyticsWidget,
-  DashboardContainer,
-  DashboardGrid,
-  DashboardGridItem,
-  SaasPageHeader,
-} from '@/components/saas'
-import { useClients, useEvents, useTrainerAnalytics } from '@/features/api/hooks'
+import { DashboardContainer, DashboardGrid, DashboardGridItem, SaasPageHeader } from '@/components/saas'
+import { useClients, useEvents, useNotifications, usePayments, useTrainerAnalytics } from '@/features/api/hooks'
 import { getAttendanceChart, getRevenueChart } from '@/features/api/analytics-service'
-import { mockActivityFeed, type ActivityFeedItem } from '@/lib/mock-data'
+import type { ChartPeriodId } from '@/features/trainer/TrainerDashboardCharts'
+import { buildTrainerActivityFeed, type ActivityFeedItem } from '@/lib/activity-feed'
 import { enrichClient } from '@/lib/client-crm'
 import { formatRub } from '@/lib/utils'
-import { CHART } from '@/lib/chart-theme'
-import { cn } from '@/lib/utils'
 import { intlLocale } from '@/lib/i18n-format'
 import type { ClientStatus, PaymentState } from '@/types'
 
@@ -29,7 +21,11 @@ const chartPeriods = [
   { id: '12m', labelKey: 'dashboard.period.year', months: 12 },
 ] as const
 
-type ChartPeriodId = (typeof chartPeriods)[number]['id']
+const LazyTrainerDashboardCharts = lazy(() =>
+  import('@/features/trainer/TrainerDashboardCharts').then((m) => ({
+    default: m.TrainerDashboardCharts,
+  })),
+)
 
 const ACTIVITY_ICONS: Record<ActivityFeedItem['type'], LucideIcon> = {
   payment: CreditCard,
@@ -61,9 +57,12 @@ function isToday(iso: string) {
 
 export function TrainerDashboardPage() {
   const { t, i18n } = useTranslation(['trainer', 'common'])
-  const { data: clients = [], isLoading: clientsLoading } = useClients()
-  const { data: analytics, isLoading: analyticsLoading } = useTrainerAnalytics()
-  const { data: events = [] } = useEvents()
+  const { data: clients = [], isLoading: clientsLoading, isError: clientsError, refetch: refetchClients } = useClients()
+  const { data: analytics, isLoading: analyticsLoading, isError: analyticsError, refetch: refetchAnalytics } =
+    useTrainerAnalytics()
+  const { data: events = [], isLoading: eventsLoading } = useEvents()
+  const { data: notifications = [] } = useNotifications()
+  const { data: payments = [] } = usePayments()
   const { data: revenueChart = [], isLoading: chartLoading } = useQuery({
     queryKey: ['revenue-chart'],
     queryFn: getRevenueChart,
@@ -75,7 +74,10 @@ export function TrainerDashboardPage() {
   const [chartPeriod, setChartPeriod] = useState<ChartPeriodId>('6m')
   const periodMonths = chartPeriods.find((p) => p.id === chartPeriod)?.months ?? 6
   const revenueData = useMemo(() => revenueChart.slice(-periodMonths), [revenueChart, periodMonths])
-  const activityItems = useMemo(() => mockActivityFeed.slice(0, 14), [])
+  const activityItems = useMemo(
+    () => buildTrainerActivityFeed(notifications, payments, 14),
+    [notifications, payments],
+  )
 
   const statusLabel = (status: ClientStatus) => t(`common:status.${status}`)
 
@@ -147,6 +149,23 @@ export function TrainerDashboardPage() {
         ]}
       />
 
+      {(clientsError || analyticsError) && (
+        <div className="mb-3 flex flex-wrap items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--danger)]/30 bg-[var(--danger)]/10 px-3 py-2 text-sm">
+          <span className="text-[var(--text-secondary)]">{t('dashboard.loadError')}</span>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              if (clientsError) void refetchClients()
+              if (analyticsError) void refetchAnalytics()
+            }}
+          >
+            {t('common:actions.retry')}
+          </Button>
+        </div>
+      )}
+
       <div className="saas-metric-grid mb-3">
         {stats.map((stat) => (
           <div key={stat.label} className="saas-metric-cell">
@@ -166,6 +185,13 @@ export function TrainerDashboardPage() {
           </Button>
         ))}
       </div>
+
+      {eventsLoading ? (
+        <div className="mb-3 flex items-center gap-2 text-sm text-[var(--text-muted)]">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          {t('common:actions.loading')}
+        </div>
+      ) : null}
 
       {todayEvents.length > 0 ? (
         <DashboardContainer
@@ -200,81 +226,24 @@ export function TrainerDashboardPage() {
       ) : null}
 
       <DashboardGrid>
-        <DashboardGridItem span={4}>
-          <AnalyticsWidget title={t('dashboard.preview.attendance')} height={200}>
-            <div className="chart-mobile h-[180px] min-h-[160px]">
-              <ResponsiveContainer width="100%" height="100%" minHeight={160}>
-                <BarChart data={attendanceChart}>
-                  <CartesianGrid stroke={CHART.grid} vertical={false} />
-                  <XAxis dataKey="week" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} width={28} />
-                  <Tooltip contentStyle={CHART.tooltip} />
-                  <Bar dataKey="sessions" fill={CHART.accent} radius={[3, 3, 0, 0]} maxBarSize={28} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </AnalyticsWidget>
-        </DashboardGridItem>
-
-        <DashboardGridItem span={4}>
-          <AnalyticsWidget
-            title={t('dashboard.revenue.title')}
-            height={220}
-            actions={
-              <div className="flex gap-0.5 rounded-[var(--radius-sm)] bg-[var(--surface3)] p-0.5">
-                {chartPeriods.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => setChartPeriod(p.id)}
-                    className={cn(
-                      'rounded-[var(--radius-sm)] px-2.5 py-1 text-xs transition-colors',
-                      chartPeriod === p.id
-                        ? 'bg-[var(--surface)] text-[var(--text-primary)]'
-                        : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]',
-                    )}
-                  >
-                    {t(p.labelKey)}
-                  </button>
-                ))}
+        <Suspense
+          fallback={
+            <DashboardGridItem span={8}>
+              <div className="flex h-[200px] items-center justify-center gap-2 text-sm text-[var(--text-muted)]">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                {t('common:actions.loading')}
               </div>
-            }
-          >
-            <div className="chart-mobile h-[200px] min-h-[180px]">
-              {chartLoading ? (
-                <p className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
-                  {t('common:actions.loading')}
-                </p>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%" minHeight={180}>
-                  <LineChart data={revenueData}>
-                    <CartesianGrid stroke={CHART.grid} vertical={false} />
-                    <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
-                    <YAxis
-                      stroke={CHART.axis}
-                      fontSize={11}
-                      tickLine={false}
-                      axisLine={false}
-                      tickFormatter={(v) => `${Number(v) / 1000}k`}
-                    />
-                    <Tooltip
-                      contentStyle={CHART.tooltip}
-                      formatter={(v) => [formatRub(Number(v)), t('dashboard.revenue.chart')]}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke={CHART.accent}
-                      strokeWidth={2}
-                      dot={false}
-                      isAnimationActive={false}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              )}
-            </div>
-          </AnalyticsWidget>
-        </DashboardGridItem>
+            </DashboardGridItem>
+          }
+        >
+          <LazyTrainerDashboardCharts
+            attendanceChart={attendanceChart}
+            revenueData={revenueData}
+            chartLoading={chartLoading}
+            chartPeriod={chartPeriod}
+            onChartPeriodChange={setChartPeriod}
+          />
+        </Suspense>
 
         <DashboardGridItem span={4}>
           <DashboardContainer title={t('dashboard.activity.title')} description={t('dashboard.activity.subtitle')} flush>
@@ -327,7 +296,10 @@ export function TrainerDashboardPage() {
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[13px] font-medium">{c.name}</p>
                       <p className="text-[11px] text-[var(--text-muted)]">
-                        {c.goal ?? t('clients.fallback.goal')} · {c.workoutCompletionPct ?? 0}% {t('dashboard.activeClients.progress')}
+                        {c.goal ?? t('clients.fallback.goal')}
+                        {c.workoutCompletionPct != null
+                          ? ` · ${c.workoutCompletionPct}% ${t('dashboard.activeClients.progress')}`
+                          : ''}
                       </p>
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-0.5">

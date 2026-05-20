@@ -21,6 +21,7 @@ import { Textarea } from '@/components/ui/textarea'
 import type { Client, ClientStatus } from '@/types'
 import { buildClientRecentActivity } from '@/lib/client-activity'
 import { formatRelativeActivity } from '@/lib/client-crm'
+import { minutesAgoFromIso, useNow } from '@/hooks/use-now'
 import { formatRub, formatDate } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
@@ -391,6 +392,7 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
 
 function ClientRecentActivityCard({ clientId }: { clientId: string }) {
   const { t } = useTranslation('trainer')
+  const now = useNow()
   const { data: events = [] } = useEvents()
   const { data: messages = [] } = useMessages(clientId)
   const { data: payments = [] } = usePayments()
@@ -414,10 +416,7 @@ function ClientRecentActivityCard({ clientId }: { clientId: string }) {
             <div key={item.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
               <span>{t(`clients.recentActivity.${item.type}`)}</span>
               <span className="text-[11px] text-[var(--text-muted)]">
-                {formatRelativeActivity(
-                  Math.max(1, Math.floor((Date.now() - new Date(item.at).getTime()) / 60000)),
-                  t,
-                )}
+                {formatRelativeActivity(minutesAgoFromIso(item.at, now), t)}
               </span>
             </div>
           ))

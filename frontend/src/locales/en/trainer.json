@@ -150,6 +150,7 @@
       "subtitle": "Payments, messages, reminders",
       "empty": "No recent activity"
     },
+    "loadError": "Could not load dashboard data",
     "eventTypeDefault": "training"
   },
   "clients": {

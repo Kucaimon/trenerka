@@ -22,10 +22,15 @@ trenerka/
 
 ```bash
 cd frontend
-cp .env.example .env
+cp .env.demo .env
+# или: cp .env.example .env и VITE_USE_MOCK_DATA=true
 npm install
 npm run dev
 ```
+
+Для локальной разработки с WordPress: скопируйте `frontend/.env.local` в `frontend/.env` и укажите `VITE_WP_API_URL`.
+
+Production-сборка: `frontend/.env.production` (`VITE_USE_MOCK_DATA=false`).
 
 Откройте **http://localhost:5173** (Vite по умолчанию).
 
@@ -44,7 +49,11 @@ npm run dev
 ```bash
 cd frontend
 npm run build
+npm run lint
+npm test
 ```
+
+E2E (mock, поднимает dev-сервер): `npm run test:e2e`
 
 ## WordPress (production backend)
 

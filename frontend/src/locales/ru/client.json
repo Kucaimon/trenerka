@@ -17,6 +17,7 @@
   },
   "home": {
     "greeting": "Привет, {{name}}!",
+    "loadError": "Не удалось загрузить данные кабинета",
     "defaultName": "Клиент",
     "todayWorkout": {
       "label": "Сегодня",

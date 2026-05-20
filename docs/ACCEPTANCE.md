@@ -54,5 +54,7 @@
 
 ## Quality
 - [x] `npm run build` passes
-- [x] `npm run lint` passes (1 warning RHF watch)
+- [x] `npm run lint` passes
+- [x] `npm test` (Vitest smoke)
+- [x] `npm run test:e2e` (Playwright mock)
 - [ ] No cross-trainer/client data leaks (manual)

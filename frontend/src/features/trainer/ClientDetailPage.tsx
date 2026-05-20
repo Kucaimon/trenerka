@@ -24,6 +24,7 @@ import { AssignProgramDialog } from '@/components/trainer/AssignProgramDialog'
 import { ClientFormDialog, type ClientFormValues } from '@/components/trainer/ClientFormDialog'
 import { buildClientRecentActivity } from '@/lib/client-activity'
 import { formatRelativeActivity } from '@/lib/client-crm'
+import { minutesAgoFromIso, useNow } from '@/hooks/use-now'
 import { formatRub, formatDate } from '@/lib/utils'
 import type { ClientStatus } from '@/types'
 
@@ -35,6 +36,7 @@ const STATUS_VARIANTS: Record<ClientStatus, 'success' | 'warning' | 'secondary'>
 
 export function ClientDetailPage() {
   const { t, i18n } = useTranslation(['trainer', 'common'])
+  const now = useNow()
   const { id } = useParams<{ id: string }>()
   const { data: client } = useClient(id!)
   const { data: allPayments = [] } = usePayments()
@@ -176,10 +178,7 @@ export function ClientDetailPage() {
                 <div key={item.id} className="flex justify-between px-5 py-2.5 text-sm">
                   <span>{t(`clients.recentActivity.${item.type}`)}</span>
                   <span className="text-[11px] text-[var(--text-muted)]">
-                    {formatRelativeActivity(
-                      Math.max(1, Math.floor((Date.now() - new Date(item.at).getTime()) / 60000)),
-                      t,
-                    )}
+                    {formatRelativeActivity(minutesAgoFromIso(item.at, now), t)}
                   </span>
                 </div>
               )))}
