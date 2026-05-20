@@ -146,6 +146,8 @@
     "eventTypeDefault": "тренировка"
   },
   "clients": {
+    "loadError": "Не удалось загрузить карточку клиента",
+    "archiveEqualsDelete": "Статус «Архив» скрывает клиента из активных — полное удаление через поддержку.",
     "title": "Клиенты",
     "inDatabase": "{{count}} в базе",
     "searchPlaceholder": "Поиск по имени…",
@@ -306,7 +308,15 @@
     },
     "create": {
       "title": "Новое событие",
-      "name": "Название"
+      "name": "Название",
+      "client": "Клиент",
+      "clientPlaceholder": "Выберите клиента",
+      "eventType": "Тип события"
+    },
+    "eventTypes": {
+      "training": "Тренировка",
+      "consultation": "Консультация",
+      "group": "Групповое"
     }
   },
   "finance": {
@@ -435,7 +445,8 @@
       "revenue": "Выручка",
       "retention": "Удержание",
       "sessions": "Сессии"
-    }
+    },
+    "pdfExportStage2": "PDF — этап 2"
   },
   "profile": {
     "title": "Профиль",

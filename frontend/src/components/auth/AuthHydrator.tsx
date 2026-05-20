@@ -7,7 +7,6 @@ import { useAuthStore } from '@/store/auth-store'
 export function AuthHydrator() {
   const token = useAuthStore((s) => s.token)
   const login = useAuthStore((s) => s.login)
-  const setTrainerProfile = useAuthStore((s) => s.setTrainerProfile)
   const setSessionChecking = useAuthStore((s) => s.setSessionChecking)
   const logout = useAuthStore((s) => s.logout)
 
@@ -26,18 +25,14 @@ export function AuthHydrator() {
           logout()
           return
         }
-        const trainerProfile = me.role === 'trainer' ? await fetchTrainerProfile().catch(() => null) : null
-        if (cancelled) return
         const current = useAuthStore.getState()
-        if (!current.user || current.user.id !== me.id) {
-          login(me, token, trainerProfile)
+        if (current.user && current.user.role !== me.role) {
+          logout()
           return
         }
-        if (me.role === 'trainer') {
-          setTrainerProfile(
-            trainerProfile && trainerProfile.userId === me.id ? trainerProfile : null,
-          )
-        }
+        const trainerProfile = me.role === 'trainer' ? await fetchTrainerProfile().catch(() => null) : null
+        if (cancelled) return
+        login(me, token, trainerProfile)
       } finally {
         if (!cancelled) setSessionChecking(false)
       }
@@ -46,7 +41,7 @@ export function AuthHydrator() {
       cancelled = true
       setSessionChecking(false)
     }
-  }, [token, login, logout, setTrainerProfile, setSessionChecking])
+  }, [token, login, logout, setSessionChecking])
 
   return null
 }

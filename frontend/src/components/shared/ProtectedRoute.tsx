@@ -29,6 +29,10 @@ export function ProtectedRoute({ children, role }: { children: ReactNode; role: 
   if (!user || !token) {
     return <Navigate to={loginPath} replace />
   }
-  if (user.role !== role) return <Navigate to="/" replace />
+  if (user.role !== role) {
+    const redirect =
+      user.role === 'trainer' ? '/trainer' : user.role === 'client' ? '/client' : '/admin'
+    return <Navigate to={redirect} replace />
+  }
   return <>{children}</>
 }

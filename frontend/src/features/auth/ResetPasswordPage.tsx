@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -17,6 +17,7 @@ type ResetForm = { password: string; confirmPassword: string }
 
 export function ResetPasswordPage() {
   const { t } = useTranslation(['auth', 'common'])
+  const navigate = useNavigate()
   const [params] = useSearchParams()
   const token = params.get('token')
   const isResetStep = Boolean(token)
@@ -62,6 +63,7 @@ export function ResetPasswordPage() {
       await confirmResetPassword(token, data.password)
       toast.success(t('reset.successToast'))
       resetForm.reset()
+      navigate('/login/trainer', { replace: true })
     } catch (e) {
       toast.error(e instanceof Error ? e.message : t('reset.error'))
     }

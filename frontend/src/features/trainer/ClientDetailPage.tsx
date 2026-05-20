@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, CalendarCheck2, CreditCard, Dumbbell, MessageSquare, Pencil } from 'lucide-react'
+import { ArrowLeft, CalendarCheck2, CreditCard, Dumbbell, FileDown, MessageSquare, Pencil } from 'lucide-react'
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { toast } from 'sonner'
 import {
@@ -39,7 +39,7 @@ export function ClientDetailPage() {
   const { t, i18n } = useTranslation(['trainer', 'common'])
   const now = useNow()
   const { id } = useParams<{ id: string }>()
-  const { data: client } = useClient(id!)
+  const { data: client, isLoading: clientLoading, isError: clientError, refetch: refetchClient } = useClient(id!)
   const { data: allPayments = [] } = usePayments()
   const { data: assigned } = useClientAssignedProgram(id!)
   const { data: progress = [] } = useClientProgressReports(id!)
@@ -68,7 +68,19 @@ export function ClientDetailPage() {
     if (client?.notes !== undefined) setNotes(client.notes)
   }, [client?.id, client?.notes])
 
-  if (!client) return <p className="text-[var(--text-muted)]">{t('common:actions.loading')}</p>
+  if (clientError) {
+    return (
+      <div className="page-container space-y-3">
+        <p className="text-sm text-[var(--text-secondary)]">{t('clients.loadError')}</p>
+        <Button variant="secondary" size="sm" onClick={() => void refetchClient()}>
+          {t('common:actions.retry')}
+        </Button>
+      </div>
+    )
+  }
+  if (clientLoading || !client) {
+    return <p className="text-[var(--text-muted)]">{t('common:actions.loading')}</p>
+  }
 
   const statusVariant = STATUS_VARIANTS[client.status] ?? 'secondary'
   const program = assigned?.program
@@ -200,8 +212,12 @@ export function ClientDetailPage() {
 
         <TabsContent value="measurements">
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2">
               <CardTitle>{t('clients.overview.lastMeasurement')}</CardTitle>
+              <Button variant="secondary" size="sm" disabled title={t('analytics.pdfExportStage2')}>
+                <FileDown className="h-4 w-4" />
+                {t('analytics.pdfExportStage2')}
+              </Button>
             </CardHeader>
             <CardContent>
               {measurementChart.length > 1 ? (

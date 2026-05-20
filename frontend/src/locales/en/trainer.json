@@ -146,6 +146,8 @@
     "eventTypeDefault": "training"
   },
   "clients": {
+    "loadError": "Could not load client profile",
+    "archiveEqualsDelete": "Archive hides the client from active lists — contact support for permanent deletion.",
     "title": "Clients",
     "inDatabase": "{{count}} in database",
     "searchPlaceholder": "Search by name…",
@@ -306,7 +308,15 @@
     },
     "create": {
       "title": "New event",
-      "name": "Title"
+      "name": "Title",
+      "client": "Client",
+      "clientPlaceholder": "Select client",
+      "eventType": "Event type"
+    },
+    "eventTypes": {
+      "training": "Training",
+      "consultation": "Consultation",
+      "group": "Group"
     }
   },
   "finance": {
@@ -434,7 +444,8 @@
       "revenue": "Revenue",
       "retention": "Retention",
       "sessions": "Sessions"
-    }
+    },
+    "pdfExportStage2": "PDF — Stage 2"
   },
   "profile": {
     "title": "Profile",

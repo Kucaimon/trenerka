@@ -122,6 +122,9 @@ export function ClientFormDialog({
                   ))}
                 </SelectContent>
               </Select>
+              {status === 'archive' ? (
+                <p className="text-xs text-[var(--text-muted)]">{t('clients.archiveEqualsDelete')}</p>
+              ) : null}
             </div>
             <div className="space-y-1.5">
               <Label>{t('clientForm.fields.packageBalance')}</Label>

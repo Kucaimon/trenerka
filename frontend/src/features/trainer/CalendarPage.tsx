@@ -12,22 +12,26 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { SaasPageHeader } from '@/components/saas'
-import { useEvents, useSaveEvent } from '@/features/api/hooks'
+import { useClients, useEvents, useSaveEvent } from '@/features/api/hooks'
 import { completeEvent, copyRecurringEvent } from '@/features/api/calendar-service'
 import { formatDateTime } from '@/lib/i18n-format'
-import type { CalendarEvent } from '@/types'
+import type { CalendarEvent, CalendarEventType } from '@/types'
 
 export function CalendarPage() {
   const { t, i18n } = useTranslation(['trainer', 'common'])
   const isMobile = useIsMobile()
   const { data: apiEvents = [], isLoading } = useEvents()
+  const { data: clients = [] } = useClients()
   const saveEvent = useSaveEvent()
   const [createOpen, setCreateOpen] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
   const [title, setTitle] = useState('')
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
+  const [clientId, setClientId] = useState('')
+  const [eventType, setEventType] = useState<CalendarEventType>('training')
 
   const fcLocale = i18n.language === 'ru' ? 'ru' : i18n.language.startsWith('zh') ? 'zh-cn' : i18n.language.split('-')[0]
 
@@ -65,6 +69,8 @@ export function CalendarPage() {
     setTitle('')
     setStart(info.startStr)
     setEnd(info.endStr)
+    setClientId(clients[0]?.id ?? '')
+    setEventType('training')
     setSelectedEvent(null)
     setCreateOpen(true)
   }
@@ -82,7 +88,8 @@ export function CalendarPage() {
         title,
         start,
         end,
-        type: 'training',
+        clientId: clientId || undefined,
+        type: eventType,
       })
       toast.success(t('calendar.toast.created'))
       setCreateOpen(false)
@@ -178,7 +185,35 @@ export function CalendarPage() {
               <Label>{t('calendar.create.name')}</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
-            <Button className="w-full" onClick={submitNew}>
+            <div className="space-y-1.5">
+              <Label>{t('calendar.create.client')}</Label>
+              <Select value={clientId} onValueChange={setClientId}>
+                <SelectTrigger>
+                  <SelectValue placeholder={t('calendar.create.clientPlaceholder')} />
+                </SelectTrigger>
+                <SelectContent>
+                  {clients.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t('calendar.create.eventType')}</Label>
+              <Select value={eventType} onValueChange={(v) => setEventType(v as CalendarEventType)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="training">{t('calendar.eventTypes.training')}</SelectItem>
+                  <SelectItem value="consultation">{t('calendar.eventTypes.consultation')}</SelectItem>
+                  <SelectItem value="group">{t('calendar.eventTypes.group')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button className="w-full" onClick={submitNew} disabled={!title.trim() || saveEvent.isPending}>
               {t('common:actions.create')}
             </Button>
           </div>

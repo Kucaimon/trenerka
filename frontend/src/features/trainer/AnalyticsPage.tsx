@@ -29,7 +29,8 @@ import {
 import { useTrainerAnalytics } from '@/features/api/hooks'
 import { formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
-import { Activity, CalendarCheck2, Repeat2, Wallet } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Activity, CalendarCheck2, FileDown, Repeat2, Wallet } from 'lucide-react'
 
 export function AnalyticsPage() {
   const { t } = useTranslation(['trainer', 'common'])
@@ -56,6 +57,9 @@ export function AnalyticsPage() {
     queryFn: getSubscriptionMixChart,
   })
   const subscriptionHasData = subscriptionData.some((s) => s.value > 0)
+  const periodMonths = period === '3m' ? 3 : period === '12m' ? 12 : 6
+  const revenueFiltered = revenueData.slice(-periodMonths)
+  const retentionFiltered = retentionData.slice(-periodMonths)
 
   return (
     <div className="page-container">
@@ -63,16 +67,22 @@ export function AnalyticsPage() {
         title={t('analytics.title')}
         description={t('analytics.description')}
         actions={
-          <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="3m">{t('analytics.period.m3')}</SelectItem>
-              <SelectItem value="6m">{t('analytics.period.m6')}</SelectItem>
-              <SelectItem value="12m">{t('analytics.period.m12')}</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-wrap items-center gap-2">
+            <Select value={period} onValueChange={setPeriod}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="3m">{t('analytics.period.m3')}</SelectItem>
+                <SelectItem value="6m">{t('analytics.period.m6')}</SelectItem>
+                <SelectItem value="12m">{t('analytics.period.m12')}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="secondary" size="sm" disabled title={t('analytics.pdfExportStage2')}>
+              <FileDown className="h-4 w-4" />
+              {t('analytics.pdfExportStage2')}
+            </Button>
+          </div>
         }
       />
 
@@ -93,13 +103,13 @@ export function AnalyticsPage() {
               <p className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
                 {t('common:actions.loading')}
               </p>
-            ) : revenueData.length === 0 ? (
+            ) : revenueFiltered.length === 0 ? (
               <p className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
                 {t('common:empty.noData')}
               </p>
             ) : (
               <ResponsiveContainer width="100%" height="100%" minHeight={200}>
-                <BarChart data={revenueData}>
+                <BarChart data={revenueFiltered}>
                   <CartesianGrid stroke={CHART.grid} vertical={false} />
                   <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
@@ -120,13 +130,13 @@ export function AnalyticsPage() {
               <p className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
                 {t('common:actions.loading')}
               </p>
-            ) : retentionData.length === 0 ? (
+            ) : retentionFiltered.length === 0 ? (
               <p className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
                 {t('common:empty.noData')}
               </p>
             ) : (
               <ResponsiveContainer width="100%" height="100%" minHeight={200}>
-                <AreaChart data={retentionData}>
+                <AreaChart data={retentionFiltered}>
                   <CartesianGrid stroke={CHART.grid} vertical={false} />
                   <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
                   <YAxis stroke={CHART.axis} fontSize={11} domain={[80, 100]} tickLine={false} axisLine={false} />
