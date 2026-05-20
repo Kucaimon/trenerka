@@ -56,6 +56,21 @@
       "page": "Page {{current}} / {{total}}"
     }
   },
+  "exerciseMedia": {
+    "technique": "Description / technique",
+    "techniquePlaceholder": "How to perform the exercise — key cues for your client",
+    "description": "Additional notes",
+    "descriptionPlaceholder": "Notes, contraindications, variations",
+    "videoUrl": "Video link",
+    "videoPlaceholder": "YouTube or VK URL",
+    "photo": "Photo",
+    "removePhoto": "Remove photo",
+    "attachment": "PDF or file",
+    "removeAttachment": "Remove file",
+    "viewAttachment": "Open file",
+    "selectedFile": "Selected: {{name}}",
+    "uploading": "Uploading file…"
+  },
   "exerciseDetail": {
     "notFound": "Exercise not found.",
     "backToCatalog": "Back to catalog",
@@ -364,6 +379,20 @@
     "empty": "No programs yet",
     "createInBuilder": "Create in builder"
   },
+  "programShare": {
+    "button": "Share",
+    "vk": "VK",
+    "copyText": "Copy text",
+    "native": "Share…",
+    "vkDescription": "{{day}} · {{count}} exercises · ~{{minutes}} min",
+    "clipboard": "🏋️ {{name}}\n\n📅 {{day}}\n💪 {{count}} exercises\n⏱ ~{{minutes}} min{{weeksLine}}\n\nCreated with Trenerka Fit\n{{url}}",
+    "weeksLine": "\n📆 {{weeks}} wk",
+    "toast": {
+      "copied": "Text copied — paste into Telegram or Instagram",
+      "copyError": "Could not copy",
+      "shareError": "Could not open share menu"
+    }
+  },
   "builder": {
     "defaultProgramName": "New program",
     "catalog": {
@@ -377,8 +406,26 @@
     "metrics": {
       "sets": "Sets",
       "reps": "Reps",
-      "rest": "Rest",
-      "restValue": "90 sec"
+      "rest": "Rest"
+    },
+    "customExercise": "Custom exercise",
+    "fields": {
+      "videoUrl": "Video link",
+      "videoUrlPlaceholder": "YouTube or VK",
+      "technique": "Description / technique",
+      "techniquePlaceholder": "How to perform — for your client",
+      "addPhoto": "Add photo",
+      "changePhoto": "Change photo",
+      "addPdf": "Add PDF",
+      "changePdf": "Change PDF",
+      "programPdf": "Program PDF",
+      "addProgramPdf": "Upload program PDF",
+      "viewPdf": "Open PDF"
+    },
+    "custom": {
+      "defaultMuscle": "General",
+      "defaultEquipment": "No equipment",
+      "addAndInsert": "Create and add"
     },
     "empty": {
       "title": "Add exercises from the catalog",
@@ -392,13 +439,10 @@
       "volume": "Volume",
       "volumeSets": "{{count}} sets"
     },
-    "ai": {
-      "hint": "Add a core exercise — the plan covers chest and legs but lacks stabilization.",
-      "suggest": "Suggest exercises"
-    },
     "save": "Save program",
     "toast": {
-      "saved": "Program saved"
+      "saved": "Program saved",
+      "fileUploaded": "File uploaded"
     }
   },
   "messages": {

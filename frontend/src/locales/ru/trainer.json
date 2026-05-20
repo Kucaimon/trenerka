@@ -56,6 +56,21 @@
       "page": "Стр. {{current}} / {{total}}"
     }
   },
+  "exerciseMedia": {
+    "technique": "Описание / техника",
+    "techniquePlaceholder": "Как выполнять упражнение, ключевые моменты для клиента",
+    "description": "Дополнительное описание",
+    "descriptionPlaceholder": "Заметки, противопоказания, варианты",
+    "videoUrl": "Ссылка на видео",
+    "videoPlaceholder": "YouTube или VK",
+    "photo": "Фото",
+    "removePhoto": "Убрать фото",
+    "attachment": "PDF или файл",
+    "removeAttachment": "Убрать файл",
+    "viewAttachment": "Открыть файл",
+    "selectedFile": "Выбран: {{name}}",
+    "uploading": "Загрузка файла…"
+  },
   "exerciseDetail": {
     "notFound": "Упражнение не найдено.",
     "backToCatalog": "К каталогу",
@@ -364,6 +379,20 @@
     "empty": "Пока нет программ",
     "createInBuilder": "Создать в конструкторе"
   },
+  "programShare": {
+    "button": "Поделиться",
+    "vk": "ВКонтакте",
+    "copyText": "Скопировать текст",
+    "native": "Поделиться…",
+    "vkDescription": "{{day}} · {{count}} упражнений · ~{{minutes}} мин",
+    "clipboard": "🏋️ {{name}}\n\n📅 {{day}}\n💪 {{count}} упражнений\n⏱ ~{{minutes}} мин{{weeksLine}}\n\nСоздано в Trenerka Fit\n{{url}}",
+    "weeksLine": "\n📆 {{weeks}} нед.",
+    "toast": {
+      "copied": "Текст скопирован — вставьте в Telegram или Instagram",
+      "copyError": "Не удалось скопировать",
+      "shareError": "Не удалось открыть меню «Поделиться»"
+    }
+  },
   "builder": {
     "defaultProgramName": "Новая программа",
     "catalog": {
@@ -377,8 +406,26 @@
     "metrics": {
       "sets": "Сеты",
       "reps": "Повт.",
-      "rest": "Отдых",
-      "restValue": "90 сек"
+      "rest": "Отдых"
+    },
+    "customExercise": "Своё упражнение",
+    "fields": {
+      "videoUrl": "Ссылка на видео",
+      "videoUrlPlaceholder": "YouTube или VK",
+      "technique": "Описание / техника",
+      "techniquePlaceholder": "Как выполнять — для клиента",
+      "addPhoto": "Добавить фото",
+      "changePhoto": "Заменить фото",
+      "addPdf": "Добавить PDF",
+      "changePdf": "Заменить PDF",
+      "programPdf": "PDF программы",
+      "addProgramPdf": "Загрузить PDF программы",
+      "viewPdf": "Открыть PDF"
+    },
+    "custom": {
+      "defaultMuscle": "Общее",
+      "defaultEquipment": "Без оборудования",
+      "addAndInsert": "Создать и добавить"
     },
     "empty": {
       "title": "Добавьте упражнения из каталога",
@@ -392,13 +439,10 @@
       "volume": "Объём",
       "volumeSets": "{{count}} подходов"
     },
-    "ai": {
-      "hint": "Добавьте упражнение на кор — план покрывает грудь и ноги, но мало стабилизации.",
-      "suggest": "Предложить упражнения"
-    },
     "save": "Сохранить программу",
     "toast": {
-      "saved": "Программа сохранена"
+      "saved": "Программа сохранена",
+      "fileUploaded": "Файл загружен"
     }
   },
   "messages": {

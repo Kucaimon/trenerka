@@ -5,6 +5,8 @@ import { SaasPageHeader } from '@/components/saas'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { usePrograms } from '@/features/api/hooks'
+import { ProgramShareMenu } from '@/features/trainer/ProgramShareMenu'
+import { programShareFromProgram } from '@/lib/program-share'
 
 export function ProgramsPage() {
   const { t } = useTranslation(['trainer', 'common'])
@@ -47,9 +49,12 @@ export function ProgramsPage() {
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[var(--accent)]/20 bg-[var(--accent-dim)]">
                   <Layers className="h-5 w-5 text-[var(--accent)]" />
                 </div>
-                <Badge variant="secondary">
-                  {program.weeks} {t('common:units.weeksShort')}
-                </Badge>
+                <div className="flex items-center gap-1">
+                  <ProgramShareMenu variant="icon" input={programShareFromProgram(program)} />
+                  <Badge variant="secondary">
+                    {program.weeks} {t('common:units.weeksShort')}
+                  </Badge>
+                </div>
               </div>
               <h3 className="mt-4 font-display text-lg font-bold tracking-tight">{program.name}</h3>
               {program.description && (
