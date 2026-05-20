@@ -17,12 +17,12 @@
 **Рекомендуемая схема для MVP:**
 
 - Пользователи открывают **`https://app.trenerka-fit.ru`**
-- API и админка — **`https://wp.trenerka-fit.ru`**
+- API и админка — **`http://wp.trenerka-fit.ru`**
 - SSL: включить Let's Encrypt в панели Beget для каждого поддомена (авто-продление)
 
 ### Альтернатива: Vercel для фронта
 
-Фронт можно оставить на Vercel, а на Beget — только WordPress. См. [VERCEL.md](./VERCEL.md). Переменные окружения те же (`VITE_WP_API_URL=https://wp.trenerka-fit.ru/wp-json`).
+Фронт можно оставить на Vercel, а на Beget — только WordPress. См. [VERCEL.md](./VERCEL.md). Переменные окружения те же (`VITE_WP_API_URL=http://wp.trenerka-fit.ru/wp-json`).
 
 ---
 
@@ -122,13 +122,13 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
 ### Проверка JWT (curl)
 
 ```bash
-curl -sS -X POST "https://wp.trenerka-fit.ru/wp-json/jwt-auth/v1/token" \
+curl -sS -X POST "http://wp.trenerka-fit.ru/wp-json/jwt-auth/v1/token" \
   -H "Content-Type: application/json" \
   -d '{"username":"EMAIL","password":"PASSWORD"}'
 ```
 
 ```bash
-curl -sS "https://wp.trenerka-fit.ru/wp-json/trenerka/v1/auth/me" \
+curl -sS "http://wp.trenerka-fit.ru/wp-json/trenerka/v1/auth/me" \
   -H "Authorization: Bearer ВАШ_ТОКЕН"
 ```
 
@@ -153,7 +153,7 @@ curl -sS "https://wp.trenerka-fit.ru/wp-json/trenerka/v1/auth/me" \
 | Переменная | Значение |
 |------------|----------|
 | `VITE_USE_MOCK_DATA` | `false` |
-| `VITE_WP_API_URL` | `https://wp.trenerka-fit.ru/wp-json` |
+| `VITE_WP_API_URL` | `http://wp.trenerka-fit.ru/wp-json` |
 | `VITE_SKILLS_URL` | `https://fitnesakademiya.ru` |
 
 Сборка: `cd frontend && npm run build` — значения вшиваются в бандл на этапе build.
@@ -190,7 +190,7 @@ Trenerka ограничивает вложения **10 МБ** на уровне
 | 6 | `wp-config.php`: `JWT_AUTH_*`, `TRENERKA_FRONTEND_URL=https://app.trenerka-fit.ru` | ☐ |
 | 7 | `.htaccess` WP: передача `Authorization` | ☐ |
 | 8 | Постоянные ссылки: «Название записи» | ☐ |
-| 9 | `curl https://wp.trenerka-fit.ru/wp-json/` → JSON | ☐ |
+| 9 | `curl http://wp.trenerka-fit.ru/wp-json/` → JSON | ☐ |
 | 10 | JWT `/jwt-auth/v1/token` → поле `token` | ☐ |
 | 11 | Локально `npm run build`, загрузка `dist/` в `app.../public_html/` | ☐ |
 | 12 | `https://app.trenerka-fit.ru` — логин тренера, CRM, чат, файл &lt; 10 МБ | ☐ |
@@ -236,7 +236,7 @@ Trenerka ограничивает вложения **10 МБ** на уровне
 ### Cron напоминаний
 
 ```bash
-curl -sS "https://wp.trenerka-fit.ru/wp-cron.php?doing_wp_cron" > /dev/null
+curl -sS "http://wp.trenerka-fit.ru/wp-cron.php?doing_wp_cron" > /dev/null
 ```
 
 каждые 5–15 минут в планировщике Beget; опционально `define('DISABLE_WP_CRON', true);` в `wp-config.php`.
