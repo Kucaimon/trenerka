@@ -89,7 +89,13 @@ export function ClientsPage() {
                   <Button variant="ghost" size="icon" className="h-8 w-8" title={t('common:actions.exportCsv')} onClick={() => exportClientsSpreadsheet(filtered)}>
                     <Download className="h-4 w-4" />
                   </Button>
-                  <Button size="icon" className="h-8 w-8" onClick={() => setCreateOpen(true)}>
+                  <Button
+                    size="icon"
+                    className="h-8 w-8"
+                    title={t('clients.actions.addClient')}
+                    aria-label={t('clients.actions.addClient')}
+                    onClick={() => setCreateOpen(true)}
+                  >
                     <UserPlus className="h-4 w-4" />
                   </Button>
                 </div>

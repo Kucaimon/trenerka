@@ -134,6 +134,9 @@
   },
   "clients": {
     "title": "Clients",
+    "breadcrumb": {
+      "clients": "العملاء"
+    },
     "inDatabase": "{{count}} in database",
     "searchPlaceholder": "Search by name…",
     "filters": {
@@ -163,6 +166,7 @@
       "goal": "Custom goal"
     },
     "actions": {
+      "addClient": "إضافة عميل",
       "message": "Message",
       "assignProgram": "Assign program"
     },

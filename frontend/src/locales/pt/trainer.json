@@ -132,6 +132,9 @@
   },
   "clients": {
     "title": "Clients",
+    "breadcrumb": {
+      "clients": "Clientes"
+    },
     "inDatabase": "{{count}} in database",
     "searchPlaceholder": "Search by name…",
     "filters": {
@@ -161,6 +164,7 @@
       "goal": "Custom goal"
     },
     "actions": {
+      "addClient": "Adicionar cliente",
       "message": "Message",
       "assignProgram": "Assign program"
     },

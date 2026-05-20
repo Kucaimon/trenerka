@@ -149,6 +149,9 @@
     "loadError": "Could not load client profile",
     "archiveEqualsDelete": "Archive hides the client from active lists — contact support for permanent deletion.",
     "title": "Clients",
+    "breadcrumb": {
+      "clients": "Clients"
+    },
     "inDatabase": "{{count}} in database",
     "searchPlaceholder": "Search by name…",
     "filters": {
@@ -178,6 +181,7 @@
       "goal": "Custom goal"
     },
     "actions": {
+      "addClient": "Add client",
       "message": "Message",
       "assignProgram": "Assign program"
     },
