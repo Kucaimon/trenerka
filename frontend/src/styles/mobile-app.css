@@ -52,7 +52,20 @@
 }
 
 @media (min-width: 768px) {
-  .app-shell--client {
+  .app-shell.app-shell--client.app-shell--desktop {
+    flex-direction: row;
+    width: 100%;
+    max-width: none;
+    min-height: 100dvh;
+    max-height: none;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .app-shell--client:not(.app-shell--desktop) {
     width: 100%;
     max-width: 48rem;
     min-height: 100dvh;
@@ -63,14 +76,38 @@
     box-shadow: none;
   }
 
-  .app-shell--client .app-content {
+  .app-shell--client .app-content,
+  .client-main-content {
     padding-bottom: calc(var(--mobile-padding) + var(--safe-area-bottom) + 1rem);
+  }
+
+  .app-shell--client.app-shell--desktop .client-main-content,
+  .app-shell--client.app-shell--desktop .app-content {
+    padding-bottom: var(--mobile-padding-lg);
   }
 }
 
-@media (min-width: 1280px) {
-  .app-shell--client {
-    max-width: 56rem;
+.client-layout-root {
+  min-height: 100dvh;
+}
+
+.client-main {
+  margin-left: 0;
+  width: 100%;
+  max-width: none;
+}
+
+.client-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (min-width: 1024px) {
+  .client-main-content > * {
+    max-width: 72rem;
+    margin-inline: auto;
+    width: 100%;
   }
 }
 
@@ -155,7 +192,8 @@
 }
 
 @media (min-width: 768px) {
-  .app-tab-bar-wrap--trainer {
+  .app-tab-bar-wrap--trainer,
+  .app-tab-bar-wrap:not(.app-tab-bar-wrap--trainer) {
     display: none !important;
   }
 }

@@ -14,7 +14,7 @@ export function ClientWorkoutsPage() {
   const weekPct = weekCompletionPercent(workouts)
 
   return (
-    <MobileListStagger className="space-y-5">
+    <MobileListStagger className="mx-auto w-full max-w-4xl space-y-5 lg:max-w-none">
       <MobileListItem>
         <section>
           <p className="label-caps">{t('workouts.label')}</p>

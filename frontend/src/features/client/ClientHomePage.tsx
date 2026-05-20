@@ -55,9 +55,9 @@ export function ClientHomePage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="mx-auto max-w-4xl space-y-4 pb-6"
+      className="mx-auto w-full max-w-4xl space-y-4 pb-6 lg:max-w-none"
     >
-      <header className="flex items-center gap-3 px-1">
+      <header className="flex items-center gap-3 px-1 lg:col-span-2">
         <Avatar className="h-11 w-11 border border-[var(--border-strong)]">
           <AvatarFallback className="bg-[var(--surface2)] text-base font-bold text-[var(--accent)]">
             {firstName.slice(0, 1).toUpperCase()}
@@ -72,14 +72,14 @@ export function ClientHomePage() {
       </header>
 
       {dashboardLoading || workoutsLoading ? (
-        <div className="flex items-center gap-2 px-1 text-sm text-[var(--text-muted)]">
+        <div className="flex items-center gap-2 px-1 text-sm text-[var(--text-muted)] lg:col-span-2">
           <Loader2 className="h-4 w-4 animate-spin" />
           {t('common:actions.loading')}
         </div>
       ) : null}
 
       {dashboardError ? (
-        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--danger)]/30 bg-[var(--danger)]/10 px-4 py-3 text-sm">
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--danger)]/30 bg-[var(--danger)]/10 px-4 py-3 text-sm lg:col-span-2">
           <span>{t('home.loadError')}</span>
           <Button type="button" variant="secondary" size="sm" onClick={() => void refetchDashboard()}>
             {t('common:actions.retry')}
@@ -87,6 +87,8 @@ export function ClientHomePage() {
         </div>
       ) : null}
 
+      <div className="contents lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
+      <div className="contents space-y-4 lg:block lg:space-y-4">
       <Card className="border-[var(--border)] bg-[var(--surface2)]">
         <CardContent className="flex items-center justify-between gap-4 p-4">
           <div className="flex items-center gap-3">
@@ -168,7 +170,43 @@ export function ClientHomePage() {
         </Card>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+      {history.length > 0 ? (
+        <Card>
+          <CardHeader className="flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-semibold">{t('home.history.title')}</CardTitle>
+            <Link to="/client/workouts" className="text-xs font-medium text-[var(--accent)]">
+              {t('common:actions.viewAll')}
+            </Link>
+          </CardHeader>
+          <CardContent className="space-y-0 p-0">
+            {history.map((workout, index) => (
+              <Link
+                key={workout.id}
+                to={`/client/workouts/${workout.id}/session`}
+                className={cn(
+                  'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--surface3)]',
+                  index < history.length - 1 && 'border-b border-[var(--border)]',
+                )}
+              >
+                <span className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--accent-dim)]">
+                  <Dumbbell className="h-4 w-4 text-[var(--accent)]" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{workout.title}</p>
+                  <p className="text-xs text-[var(--text-muted)]">
+                    {workout.day}
+                    {workout.status === 'done' ? ` · ${t('home.history.done')}` : ''}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
+      </div>
+
+      <div className="contents space-y-4 lg:block lg:space-y-4">
+      <div className="grid gap-3 sm:grid-cols-[1fr_auto] lg:grid-cols-1">
         <Card className="border-[var(--border)] bg-[var(--surface2)]">
           <CardContent className="flex items-center justify-between gap-4 p-4">
             <div>
@@ -215,8 +253,8 @@ export function ClientHomePage() {
             </Link>
           </CardHeader>
           <CardContent>
-            <div className="h-28">
-              <ResponsiveContainer width="100%" height={112}>
+            <div className="h-28 lg:h-40">
+              <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={measurementSeries}>
                   <Area
                     type="monotone"
@@ -230,40 +268,6 @@ export function ClientHomePage() {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-          </CardContent>
-        </Card>
-      ) : null}
-
-      {history.length > 0 ? (
-        <Card>
-          <CardHeader className="flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-semibold">{t('home.history.title')}</CardTitle>
-            <Link to="/client/workouts" className="text-xs font-medium text-[var(--accent)]">
-              {t('common:actions.viewAll')}
-            </Link>
-          </CardHeader>
-          <CardContent className="space-y-0 p-0">
-            {history.map((workout, index) => (
-              <Link
-                key={workout.id}
-                to={`/client/workouts/${workout.id}/session`}
-                className={cn(
-                  'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--surface3)]',
-                  index < history.length - 1 && 'border-b border-[var(--border)]',
-                )}
-              >
-                <span className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--accent-dim)]">
-                  <Dumbbell className="h-4 w-4 text-[var(--accent)]" />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{workout.title}</p>
-                  <p className="text-xs text-[var(--text-muted)]">
-                    {workout.day}
-                    {workout.status === 'done' ? ` · ${t('home.history.done')}` : ''}
-                  </p>
-                </div>
-              </Link>
-            ))}
           </CardContent>
         </Card>
       ) : null}
@@ -313,6 +317,8 @@ export function ClientHomePage() {
             )}
           </CardContent>
         </Card>
+      </div>
+      </div>
       </div>
     </motion.div>
   )

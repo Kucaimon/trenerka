@@ -20,6 +20,7 @@ export function AppShell({
   mobileNav,
 }: AppShellProps) {
   const isTrainer = variant === 'trainer'
+  const isClient = variant === 'client'
 
   return (
     <div className={cn('trainer-layout-root min-h-dvh w-full overflow-x-hidden bg-[var(--black)]', rootClassName)}>
@@ -27,9 +28,9 @@ export function AppShell({
         className={cn(
           'ds-app-shell',
           isTrainer && 'app-shell app-shell--trainer min-h-dvh w-full',
-          variant === 'client' && 'app-shell app-shell--client',
-          !isTrainer && variant !== 'client' && 'ds-app-shell--row',
-          isTrainer && 'flex-col md:flex-row',
+          isClient && 'app-shell app-shell--client app-shell--desktop min-h-dvh w-full',
+          !isTrainer && !isClient && 'ds-app-shell--row',
+          (isTrainer || isClient) && 'flex-col md:flex-row',
           className,
         )}
       >

@@ -84,7 +84,7 @@ export function ProgressPage() {
   }
 
   return (
-    <div className="space-y-7">
+    <div className="mx-auto w-full max-w-4xl space-y-7 lg:max-w-none">
       <header>
         <p className="label-caps">{t('progress.eyebrow')}</p>
         <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight">{t('progress.title')}</h1>
