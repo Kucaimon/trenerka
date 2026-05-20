@@ -161,6 +161,46 @@ function useNavGroups(): NavGroup[] {
   ]
 }
 
+const mobileMoreNavItemClass =
+  'flex min-h-[48px] items-center gap-2.5 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors'
+
+function TrainerMobileMoreNavItem({
+  item,
+  onNavigate,
+}: {
+  item: NavItem
+  onNavigate: () => void
+}) {
+  if (item.href) {
+    return (
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={mobileMoreNavItemClass}
+        onClick={onNavigate}
+      >
+        <item.icon className="h-5 w-5 shrink-0 opacity-80" strokeWidth={1.75} />
+        <span className="truncate">{item.label}</span>
+        <ExternalLink className="ml-auto h-4 w-4 shrink-0 opacity-50" aria-hidden />
+      </a>
+    )
+  }
+
+  return (
+    <NavLink
+      to={item.to!}
+      className={({ isActive }) =>
+        cn(mobileMoreNavItemClass, isActive && 'bg-[rgba(184,245,61,0.08)] text-[var(--accent)]')
+      }
+      onClick={onNavigate}
+    >
+      <item.icon className="h-5 w-5 shrink-0 opacity-80" strokeWidth={1.75} />
+      <span>{item.label}</span>
+    </NavLink>
+  )
+}
+
 function TrainerNavItem({
   item,
   collapsed,
@@ -379,38 +419,14 @@ export function TrainerLayout() {
       </div>
 
       <MobileBottomSheet open={moreOpen} onClose={() => setMoreOpen(false)} title={t('nav.sections')}>
-        <nav className="grid grid-cols-2 gap-2 p-4">
-          {mobileMoreNav.map((item) =>
-            item.href ? (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex min-h-[48px] items-center gap-2.5 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors"
-                onClick={() => setMoreOpen(false)}
-              >
-                <item.icon className="h-5 w-5 shrink-0 opacity-80" strokeWidth={1.75} />
-                <span className="truncate">{item.label}</span>
-                <ExternalLink className="ml-auto h-4 w-4 shrink-0 opacity-50" aria-hidden />
-              </a>
-            ) : (
-              <NavLink
-                key={item.to}
-                to={item.to!}
-                className={({ isActive }) =>
-                  cn(
-                    'flex min-h-[48px] items-center gap-2.5 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors',
-                    isActive && 'bg-[rgba(184,245,61,0.08)] text-[var(--accent)]',
-                  )
-                }
-                onClick={() => setMoreOpen(false)}
-              >
-                <item.icon className="h-5 w-5 shrink-0 opacity-80" strokeWidth={1.75} />
-                <span>{item.label}</span>
-              </NavLink>
-            ),
-          )}
+        <nav className="grid grid-cols-2 gap-2 p-4" aria-label={t('nav.sections')}>
+          {mobileMoreNav.map((item) => (
+            <TrainerMobileMoreNavItem
+              key={item.to ?? item.href}
+              item={item}
+              onNavigate={() => setMoreOpen(false)}
+            />
+          ))}
         </nav>
       </MobileBottomSheet>
 
