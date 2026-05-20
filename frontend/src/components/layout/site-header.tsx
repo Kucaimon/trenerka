@@ -67,12 +67,7 @@ export function SiteHeader() {
           </Button>
         </div>
 
-        <motion.div
-          className="flex shrink-0 items-center gap-1 lg:hidden"
-          initial={false}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
-        >
+        <motion.div className="concept-nav-mobile-actions lg:hidden">
           <LanguageSwitcher variant="ghost" compact className="border-transparent px-2" />
           <Button
             type="button"
