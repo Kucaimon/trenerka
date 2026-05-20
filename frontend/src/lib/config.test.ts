@@ -24,4 +24,13 @@ describe('config', () => {
     const { config } = await import('@/lib/config')
     expect(config.wpApiUrl).toBe('https://staging.example.com/wp-json')
   })
+
+  it('does not fall back to localhost in production when url is empty', async () => {
+    vi.stubEnv('MODE', 'production')
+    vi.stubEnv('PROD', true)
+    vi.stubEnv('VITE_USE_MOCK_DATA', 'false')
+    vi.stubEnv('VITE_WP_API_URL', '')
+    const { config } = await import('@/lib/config')
+    expect(config.wpApiUrl).toBe('')
+  })
 })

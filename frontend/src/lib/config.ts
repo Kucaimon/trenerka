@@ -1,6 +1,9 @@
 function normalizeWpApiUrl(raw: string | undefined): string {
   const trimmed = (raw ?? '').trim().replace(/\/+$/, '')
-  if (!trimmed) return 'http://localhost:8080/wp-json'
+  if (!trimmed) {
+    if (import.meta.env.PROD) return ''
+    return 'http://localhost:8080/wp-json'
+  }
   return trimmed.endsWith('/wp-json') ? trimmed : `${trimmed}/wp-json`
 }
 
