@@ -4,6 +4,7 @@ import { TrainerLayout } from '@/components/layout/trainer-layout'
 import { ClientShell } from '@/components/layout/client-shell'
 import { AdminLayout } from '@/components/layout/admin-layout'
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute'
+import { RouteErrorFallback } from '@/components/shared/RouteErrorFallback'
 import {
   AdminDashboardPage,
   AnalyticsPage,
@@ -69,6 +70,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/trainer',
+    errorElement: <RouteErrorFallback />,
     element: (
       <ProtectedRoute role="trainer">
         <TrainerLayout />
@@ -95,6 +97,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/client',
+    errorElement: <RouteErrorFallback />,
     element: (
       <ProtectedRoute role="client">
         <ClientShell />

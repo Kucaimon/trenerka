@@ -12,7 +12,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Camera, Download, Loader2, Ruler, Scale, TrendingDown, X } from 'lucide-react'
+import { Camera, Loader2, Ruler, Scale, TrendingDown, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -181,14 +181,9 @@ export function ProgressPage() {
       ) : null}
 
       <section className="rounded-[22px] border border-[var(--border)] bg-white/[0.03] p-5">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <TrendingDown className="h-4 w-4 text-[var(--accent)]" />
-            <p className="text-sm font-semibold">{t('progress.form.newMeasurement')}</p>
-          </div>
-          <Button variant="secondary" size="sm" disabled>
-            <Download className="h-4 w-4" /> PDF
-          </Button>
+        <div className="mb-4 flex items-center gap-2">
+          <TrendingDown className="h-4 w-4 text-[var(--accent)]" />
+          <p className="text-sm font-semibold">{t('progress.form.newMeasurement')}</p>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">

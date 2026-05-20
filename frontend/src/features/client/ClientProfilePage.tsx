@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { ChevronRight, LogOut, Wallet } from 'lucide-react'
 import { useAuthStore } from '@/store/auth-store'
 import { useClientDashboard } from '@/features/api/hooks'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 export function ClientProfilePage() {
@@ -45,22 +44,17 @@ export function ClientProfilePage() {
         <ChevronRight className="h-5 w-5 text-[var(--text-muted)]" />
       </Link>
 
-      <div className="glass-panel space-y-4 p-5">
-        <p className="label-caps">{t('profile.filesTitle')}</p>
-        <p className="text-sm leading-6 text-[var(--text-secondary)]">{t('profile.filesHint')}</p>
-        <Badge variant="accent">{t('profile.premium')}</Badge>
-        <Button
-          variant="outline"
-          className="mt-4 w-full gap-2"
-          onClick={() => {
-            logout()
-            navigate('/')
-          }}
-        >
-          <LogOut className="h-4 w-4" />
-          {t('common:actions.logout')}
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        className="w-full gap-2"
+        onClick={() => {
+          logout()
+          navigate('/')
+        }}
+      >
+        <LogOut className="h-4 w-4" />
+        {t('common:actions.logout')}
+      </Button>
     </div>
   )
 }

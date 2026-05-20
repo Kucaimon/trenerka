@@ -29,7 +29,6 @@ import { useAuthStore } from '@/store/auth-store'
 import { Button } from '@/components/ui/button'
 import { LogoLink } from '@/components/shared/LogoLink'
 import { CommandPalette } from '@/components/layout/command-palette'
-import { SkillsButton } from '@/components/shared/SkillsButton'
 import { useClients, useTrainerAnalytics } from '@/features/api/hooks'
 import {
   MobileTabBar,
@@ -142,14 +141,6 @@ function useNavGroups(): NavGroup[] {
       ],
     },
   ]
-}
-
-function MoreMenuSkills() {
-  return (
-    <div className="col-span-2 border-t border-[var(--border)] pt-3">
-      <SkillsButton fullWidth />
-    </div>
-  )
 }
 
 export function TrainerLayout() {
@@ -344,7 +335,6 @@ export function TrainerLayout() {
               <span>{item.label}</span>
             </NavLink>
           ))}
-          <MoreMenuSkills />
           <div className="col-span-2 border-t border-[var(--border)] pt-3">
             <MobileLanguageList onSelect={() => setMoreOpen(false)} />
           </div>

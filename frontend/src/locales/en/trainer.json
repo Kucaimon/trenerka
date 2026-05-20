@@ -64,23 +64,12 @@
   },
   "filesPage": {
     "title": "Files",
-    "description": "Client documents and media. Upload up to 10 MB via API /upload (MVP: demo list).",
+    "description": "Client documents and media. File upload will be available in a future release.",
     "clientsCount": "{{count}} clients",
-    "filesCount": "{{count}} files",
     "training": "Training",
     "trainingHint": "Fitness Academy courses and materials",
-    "demo": {
-      "0": "D",
-      "1": "e",
-      "2": "m",
-      "3": "o",
-      "name1": "Questionnaire_Anna.pdf",
-      "name2": "Progress_May.jpg",
-      "name3": "Contract_Ivan.pdf",
-      "size1": "240 KB",
-      "size2": "1.2 MB",
-      "size3": "180 KB"
-    }
+    "emptyTitle": "No files yet",
+    "empty": "Uploaded client documents will appear here once the file API is connected."
   },
   "settings": {
     "title": "Settings",

@@ -34,7 +34,12 @@
     "exportCsv": "Export CSV",
     "addPayment": "Add payment",
     "all": "All",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "home": "Home"
+  },
+  "errors": {
+    "pageTitle": "Something went wrong",
+    "unexpected": "An unexpected error occurred. Try refreshing the page."
   },
   "nav": {
     "product": "Product",
@@ -66,7 +71,7 @@
     "socialTelegram": "Telegram",
     "socialVk": "VK"
   },
-  "skills": "Skills",
+  "skills": "Fitness Academy",
   "notFound": "Not found",
   "deleted": "Deleted",
   "saveError": "Save failed",

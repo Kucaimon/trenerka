@@ -36,9 +36,9 @@ export function AnalyticsPage() {
   const { t } = useTranslation(['trainer', 'common'])
   const [period, setPeriod] = useState('6m')
   const { data: analytics } = useTrainerAnalytics()
-  const { data: mockRevenueData = [] } = useQuery({ queryKey: ['revenue-chart'], queryFn: getRevenueChart })
-  const { data: mockRetentionData = [] } = useQuery({ queryKey: ['retention-chart'], queryFn: getRetentionChart })
-  const { data: mockAttendanceData = [] } = useQuery({ queryKey: ['attendance-chart'], queryFn: getAttendanceChart })
+  const { data: revenueData = [] } = useQuery({ queryKey: ['revenue-chart'], queryFn: getRevenueChart })
+  const { data: retentionData = [] } = useQuery({ queryKey: ['retention-chart'], queryFn: getRetentionChart })
+  const { data: attendanceData = [] } = useQuery({ queryKey: ['attendance-chart'], queryFn: getAttendanceChart })
   const { data: weekdayData = [] } = useQuery({ queryKey: ['weekday-chart'], queryFn: getWeekdayActivityChart })
   const { data: subscriptionData = [] } = useQuery({ queryKey: ['subscription-chart'], queryFn: getSubscriptionMixChart })
 
@@ -69,14 +69,14 @@ export function AnalyticsPage() {
       </div>
 
       <div className="grid gap-4 overflow-x-hidden xl:grid-cols-2">
-        {(config.useMockData || mockRevenueData.length > 0) && (
+        {(config.useMockData || revenueData.length > 0) && (
         <Card className="chart-grid-bg">
           <CardHeader>
             <CardTitle>{t('analytics.charts.revenueByMonth')}</CardTitle>
           </CardHeader>
           <CardContent className="chart-mobile h-64 min-h-[200px] pt-0 md:h-72">
             <ResponsiveContainer width="100%" height="100%" minHeight={200}>
-              <BarChart data={mockRevenueData}>
+              <BarChart data={revenueData}>
                 <CartesianGrid stroke={CHART.grid} vertical={false} />
                 <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
@@ -95,7 +95,7 @@ export function AnalyticsPage() {
           </CardHeader>
           <CardContent className="chart-mobile h-64 min-h-[200px] pt-0 md:h-72">
             <ResponsiveContainer width="100%" height="100%" minHeight={200}>
-              <AreaChart data={mockRetentionData}>
+              <AreaChart data={retentionData}>
                 <CartesianGrid stroke={CHART.grid} vertical={false} />
                 <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke={CHART.axis} fontSize={11} domain={[80, 100]} tickLine={false} axisLine={false} />
@@ -161,7 +161,7 @@ export function AnalyticsPage() {
           </CardHeader>
           <CardContent className="h-56 pt-0">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockAttendanceData}>
+              <BarChart data={attendanceData}>
                 <CartesianGrid stroke={CHART.grid} vertical={false} />
                 <XAxis dataKey="week" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />

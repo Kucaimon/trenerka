@@ -34,7 +34,12 @@
     "exportCsv": "Экспорт CSV",
     "addPayment": "Добавить оплату",
     "all": "Все",
-    "viewAll": "Все"
+    "viewAll": "Все",
+    "home": "На главную"
+  },
+  "errors": {
+    "pageTitle": "Что-то пошло не так",
+    "unexpected": "Произошла непредвиденная ошибка. Попробуйте обновить страницу."
   },
   "nav": {
     "product": "Продукт",
@@ -66,7 +71,7 @@
     "socialTelegram": "Telegram",
     "socialVk": "ВКонтакте"
   },
-  "skills": "Навыки",
+  "skills": "Курсы Фитнес Академии",
   "notFound": "Не найдено",
   "deleted": "Удалено",
   "saveError": "Ошибка сохранения",
