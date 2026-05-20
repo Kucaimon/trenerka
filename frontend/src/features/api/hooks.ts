@@ -39,6 +39,7 @@ export const queryKeys = {
   news: ['news'] as const,
   clientProgram: (id: string) => ['client-program', id] as const,
   clientProgressReports: (id: string) => ['client-progress-reports', id] as const,
+  clientWorkoutCompletions: (id: string) => ['client-workout-completions', id] as const,
 }
 
 export function useClients() {
@@ -216,6 +217,14 @@ export function useClientProgressReports(clientId: string) {
   return useQuery({
     queryKey: queryKeys.clientProgressReports(clientId),
     queryFn: () => clientsApi.getClientProgress(clientId),
+    enabled: !!clientId,
+  })
+}
+
+export function useClientWorkoutCompletions(clientId: string) {
+  return useQuery({
+    queryKey: queryKeys.clientWorkoutCompletions(clientId),
+    queryFn: () => clientsApi.getClientWorkoutCompletions(clientId),
     enabled: !!clientId,
   })
 }
