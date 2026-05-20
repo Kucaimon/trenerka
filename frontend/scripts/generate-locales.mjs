@@ -604,7 +604,7 @@ const T = {
       },
       filesPage: {
         title: 'Файлы',
-        description: 'Документы и медиа клиентов. Загрузка до 10 МБ — через API /upload (MVP: демо-список).',
+        description: 'Документы и медиа клиентов из CRM и чата.',
         clientsCount: '{{count}} клиентов',
         filesCount: '{{count}} файлов',
         training: 'Обучение',
@@ -666,7 +666,7 @@ const T = {
       },
       filesPage: {
         title: 'Files',
-        description: 'Client documents and media. Upload up to 10 MB via API /upload (MVP: demo list).',
+        description: 'Client documents and media from CRM and chat.',
         clientsCount: '{{count}} clients',
         filesCount: '{{count}} files',
         training: 'Training',
@@ -843,7 +843,7 @@ for (const lang of ['de', 'pt', 'ja', 'it', 'es', 'fr', 'ar', 'zh-CN']) {
     },
     filesPage: {
       title: nav.files,
-      description: lang === 'de' ? 'Kundendokumente und Medien. Upload bis 10 MB (MVP: Demo).' : lang === 'ar' ? 'مستندات ووسائط العملاء. رفع حتى 10 ميجا (عرض تجريبي).' : 'Client documents and media (MVP: demo).',
+      description: lang === 'de' ? 'Kundendokumente und Medien aus CRM und Chat.' : lang === 'ar' ? 'مستندات ووسائط العملاء من CRM والدردشة.' : 'Client documents and media from CRM and chat.',
       clientsCount: lang === 'de' ? '{{count}} Kunden' : lang === 'ar' ? '{{count}} عملاء' : '{{count}} clients',
       filesCount: lang === 'de' ? '{{count}} Dateien' : lang === 'ar' ? '{{count}} ملفات' : '{{count}} files',
       training: lang === 'de' ? 'Schulung' : lang === 'ar' ? 'تدريب' : lang === 'zh-CN' ? '培训' : 'Training',

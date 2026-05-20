@@ -149,7 +149,7 @@ export const extensions = {
       register: {
         confirmPassword: 'Подтвердите пароль',
         submitting: 'Создание…',
-        mockVerifyHint: 'MVP (без SMTP): подтвердите email по ссылке',
+        mockVerifyHint: 'Подтвердите email по ссылке ниже',
         mockVerifyLink: 'Подтвердить сейчас',
       },
       validation: { passwordMismatch: 'Пароли не совпадают' },
@@ -170,7 +170,7 @@ export const extensions = {
         submitting: 'Отправка…',
         back: 'Назад',
         toastSent: 'Инструкции отправлены на email',
-        mockLinkHint: 'MVP (mock): ссылка сброса',
+        mockLinkHint: 'Ссылка для сброса пароля',
         newPasswordTitle: 'Новый пароль',
         newPasswordSubtitle: 'Введите новый пароль для входа',
         newPassword: 'Новый пароль',
@@ -190,7 +190,7 @@ export const extensions = {
       register: {
         confirmPassword: 'Confirm password',
         submitting: 'Creating…',
-        mockVerifyHint: 'MVP (no SMTP): confirm email via link',
+        mockVerifyHint: 'Confirm your email using the link below',
         mockVerifyLink: 'Confirm now',
       },
       validation: { passwordMismatch: 'Passwords do not match' },
@@ -211,7 +211,7 @@ export const extensions = {
         submitting: 'Sending…',
         back: 'Back',
         toastSent: 'Instructions sent to your email',
-        mockLinkHint: 'MVP (mock): reset link',
+        mockLinkHint: 'Password reset link',
         newPasswordTitle: 'New password',
         newPasswordSubtitle: 'Enter a new password for sign in',
         newPassword: 'New password',
@@ -371,7 +371,7 @@ export const extensions = {
         setupDescription: 'Заполните профиль — так клиенты увидят вас в чатах и CRM.',
         setupBanner: 'Перед началом работы укажите ФИО, специализацию, опыт и контакты.',
         cardTitle: 'Данные тренера',
-        cardDescription: 'ФИО, специализация, опыт, телефон и аватар по ТЗ §4.2.1.',
+        cardDescription: 'Укажите данные для отображения в кабинете и для клиентов.',
         badgePro: 'Pro',
         defaultName: 'Тренер',
         fields: {
@@ -384,8 +384,7 @@ export const extensions = {
         specializationPlaceholder: 'Силовой тренинг, похудение…',
         experiencePlaceholder: 'Например: 5 лет, сертификат ACE',
         uploadAvatar: 'Загрузить аватар',
-        avatarMockHint: 'MVP: превью локально (UploadThing — когда задан VITE_UPLOADTHING_APP_ID).',
-        avatarUploadThing: 'Загрузка через UploadThing при сохранении.',
+        avatarHint: 'JPG или PNG, до 5 МБ. Сохраните профиль, чтобы загрузить фото.',
         avatarTooLarge: 'Файл больше 5 МБ',
         saved: 'Профиль сохранён',
         validation: {
@@ -618,7 +617,7 @@ export const extensions = {
         setupDescription: 'Complete your profile so clients see you in chats and CRM.',
         setupBanner: 'Before you start, add your name, specialization, experience, and contacts.',
         cardTitle: 'Trainer details',
-        cardDescription: 'Full name, specialization, experience, phone, and avatar per spec §4.2.1.',
+        cardDescription: 'Add your details for your dashboard and client-facing pages.',
         badgePro: 'Pro',
         defaultName: 'Trainer',
         fields: {
@@ -631,8 +630,7 @@ export const extensions = {
         specializationPlaceholder: 'Strength training, weight loss…',
         experiencePlaceholder: 'e.g. 5 years, ACE certified',
         uploadAvatar: 'Upload avatar',
-        avatarMockHint: 'MVP: local preview (UploadThing when VITE_UPLOADTHING_APP_ID is set).',
-        avatarUploadThing: 'Upload via UploadThing on save.',
+        avatarHint: 'JPG or PNG, up to 5 MB. Save your profile to upload the photo.',
         avatarTooLarge: 'File is larger than 5 MB',
         saved: 'Profile saved',
         validation: {
@@ -811,7 +809,7 @@ export const extensions = {
       nutrition: {
         eyebrow: 'Питание',
         title: 'План на сегодня',
-        subtitle: 'Базовый MVP: план питания, калории и заметки для тренера.',
+        subtitle: 'План питания на день, калории и заметки для тренера.',
         calories: 'Калории',
         goalProgress: '74% от дневной цели · 1 820 ккал',
         protein: 'белок',
@@ -917,7 +915,7 @@ export const extensions = {
       nutrition: {
         eyebrow: 'Nutrition',
         title: "Today's plan",
-        subtitle: 'MVP: meal plan, calories, and notes for your coach.',
+        subtitle: "Today's meal plan, calories, and notes for your coach.",
         calories: 'Calories',
         goalProgress: '74% of daily goal · 1,820 kcal',
         protein: 'protein',

@@ -184,11 +184,7 @@ export function ProfilePage() {
                   <Camera className="h-4 w-4" />
                   {t('profile.uploadAvatar')}
                 </Button>
-                <p className="text-xs text-[var(--text-muted)]">
-                  {import.meta.env.VITE_UPLOADTHING_APP_ID
-                    ? t('profile.avatarUploadThing')
-                    : t('profile.avatarMockHint')}
-                </p>
+                <p className="text-xs text-[var(--text-muted)]">{t('profile.avatarHint')}</p>
               </div>
             </div>
 

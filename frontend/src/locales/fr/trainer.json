@@ -64,7 +64,7 @@
   },
   "filesPage": {
     "title": "Fichiers",
-    "description": "Client documents and media (MVP: demo).",
+    "description": "Client documents and media from CRM and chat.",
     "clientsCount": "{{count}} clients",
     "filesCount": "{{count}} files",
     "training": "Training",
@@ -382,7 +382,7 @@
     "setupDescription": "Complete your profile so clients see you in chats and CRM.",
     "setupBanner": "Before you start, add your name, specialization, experience, and contacts.",
     "cardTitle": "Trainer details",
-    "cardDescription": "Full name, specialization, experience, phone, and avatar per spec §4.2.1.",
+    "cardDescription": "Add your details for your dashboard and client-facing pages.",
     "badgePro": "Pro",
     "defaultName": "Trainer",
     "fields": {
@@ -395,15 +395,14 @@
     "specializationPlaceholder": "Strength training, weight loss…",
     "experiencePlaceholder": "e.g. 5 years, ACE certified",
     "uploadAvatar": "Upload avatar",
-    "avatarMockHint": "MVP: local preview (UploadThing when VITE_UPLOADTHING_APP_ID is set).",
-    "avatarUploadThing": "Upload via UploadThing on save.",
     "avatarTooLarge": "File is larger than 5 MB",
     "saved": "Profile saved",
     "validation": {
       "specialization": "Enter specialization",
       "experience": "Enter experience",
       "phone": "Enter phone number"
-    }
+    },
+    "avatarHint": "JPG or PNG, up to 5 MB. Save your profile to upload the photo."
   },
   "notifications": {
     "title": "Notifications",

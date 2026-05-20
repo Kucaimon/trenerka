@@ -446,7 +446,7 @@
       "retention": "Удержание",
       "sessions": "Сессии"
     },
-    "pdfExportStage2": "PDF — этап 2"
+    "pdfExportStage2": "Экспорт PDF (скоро)"
   },
   "profile": {
     "title": "Профиль",
@@ -454,7 +454,7 @@
     "setupDescription": "Заполните профиль — так клиенты увидят вас в чатах и CRM.",
     "setupBanner": "Перед началом работы укажите ФИО, специализацию, опыт и контакты.",
     "cardTitle": "Данные тренера",
-    "cardDescription": "ФИО, специализация, опыт, телефон и аватар по ТЗ §4.2.1.",
+    "cardDescription": "Укажите данные для отображения в кабинете и для клиентов.",
     "badgePro": "Pro",
     "defaultName": "Тренер",
     "fields": {
@@ -467,8 +467,7 @@
     "specializationPlaceholder": "Силовой тренинг, похудение…",
     "experiencePlaceholder": "Например: 5 лет, сертификат ACE",
     "uploadAvatar": "Загрузить аватар",
-    "avatarMockHint": "MVP: превью локально (UploadThing — когда задан VITE_UPLOADTHING_APP_ID).",
-    "avatarUploadThing": "Загрузка через UploadThing при сохранении.",
+    "avatarHint": "JPG или PNG, до 5 МБ. Сохраните профиль, чтобы загрузить фото.",
     "avatarTooLarge": "Файл больше 5 МБ",
     "saved": "Профиль сохранён",
     "validation": {
