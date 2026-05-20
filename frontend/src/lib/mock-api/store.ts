@@ -14,7 +14,9 @@ import {
   mockAttendanceData,
   mockWeekdayActivity,
   mockSubscriptionMix,
+  mockClientFiles,
 } from '@/lib/mock-data'
+import { currentMonthPrefix } from '@/lib/mock-data/dates'
 import { listExercisesFrom } from '@/lib/mock-data/exercise-list'
 import type { ExerciseListParams } from '@/features/api/exercise-list'
 import type {
@@ -34,7 +36,7 @@ import type {
   AdminUser,
 } from '@/types'
 
-const STORAGE_KEY = 'trenerka_mock_store_v3'
+const STORAGE_KEY = 'trenerka_mock_store_v4'
 
 interface MockStore {
   clients: Client[]
@@ -84,7 +86,11 @@ function seed(): MockStore {
         ],
       },
     ],
-    clientPrograms: [{ id: 'cp1', clientId: 'c1', programId: 'prog-1', startDate: '2025-05-01', status: 'active' }],
+    clientPrograms: [
+      { id: 'cp1', clientId: 'c1', programId: 'prog-1', startDate: '2026-04-01', status: 'active' },
+      { id: 'cp2', clientId: 'c4', programId: 'prog-1', startDate: '2026-03-15', status: 'active' },
+      { id: 'cp3', clientId: 'c10', programId: 'prog-1', startDate: '2026-05-01', status: 'active' },
+    ],
     events: mockCalendarEvents,
     payments: mockPayments,
     messages: mockMessages,
@@ -374,7 +380,9 @@ export const mockApi = {
     trainer(): TrainerAnalytics {
       return {
         activeClients: store.clients.filter((c) => c.status === 'active').length,
-        monthlyRevenue: store.payments.filter((p) => p.date.startsWith('2025-05')).reduce((s, p) => s + p.amount, 0),
+        monthlyRevenue: store.payments
+          .filter((p) => p.date.startsWith(currentMonthPrefix()))
+          .reduce((s, p) => s + p.amount, 0),
         weeklySessions: store.events.length,
         unreadMessages: store.messages.filter((m) => m.sender === 'client' && !m.read).length,
       }
@@ -441,4 +449,10 @@ export const mockApi = {
 
   achievements: () => mockAchievements,
   mealPlan: () => mockMealPlan,
+
+  files: {
+    byClient(clientId: string) {
+      return mockClientFiles.filter((f) => f.clientId === clientId)
+    },
+  },
 }

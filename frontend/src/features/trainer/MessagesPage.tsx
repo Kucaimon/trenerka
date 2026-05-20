@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { SaasPageHeader } from '@/components/saas'
 import { useClients, useMessages, useSendMessage } from '@/features/api/hooks'
+import { mockApi } from '@/lib/mock-api/store'
 import { uploadAttachment } from '@/features/api/messages-service'
 import { useIsMobile } from '@/components/mobile'
 import { cn } from '@/lib/utils'
@@ -73,23 +74,33 @@ export function MessagesPage() {
       <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-3">
         <Card className={cn('flex flex-col overflow-hidden p-0', isMobile && !showMobileList && 'hidden', isMobile && showMobileList && 'flex-1')}>
           <ScrollArea className="flex-1">
-            {clients.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => {
-                  setActiveClient(c.id)
-                  if (isMobile) setShowList(false)
-                }}
-                className={cn(
-                  'w-full border-b border-[var(--border)] px-4 py-3 text-left transition-colors hover:bg-white/[0.03]',
-                  activeClient === c.id && 'border-l-2 border-l-[var(--accent)] bg-white/[0.03]',
-                )}
-              >
-                <p className="text-sm font-medium">{c.name}</p>
-                <p className="truncate text-xs text-[var(--text-muted)]">{c.email}</p>
-              </button>
-            ))}
+            {clients.map((c) => {
+              const unread = mockApi.messages.list(c.id).filter((m) => m.sender === 'client' && !m.read).length
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveClient(c.id)
+                    if (isMobile) setShowList(false)
+                  }}
+                  className={cn(
+                    'flex w-full items-center gap-2 border-b border-[var(--border)] px-4 py-3 text-left transition-colors hover:bg-white/[0.03]',
+                    activeClient === c.id && 'border-l-2 border-l-[var(--accent)] bg-white/[0.03]',
+                  )}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium">{c.name}</p>
+                    <p className="truncate text-xs text-[var(--text-muted)]">{c.email}</p>
+                  </div>
+                  {unread > 0 ? (
+                    <span className="rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[10px] font-bold text-[#111]">
+                      {unread}
+                    </span>
+                  ) : null}
+                </button>
+              )
+            })}
           </ScrollArea>
         </Card>
 

@@ -90,11 +90,30 @@
   "dashboard": {
     "title": "Дашборд",
     "greeting": "Отличный день!",
+    "breadcrumb": {
+      "app": "Trenerka",
+      "dashboard": "Дашборд"
+    },
     "stats": {
       "clients": "Клиенты",
       "revenueMay": "Доход (май)",
       "workouts": "Тренировок",
-      "completion": "Выполнение"
+      "completion": "Выполнение",
+      "unread": "Непрочитанные"
+    },
+    "quickActions": {
+      "title": "Быстрые действия",
+      "addClient": "Клиент",
+      "workout": "Тренировка",
+      "session": "Сессия",
+      "message": "Сообщение"
+    },
+    "preview": {
+      "attendance": "Посещаемость",
+      "revenue": "Выручка"
+    },
+    "today": {
+      "badge": "Сегодня"
     },
     "change": {
       "weekClients": "↑ +3 за неделю",
@@ -114,13 +133,16 @@
     },
     "activeClients": {
       "title": "Активные клиенты",
-      "subtitle": "Последняя активность",
+      "subtitle": "Программа · прогресс · оплата",
       "empty": "Нет активных клиентов",
-      "noSessions": "Нет сессий"
+      "noSessions": "Нет сессий",
+      "progress": "Прогресс",
+      "program": "Программа"
     },
     "schedule": {
       "title": "Расписание на сегодня",
       "subtitle": "Ближайшие сессии",
+      "upcoming": "Предстоящие",
       "empty": "Нет событий"
     },
     "activity": {
@@ -183,10 +205,52 @@
     "back": "Клиенты",
     "tabs": {
       "overview": "Обзор",
+      "measurements": "Замеры",
+      "program": "Программа",
       "programs": "Программы",
       "progress": "Прогресс",
       "payments": "Оплаты",
-      "notes": "Заметки"
+      "notes": "Заметки",
+      "attendance": "Посещаемость",
+      "workouts": "Тренировки",
+      "files": "Файлы",
+      "messages": "Сообщения"
+    },
+    "attendance": {
+      "title": "История сессий",
+      "empty": "Нет записей в календаре",
+      "completed": "Выполнено"
+    },
+    "workouts": {
+      "title": "Тренировки программы",
+      "empty": "Программа не назначена"
+    },
+    "files": {
+      "title": "Файлы клиента",
+      "empty": "Нет загруженных файлов"
+    },
+    "messagesTab": {
+      "title": "Переписка",
+      "openChat": "Открыть в чатах"
+    },
+    "payment": {
+      "paid": "Оплачено",
+      "pending": "Ожидает",
+      "overdue": "Просрочено"
+    },
+    "activity": {
+      "minutesAgo": "{{count}} мин назад",
+      "hoursAgo": "{{count}} ч назад",
+      "daysAgo": "{{count}} дн назад"
+    },
+    "recentActivity": {
+      "workout": "Тренировка",
+      "message": "Сообщение",
+      "payment": "Оплата"
+    },
+    "notesSnippet": {
+      "title": "Заметки",
+      "empty": "Заметок пока нет"
     },
     "overview": {
       "workProfile": "Профиль работы",
@@ -329,6 +393,7 @@
   },
   "messages": {
     "title": "Сообщения",
+    "empty": "Сообщений пока нет",
     "selectClient": "Выберите клиента",
     "attachment": "Вложение: {{url}}",
     "placeholder": "Сообщение…",

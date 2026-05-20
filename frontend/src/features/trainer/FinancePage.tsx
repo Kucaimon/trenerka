@@ -12,6 +12,9 @@ import { useClients, usePayments, queryKeys } from '@/features/api/hooks'
 import { createPayment, exportPaymentsCsv, getPaymentProviderConfig, getPaymentReport } from '@/features/api/payments-service'
 import { formatRub, formatDate } from '@/lib/utils'
 import { Download } from 'lucide-react'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { getRevenueChart } from '@/features/api/analytics-service'
+import { CHART } from '@/lib/chart-theme'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export function FinancePage() {
@@ -32,6 +35,10 @@ export function FinancePage() {
   const { data: periodReport } = useQuery({
     queryKey: ['payment-report', reportFrom, reportTo],
     queryFn: () => getPaymentReport(reportFrom, reportTo),
+  })
+  const { data: revenueChart = [] } = useQuery({
+    queryKey: ['finance-revenue-chart'],
+    queryFn: getRevenueChart,
   })
 
   const total = payments.reduce((s, p) => s + p.amount, 0)
@@ -81,6 +88,23 @@ export function FinancePage() {
         <StatCard label={t('finance.stats.currentMonth')} value={formatRub(thisMonth)} highlight />
         <StatCard label={t('finance.stats.period')} value={formatRub(periodReport?.total ?? 0)} />
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('analytics.charts.revenueByMonth')}</CardTitle>
+        </CardHeader>
+        <CardContent className="chart-mobile h-56 pt-0">
+          <ResponsiveContainer width="100%" height="100%" minHeight={200}>
+            <BarChart data={revenueChart}>
+              <CartesianGrid stroke={CHART.grid} vertical={false} />
+              <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
+              <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
+              <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), t('dashboard.revenue.chart')]} />
+              <Bar dataKey="revenue" fill={CHART.accent} radius={[4, 4, 0, 0]} maxBarSize={36} />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

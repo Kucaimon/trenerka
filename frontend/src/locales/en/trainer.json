@@ -90,11 +90,30 @@
   "dashboard": {
     "title": "Dashboard",
     "greeting": "Great day!",
+    "breadcrumb": {
+      "app": "Trenerka",
+      "dashboard": "Dashboard"
+    },
     "stats": {
       "clients": "Clients",
-      "revenueMay": "Revenue (May)",
+      "revenueMay": "Revenue (month)",
       "workouts": "Workouts",
-      "completion": "Completion"
+      "completion": "Completion",
+      "unread": "Unread"
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "addClient": "Client",
+      "workout": "Workout",
+      "session": "Session",
+      "message": "Message"
+    },
+    "preview": {
+      "attendance": "Attendance",
+      "revenue": "Revenue"
+    },
+    "today": {
+      "badge": "Today"
     },
     "change": {
       "weekClients": "↑ +3 this week",
@@ -114,13 +133,16 @@
     },
     "activeClients": {
       "title": "Active clients",
-      "subtitle": "Recent activity",
+      "subtitle": "Program · progress · payment",
       "empty": "No active clients",
-      "noSessions": "No sessions"
+      "noSessions": "No sessions",
+      "progress": "Progress",
+      "program": "Program"
     },
     "schedule": {
       "title": "Today's schedule",
       "subtitle": "Upcoming sessions",
+      "upcoming": "Upcoming",
       "empty": "No events"
     },
     "activity": {
@@ -183,10 +205,52 @@
     "back": "Clients",
     "tabs": {
       "overview": "Overview",
+      "measurements": "Measurements",
+      "program": "Program",
       "programs": "Programs",
       "progress": "Progress",
       "payments": "Payments",
-      "notes": "Notes"
+      "notes": "Notes",
+      "attendance": "Attendance",
+      "workouts": "Workouts",
+      "files": "Files",
+      "messages": "Messages"
+    },
+    "attendance": {
+      "title": "Session history",
+      "empty": "No calendar entries",
+      "completed": "Done"
+    },
+    "workouts": {
+      "title": "Program workouts",
+      "empty": "No program assigned"
+    },
+    "files": {
+      "title": "Client files",
+      "empty": "No uploaded files"
+    },
+    "messagesTab": {
+      "title": "Conversation",
+      "openChat": "Open in messages"
+    },
+    "payment": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue"
+    },
+    "activity": {
+      "minutesAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago"
+    },
+    "recentActivity": {
+      "workout": "Workout",
+      "message": "Message",
+      "payment": "Payment"
+    },
+    "notesSnippet": {
+      "title": "Notes",
+      "empty": "No notes yet"
     },
     "overview": {
       "workProfile": "Work profile",

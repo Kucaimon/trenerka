@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
-import { Bell, Clock3, CreditCard, MessageSquare } from 'lucide-react'
+import { Bar, BarChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
+import { Bell, CalendarPlus, Clock3, CreditCard, MessageSquare, UserPlus, Dumbbell } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   AnalyticsWidget,
   DashboardContainer,
@@ -13,13 +15,14 @@ import {
   SaasPageHeader,
 } from '@/components/saas'
 import { useClients, useEvents, useTrainerAnalytics } from '@/features/api/hooks'
-import { getRevenueChart } from '@/features/api/analytics-service'
+import { getAttendanceChart, getRevenueChart } from '@/features/api/analytics-service'
 import { mockActivityFeed, type ActivityFeedItem } from '@/lib/mock-data'
+import { enrichClient } from '@/lib/client-crm'
 import { formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
 import { cn } from '@/lib/utils'
 import { intlLocale } from '@/lib/i18n-format'
-import type { ClientStatus } from '@/types'
+import type { ClientStatus, PaymentState } from '@/types'
 
 const chartPeriods = [
   { id: '6m', labelKey: 'dashboard.period.d90', months: 6 },
@@ -65,6 +68,10 @@ export function TrainerDashboardPage() {
     queryKey: ['revenue-chart'],
     queryFn: getRevenueChart,
   })
+  const { data: attendanceChart = [] } = useQuery({
+    queryKey: ['attendance-chart-dashboard'],
+    queryFn: getAttendanceChart,
+  })
   const [chartPeriod, setChartPeriod] = useState<ChartPeriodId>('6m')
   const periodMonths = chartPeriods.find((p) => p.id === chartPeriod)?.months ?? 6
   const revenueData = useMemo(() => revenueChart.slice(-periodMonths), [revenueChart, periodMonths])
@@ -86,7 +93,22 @@ export function TrainerDashboardPage() {
         .slice(0, 4),
     [events],
   )
-  const activeClients = clients.filter((c) => c.status === 'active').slice(0, 6)
+  const activeClients = useMemo(
+    () => clients.filter((c) => c.status === 'active').map(enrichClient).slice(0, 6),
+    [clients],
+  )
+
+  const paymentLabel = (state: PaymentState | undefined) => {
+    const key = state ?? 'paid'
+    return t(`clients.payment.${key}`)
+  }
+
+  const quickActions = [
+    { to: '/trainer/clients', icon: UserPlus, label: t('dashboard.quickActions.addClient') },
+    { to: '/trainer/workouts/builder', icon: Dumbbell, label: t('dashboard.quickActions.workout') },
+    { to: '/trainer/calendar', icon: CalendarPlus, label: t('dashboard.quickActions.session') },
+    { to: '/trainer/messages', icon: MessageSquare, label: t('dashboard.quickActions.message') },
+  ]
 
   const today = new Date().toLocaleDateString(intlLocale(i18n.language), {
     weekday: 'long',
@@ -134,6 +156,17 @@ export function TrainerDashboardPage() {
         ))}
       </div>
 
+      <div className="mb-3 flex flex-wrap gap-2">
+        {quickActions.map((action) => (
+          <Button key={action.to} variant="secondary" size="sm" className="gap-2" asChild>
+            <Link to={action.to}>
+              <action.icon className="h-3.5 w-3.5" strokeWidth={1.75} />
+              {action.label}
+            </Link>
+          </Button>
+        ))}
+      </div>
+
       {todayEvents.length > 0 ? (
         <DashboardContainer
           title={t('dashboard.schedule.title')}
@@ -167,7 +200,23 @@ export function TrainerDashboardPage() {
       ) : null}
 
       <DashboardGrid>
-        <DashboardGridItem span={8}>
+        <DashboardGridItem span={4}>
+          <AnalyticsWidget title={t('dashboard.preview.attendance')} height={200}>
+            <div className="chart-mobile h-[180px] min-h-[160px]">
+              <ResponsiveContainer width="100%" height="100%" minHeight={160}>
+                <BarChart data={attendanceChart}>
+                  <CartesianGrid stroke={CHART.grid} vertical={false} />
+                  <XAxis dataKey="week" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} width={28} />
+                  <Tooltip contentStyle={CHART.tooltip} />
+                  <Bar dataKey="sessions" fill={CHART.accent} radius={[3, 3, 0, 0]} maxBarSize={28} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </AnalyticsWidget>
+        </DashboardGridItem>
+
+        <DashboardGridItem span={4}>
           <AnalyticsWidget
             title={t('dashboard.revenue.title')}
             height={220}
@@ -267,20 +316,30 @@ export function TrainerDashboardPage() {
                 <p className="px-4 py-2.5 text-sm text-[var(--text-muted)]">{t('dashboard.activeClients.empty')}</p>
               ) : (
                 activeClients.map((c) => (
-                  <div key={c.id} className="flex items-center gap-2.5 px-3 py-1.5 hover:bg-[var(--surface3)]">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent-dim)] text-[9px] font-bold text-[var(--accent)]">
+                  <Link
+                    key={c.id}
+                    to={`/trainer/clients/${c.id}`}
+                    className="flex items-center gap-2.5 px-3 py-2 transition-colors hover:bg-[var(--surface3)]"
+                  >
+                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--accent-dim)] text-[10px] font-bold text-[var(--accent)]">
                       {c.name.slice(0, 1)}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[13px] font-medium">{c.name}</p>
                       <p className="text-[11px] text-[var(--text-muted)]">
-                        {c.lastSession ?? t('dashboard.activeClients.noSessions')}
+                        {c.goal ?? t('clients.fallback.goal')} · {c.workoutCompletionPct ?? 0}% {t('dashboard.activeClients.progress')}
                       </p>
                     </div>
-                    <Badge variant="success" className="shrink-0 px-1.5 py-0 text-[10px]">
-                      {statusLabel(c.status)}
-                    </Badge>
-                  </div>
+                    <div className="flex shrink-0 flex-col items-end gap-0.5">
+                      <Badge
+                        variant={c.paymentState === 'overdue' ? 'destructive' : c.paymentState === 'pending' ? 'warning' : 'success'}
+                        className="px-1.5 py-0 text-[10px]"
+                      >
+                        {paymentLabel(c.paymentState)}
+                      </Badge>
+                      <span className="text-[10px] text-[var(--text-muted)]">{statusLabel(c.status)}</span>
+                    </div>
+                  </Link>
                 ))
               )}
             </div>

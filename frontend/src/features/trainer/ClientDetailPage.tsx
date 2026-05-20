@@ -1,15 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, CalendarCheck2, CreditCard, Dumbbell, MessageSquare, Pencil } from 'lucide-react'
+import { ArrowLeft, CalendarCheck2, CreditCard, Dumbbell, FileText, MessageSquare, Pencil } from 'lucide-react'
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { toast } from 'sonner'
 import {
   useClient,
   useClientAssignedProgram,
   useClientProgressReports,
+  useEvents,
+  useMessages,
   usePayments,
   useUpdateClient,
 } from '@/features/api/hooks'
+import { mockApi } from '@/lib/mock-api/store'
+import { CHART } from '@/lib/chart-theme'
+import { intlLocale } from '@/lib/i18n-format'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -29,16 +35,27 @@ const STATUS_VARIANTS: Record<ClientStatus, 'success' | 'warning' | 'secondary'>
 }
 
 export function ClientDetailPage() {
-  const { t } = useTranslation(['trainer', 'common'])
+  const { t, i18n } = useTranslation(['trainer', 'common'])
   const { id } = useParams<{ id: string }>()
   const { data: client } = useClient(id!)
   const { data: allPayments = [] } = usePayments()
   const { data: assigned } = useClientAssignedProgram(id!)
   const { data: progress = [] } = useClientProgressReports(id!)
+  const { data: events = [] } = useEvents()
+  const { data: messages = [] } = useMessages(id!)
   const updateClient = useUpdateClient()
   const [editOpen, setEditOpen] = useState(false)
   const [notes, setNotes] = useState('')
   const payments = allPayments.filter((p) => p.clientId === id)
+  const clientEvents = useMemo(
+    () => events.filter((e) => e.clientId === id).sort((a, b) => b.start.localeCompare(a.start)),
+    [events, id],
+  )
+  const clientFiles = useMemo(() => mockApi.files.byClient(id!), [id])
+  const measurementChart = useMemo(
+    () => progress.map((m) => ({ date: formatDate(m.date), weight: m.weight })),
+    [progress],
+  )
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -105,12 +122,16 @@ export function ClientDetailPage() {
       </div>
 
       <Tabs defaultValue="overview">
-        <TabsList>
+        <TabsList className="flex h-auto flex-wrap gap-1">
           <TabsTrigger value="overview">{t('clients.tabs.overview')}</TabsTrigger>
-          <TabsTrigger value="programs">{t('clients.tabs.programs')}</TabsTrigger>
-          <TabsTrigger value="progress">{t('clients.tabs.progress')}</TabsTrigger>
+          <TabsTrigger value="measurements">{t('clients.tabs.measurements')}</TabsTrigger>
+          <TabsTrigger value="program">{t('clients.tabs.program')}</TabsTrigger>
           <TabsTrigger value="payments">{t('clients.tabs.payments')}</TabsTrigger>
           <TabsTrigger value="notes">{t('clients.tabs.notes')}</TabsTrigger>
+          <TabsTrigger value="attendance">{t('clients.tabs.attendance')}</TabsTrigger>
+          <TabsTrigger value="workouts">{t('clients.tabs.workouts')}</TabsTrigger>
+          <TabsTrigger value="files">{t('clients.tabs.files')}</TabsTrigger>
+          <TabsTrigger value="messages">{t('clients.tabs.messages')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="grid gap-4 lg:grid-cols-2">
@@ -171,7 +192,45 @@ export function ClientDetailPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="programs">
+        <TabsContent value="measurements">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('clients.overview.lastMeasurement')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {measurementChart.length > 1 ? (
+                <div className="chart-mobile h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={measurementChart}>
+                      <CartesianGrid stroke={CHART.grid} vertical={false} />
+                      <XAxis dataKey="date" stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} />
+                      <YAxis stroke={CHART.axis} fontSize={10} tickLine={false} axisLine={false} domain={['auto', 'auto']} />
+                      <Tooltip contentStyle={CHART.tooltip} />
+                      <Line type="monotone" dataKey="weight" stroke={CHART.accent} strokeWidth={2} dot={false} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : null}
+              <div className="mt-4 divide-y divide-[var(--border)]">
+                {progress.length === 0 ? (
+                  <p className="py-6 text-center text-sm text-[var(--text-muted)]">{t('clients.measurements.empty')}</p>
+                ) : (
+                  progress.map((m) => (
+                    <div key={m.date} className="flex justify-between py-3 text-sm">
+                      <span>{formatDate(m.date)}</span>
+                      <span className="tabular-nums font-medium">
+                        {m.weight} {t('common:units.kg')}
+                        {m.bodyFat != null ? ` · ${m.bodyFat}%` : ''}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="program">
           <Card>
             <CardContent className="py-8 text-center text-sm">
               {program ? (
@@ -194,16 +253,105 @@ export function ClientDetailPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="progress">
+        <TabsContent value="attendance">
           <Card>
+            <CardHeader>
+              <CardTitle>{t('clients.attendance.title')}</CardTitle>
+            </CardHeader>
             <CardContent className="divide-y divide-[var(--border)] p-0">
-              {progress.length === 0 ? (
-                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.measurements.empty')}</p>
+              {clientEvents.length === 0 ? (
+                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.attendance.empty')}</p>
               ) : (
-                progress.map((m) => (
-                  <div key={m.date} className="flex justify-between px-5 py-3 text-sm">
-                    <span>{formatDate(m.date)}</span>
-                    <span className="tabular-nums font-medium">{m.weight} {t('common:units.kg')}</span>
+                clientEvents.map((e) => (
+                  <div key={e.id} className="flex justify-between gap-3 px-5 py-3 text-sm">
+                    <div>
+                      <p className="font-medium">{e.title}</p>
+                      <p className="text-[11px] text-[var(--text-muted)]">
+                        {new Date(e.start).toLocaleString(intlLocale(i18n.language), {
+                          day: 'numeric',
+                          month: 'short',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </p>
+                    </div>
+                    <Badge variant="secondary">{t('clients.attendance.completed')}</Badge>
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="workouts">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('clients.workouts.title')}</CardTitle>
+            </CardHeader>
+            <CardContent className="divide-y divide-[var(--border)] p-0">
+              {!program?.workouts?.length ? (
+                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.workouts.empty')}</p>
+              ) : (
+                program.workouts.map((w) => (
+                  <div key={w.id} className="px-5 py-3">
+                    <p className="text-sm font-medium">
+                      {w.dayLabel} · {w.title}
+                    </p>
+                    <p className="text-[11px] text-[var(--text-muted)]">
+                      {w.exercises.length} упр.
+                    </p>
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="files">
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('clients.files.title')}</CardTitle>
+            </CardHeader>
+            <CardContent className="divide-y divide-[var(--border)] p-0">
+              {clientFiles.length === 0 ? (
+                <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.files.empty')}</p>
+              ) : (
+                clientFiles.map((f) => (
+                  <div key={f.id} className="flex items-center gap-3 px-5 py-3 text-sm">
+                    <FileText className="h-4 w-4 text-[var(--accent)]" />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium">{f.name}</p>
+                      <p className="text-[11px] text-[var(--text-muted)]">
+                        {f.size} · {formatDate(f.uploadedAt)}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="messages">
+          <Card>
+            <CardHeader className="flex-row items-center justify-between">
+              <CardTitle>{t('clients.messagesTab.title')}</CardTitle>
+              <Button variant="secondary" size="sm" asChild>
+                <Link to="/trainer/messages">{t('clients.messagesTab.openChat')}</Link>
+              </Button>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {messages.length === 0 ? (
+                <p className="text-sm text-[var(--text-muted)]">{t('messages.empty')}</p>
+              ) : (
+                messages.slice(-8).map((m) => (
+                  <div
+                    key={m.id}
+                    className={`max-w-[90%] rounded-lg px-3 py-2 text-sm ${
+                      m.sender === 'trainer' ? 'ml-auto bg-[var(--surface3)]' : 'border border-[var(--border)]'
+                    }`}
+                  >
+                    {m.text}
                   </div>
                 ))
               )}

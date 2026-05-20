@@ -28,15 +28,7 @@ export function LoginPage({ role }: { role: UserRole }) {
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      email:
-        role === 'trainer'
-          ? 'trainer@trenerka.ru'
-          : role === 'client'
-            ? 'client@trenerka.ru'
-            : 'admin@trenerka.ru',
-      password: 'demo123',
-    },
+    defaultValues: { email: '', password: '' },
   })
 
   const onSubmit = async (data: FormData) => {
@@ -64,22 +56,29 @@ export function LoginPage({ role }: { role: UserRole }) {
   const title =
     role === 'trainer' ? t('login.trainer') : role === 'client' ? t('login.client') : t('login.admin')
 
+  const subtitle =
+    role === 'trainer'
+      ? t('login.subtitleTrainer')
+      : role === 'client'
+        ? t('login.subtitleClient')
+        : t('login.subtitleAdmin')
+
   return (
     <>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        <CardDescription>{t('login.demoHint', { role })}</CardDescription>
+        <CardDescription>{subtitle}</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="email">{t('login.email')}</Label>
-            <Input id="email" type="email" {...register('email')} />
+            <Input id="email" type="email" autoComplete="email" {...register('email')} />
             {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="password">{t('login.password')}</Label>
-            <Input id="password" type="password" {...register('password')} />
+            <Input id="password" type="password" autoComplete="current-password" {...register('password')} />
             {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
           </div>
           <Button type="submit" className="w-full" disabled={loading}>

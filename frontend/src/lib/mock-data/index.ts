@@ -11,6 +11,10 @@ import type {
 } from '@/types'
 import { mockClients } from './clients'
 import { mockExercises } from './exercises'
+import { dateOnlyOffsetDays, isoOffsetDays, isoOffsetHours } from './dates'
+
+export { mockClientFiles } from './client-files'
+export type { ClientFile } from './client-files'
 
 export { mockClients, mockExercises }
 
@@ -76,27 +80,34 @@ export function generateRevenueSeries(days: number) {
 }
 
 export const mockCalendarEvents: CalendarEvent[] = [
-  { id: 'e1', title: 'Анна — Силовая', start: '2025-05-19T10:00:00', end: '2025-05-19T11:00:00', clientId: 'c1', color: '#b8f53d' },
-  { id: 'e2', title: 'Дмитрий — Ноги', start: '2025-05-19T14:00:00', end: '2025-05-19T15:00:00', clientId: 'c2', color: '#B7FF2A' },
-  { id: 'e3', title: 'Игорь — Спина', start: '2025-05-20T09:00:00', end: '2025-05-20T10:00:00', clientId: 'c4', recurring: true },
-  { id: 'e4', title: 'Мария — Кардио', start: '2025-05-20T16:00:00', end: '2025-05-20T16:45:00', clientId: 'c5' },
-  { id: 'e5', title: 'Ольга — Бег', start: '2025-05-21T08:00:00', end: '2025-05-21T09:00:00', clientId: 'c7' },
-  { id: 'e6', title: 'Павел — Жим', start: '2025-05-22T11:00:00', end: '2025-05-22T12:30:00', clientId: 'c10' },
+  { id: 'e1', title: 'Анна Смирнова — Силовая', start: isoOffsetDays(0, 10), end: isoOffsetDays(0, 11), clientId: 'c1', color: '#b8f53d', type: 'training' },
+  { id: 'e2', title: 'Дмитрий Козлов — Ноги', start: isoOffsetDays(0, 14), end: isoOffsetDays(0, 15), clientId: 'c2', color: '#95d425', type: 'training' },
+  { id: 'e3', title: 'Игорь Петров — Спина', start: isoOffsetDays(1, 9), end: isoOffsetDays(1, 10), clientId: 'c4', recurring: true, type: 'training' },
+  { id: 'e4', title: 'Мария Новикова — Кардио', start: isoOffsetDays(1, 16), end: isoOffsetDays(1, 16, 45), clientId: 'c5', type: 'training' },
+  { id: 'e5', title: 'Ольга Морозова — Бег', start: isoOffsetDays(2, 8), end: isoOffsetDays(2, 9), clientId: 'c7', type: 'training' },
+  { id: 'e6', title: 'Павел Кузнецов — Жим', start: isoOffsetDays(3, 11), end: isoOffsetDays(3, 12, 30), clientId: 'c10', type: 'training' },
+  { id: 'e7', title: 'Виктория Лебедева — Функционал', start: isoOffsetDays(-1, 12), end: isoOffsetDays(-1, 13), clientId: 'c11', type: 'training' },
 ]
 
 export const mockPayments: Payment[] = [
-  { id: 'p1', clientId: 'c1', amount: 15000, date: '2025-05-10', method: 'Карта', note: 'Пакет 8 занятий' },
-  { id: 'p2', clientId: 'c2', amount: 8000, date: '2025-05-12', method: 'Перевод' },
-  { id: 'p3', clientId: 'c4', amount: 22000, date: '2025-05-08', method: 'Наличные', note: 'VIP пакет' },
-  { id: 'p4', clientId: 'c10', amount: 35000, date: '2025-05-15', method: 'Карта' },
-  { id: 'p5', clientId: 'c7', amount: 18000, date: '2025-05-14', method: 'СБП' },
+  { id: 'p1', clientId: 'c1', amount: 15000, date: dateOnlyOffsetDays(-10), method: 'Карта', note: 'Пакет 8 занятий' },
+  { id: 'p2', clientId: 'c2', amount: 8000, date: dateOnlyOffsetDays(-8), method: 'Перевод' },
+  { id: 'p3', clientId: 'c4', amount: 22000, date: dateOnlyOffsetDays(-12), method: 'Наличные', note: 'VIP пакет' },
+  { id: 'p4', clientId: 'c10', amount: 35000, date: dateOnlyOffsetDays(-5), method: 'Карта' },
+  { id: 'p5', clientId: 'c7', amount: 18000, date: dateOnlyOffsetDays(-6), method: 'СБП' },
+  { id: 'p6', clientId: 'c5', amount: 12000, date: dateOnlyOffsetDays(-3), method: 'Карта' },
+  { id: 'p7', clientId: 'c11', amount: 14000, date: dateOnlyOffsetDays(-2), method: 'СБП' },
 ]
 
 export const mockMessages: Message[] = [
-  { id: 'm1', clientId: 'c1', sender: 'client', text: 'Здравствуйте! Можно перенести тренировку на четверг?', createdAt: '2025-05-17T09:30:00', read: false },
-  { id: 'm2', clientId: 'c2', sender: 'trainer', text: 'Дмитрий, отличная работа на прошлой неделе. Добавил вес в приседе.', createdAt: '2025-05-16T18:00:00', read: true },
-  { id: 'm3', clientId: 'c4', sender: 'client', text: 'Болит поясница после становой. Что делать?', createdAt: '2025-05-17T11:15:00', read: false },
-  { id: 'm4', clientId: 'c10', sender: 'client', text: 'Готов к соревнованиям через 6 недель!', createdAt: '2025-05-17T07:00:00', read: true },
+  { id: 'm1', clientId: 'c1', sender: 'client', text: 'Здравствуйте! Можно перенести тренировку на четверг?', createdAt: isoOffsetHours(-2), read: false },
+  { id: 'm2', clientId: 'c2', sender: 'trainer', text: 'Дмитрий, отличная работа на прошлой неделе. Добавил вес в приседе.', createdAt: isoOffsetHours(-26), read: true },
+  { id: 'm3', clientId: 'c4', sender: 'client', text: 'Болит поясница после становой. Что делать?', createdAt: isoOffsetHours(-5), read: false },
+  { id: 'm4', clientId: 'c10', sender: 'client', text: 'Готов к соревнованиям через 6 недель!', createdAt: isoOffsetHours(-8), read: true },
+  { id: 'm5', clientId: 'c1', sender: 'trainer', text: 'Анна, завтра в 10:00 — силовая. Не забудьте разминку 10 мин.', createdAt: isoOffsetHours(-30), read: true },
+  { id: 'm6', clientId: 'c7', sender: 'client', text: 'Пульс на лёгком беге держу 145 — нормально?', createdAt: isoOffsetHours(-4), read: false },
+  { id: 'm7', clientId: 'c5', sender: 'client', text: 'Можно заменить кардио на плавание в субботу?', createdAt: isoOffsetHours(-12), read: false },
+  { id: 'm8', clientId: 'c11', sender: 'trainer', text: 'Виктория, обновила программу на следующую неделю.', createdAt: isoOffsetHours(-48), read: true },
 ]
 
 export const mockAiInsights: AiInsight[] = [
@@ -106,9 +117,10 @@ export const mockAiInsights: AiInsight[] = [
 ]
 
 export const mockNotifications: Notification[] = [
-  { id: 'n1', title: 'Новая оплата', body: 'Павел Кузнецов оплатил 35 000 ₽', createdAt: '2025-05-15T14:22:00', read: false },
-  { id: 'n2', title: 'Напоминание', body: 'Завтра 3 тренировки подряд с 10:00', createdAt: '2025-05-17T20:00:00', read: false },
-  { id: 'n3', title: 'Сообщение', body: 'Анна Смирнова написала в чат', createdAt: '2025-05-17T09:30:00', read: true },
+  { id: 'n1', title: 'Новая оплата', body: 'Павел Кузнецов оплатил 35 000 ₽', createdAt: isoOffsetHours(-6), read: false },
+  { id: 'n2', title: 'Напоминание', body: 'Сегодня 2 тренировки: 10:00 и 14:00', createdAt: isoOffsetHours(-1), read: false },
+  { id: 'n3', title: 'Сообщение', body: 'Анна Смирнова написала в чат', createdAt: isoOffsetHours(-2), read: true },
+  { id: 'n4', title: 'Новый клиент', body: 'Алексей Соколов завершил регистрацию', createdAt: isoOffsetHours(-72), read: true },
 ]
 
 export type ActivityFeedType = 'payment' | 'message' | 'notification'
@@ -140,11 +152,11 @@ export const mockActivityFeed: ActivityFeedItem[] = [
 ].sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 
 export const mockProgress: ProgressMeasurement[] = [
-  { date: '2025-01-01', weight: 72, bodyFat: 28 },
-  { date: '2025-02-01', weight: 70.5, bodyFat: 26 },
-  { date: '2025-03-01', weight: 69.2, bodyFat: 24 },
-  { date: '2025-04-01', weight: 68.1, bodyFat: 22 },
-  { date: '2025-05-01', weight: 67.4, bodyFat: 21 },
+  { date: '2026-01-15', weight: 72, bodyFat: 28, clientId: 'c1' },
+  { date: '2026-02-15', weight: 70.5, bodyFat: 26, clientId: 'c1' },
+  { date: '2026-03-15', weight: 69.2, bodyFat: 24, clientId: 'c1' },
+  { date: '2026-04-15', weight: 68.1, bodyFat: 22, clientId: 'c1' },
+  { date: '2026-05-10', weight: 67.4, bodyFat: 21, clientId: 'c1' },
 ]
 
 export const mockAchievements: Achievement[] = [
