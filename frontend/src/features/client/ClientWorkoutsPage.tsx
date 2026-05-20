@@ -22,7 +22,7 @@ export function ClientWorkoutsPage() {
             {dashboard?.currentProgram?.trim() || t('workouts.empty')}
           </h1>
           <p className="mt-1 text-sm text-[var(--text-secondary)]">
-            {t('workouts.trainer', { name: dashboard?.profile.trainer ?? '—' })}
+            {t('workouts.trainer', { name: dashboard?.profile?.trainer ?? '—' })}
           </p>
         </section>
       </MobileListItem>

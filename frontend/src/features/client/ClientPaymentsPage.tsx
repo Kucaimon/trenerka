@@ -10,7 +10,7 @@ export function ClientPaymentsPage() {
   const { t } = useTranslation(['client', 'common'])
   const { data: dashboard } = useClientDashboard()
   const { data: payments = [], isLoading } = useClientPayments()
-  const balance = dashboard?.profile.packageBalance ?? 0
+  const balance = dashboard?.profile?.packageBalance ?? 0
 
   return (
     <MobileListStagger className="space-y-5">

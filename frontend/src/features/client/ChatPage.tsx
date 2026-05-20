@@ -71,7 +71,7 @@ export function ChatPage() {
         <header className="mobile-card !py-4">
           <p className="label-caps">{t('chat.label')}</p>
           <h1 className="mt-1 font-display text-xl font-extrabold tracking-tight">
-            {dashboard?.profile.trainer ?? t('chat.defaultTrainer')}
+            {dashboard?.profile?.trainer ?? t('chat.defaultTrainer')}
           </h1>
           {unreadTrainer > 0 ? (
             <p className="mt-1 text-xs text-[var(--accent)]">

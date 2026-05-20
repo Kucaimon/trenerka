@@ -3,7 +3,8 @@ import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
 import { mockApi } from '@/lib/mock-api/store'
 import { fileToDataUrl } from '@/lib/mock-api/users'
-import { wpFetch, getAuthToken } from '@/lib/wordpress/client'
+import { uploadMedia } from '@/lib/wordpress/upload'
+import { wpFetch } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
 import type { Message } from '@/types'
 
@@ -62,22 +63,9 @@ export async function markMessageRead(id: string): Promise<void> {
 }
 
 export async function uploadAttachment(file: File): Promise<string> {
-  if (file.size > 10 * 1024 * 1024) {
-    throw new Error(i18n.t('trainer:messages.errors.fileTooLarge'))
-  }
   if (config.useMockData) {
     await apiDelay(500)
     return fileToDataUrl(file)
   }
-  const form = new FormData()
-  form.append('file', file)
-  const token = getAuthToken()
-  const res = await fetch(`${config.wpApiUrl}${wpEndpoints.upload}`, {
-    method: 'POST',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    body: form,
-  })
-  if (!res.ok) throw new Error(i18n.t('trainer:messages.errors.uploadFailed'))
-  const data = (await res.json()) as { url: string }
-  return data.url
+  return uploadMedia(file)
 }

@@ -8,8 +8,11 @@ interface AuthState {
   user: User | null
   token: string | null
   trainerProfile: TrainerProfile | null
+  /** WP /auth/me validation in progress after reload */
+  sessionChecking: boolean
   login: (user: User, token: string, trainerProfile?: TrainerProfile | null) => void
   setTrainerProfile: (profile: TrainerProfile | null) => void
+  setSessionChecking: (checking: boolean) => void
   logout: () => void
   isRole: (role: UserRole) => boolean
   isTrainerProfileComplete: () => boolean
@@ -21,6 +24,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       trainerProfile: null,
+      sessionChecking: false,
       login: (user, token, trainerProfile = null) => {
         setAuthToken(token)
         const profile =
@@ -32,9 +36,10 @@ export const useAuthStore = create<AuthState>()(
         })
       },
       setTrainerProfile: (profile) => set({ trainerProfile: profile }),
+      setSessionChecking: (sessionChecking) => set({ sessionChecking }),
       logout: () => {
         setAuthToken(null)
-        set({ user: null, token: null, trainerProfile: null })
+        set({ user: null, token: null, trainerProfile: null, sessionChecking: false })
         void useAuthStore.persist.clearStorage()
       },
       isRole: (role) => get().user?.role === role,

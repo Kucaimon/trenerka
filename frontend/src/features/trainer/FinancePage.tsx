@@ -36,7 +36,7 @@ export function FinancePage() {
     queryKey: ['payment-report', reportFrom, reportTo],
     queryFn: () => getPaymentReport(reportFrom, reportTo),
   })
-  const { data: revenueChart = [] } = useQuery({
+  const { data: revenueChart = [], isLoading: revenueChartLoading } = useQuery({
     queryKey: ['finance-revenue-chart'],
     queryFn: getRevenueChart,
   })
@@ -94,15 +94,25 @@ export function FinancePage() {
           <CardTitle>{t('analytics.charts.revenueByMonth')}</CardTitle>
         </CardHeader>
         <CardContent className="chart-mobile h-56 pt-0">
-          <ResponsiveContainer width="100%" height="100%" minHeight={200}>
-            <BarChart data={revenueChart}>
-              <CartesianGrid stroke={CHART.grid} vertical={false} />
-              <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
-              <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
-              <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), t('dashboard.revenue.chart')]} />
-              <Bar dataKey="revenue" fill={CHART.accent} radius={[4, 4, 0, 0]} maxBarSize={36} />
-            </BarChart>
-          </ResponsiveContainer>
+          {revenueChartLoading ? (
+            <p className="flex h-full min-h-[200px] items-center justify-center text-sm text-[var(--text-muted)]">
+              {t('common:actions.loading')}
+            </p>
+          ) : revenueChart.length === 0 ? (
+            <p className="flex h-full min-h-[200px] items-center justify-center text-sm text-[var(--text-muted)]">
+              {t('common:empty.noData')}
+            </p>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%" minHeight={200}>
+              <BarChart data={revenueChart}>
+                <CartesianGrid stroke={CHART.grid} vertical={false} />
+                <XAxis dataKey="month" stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke={CHART.axis} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${Number(v) / 1000}k`} />
+                <Tooltip contentStyle={CHART.tooltip} formatter={(v) => [formatRub(Number(v)), t('dashboard.revenue.chart')]} />
+                <Bar dataKey="revenue" fill={CHART.accent} radius={[4, 4, 0, 0]} maxBarSize={36} />
+              </BarChart>
+            </ResponsiveContainer>
+          )}
         </CardContent>
       </Card>
 

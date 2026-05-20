@@ -3,9 +3,13 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { render } from '@testing-library/react'
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute'
 
+vi.mock('@/hooks/use-auth-ready', () => ({
+  useAuthStorageReady: () => true,
+}))
+
 vi.mock('@/store/auth-store', () => ({
-  useAuthStore: (selector: (s: { user: unknown; token: string | null }) => unknown) =>
-    selector({ user: null, token: null }),
+  useAuthStore: (selector: (s: { user: unknown; token: string | null; sessionChecking: boolean }) => unknown) =>
+    selector({ user: null, token: null, sessionChecking: false }),
 }))
 
 vi.mock('@/lib/wordpress/client', () => ({

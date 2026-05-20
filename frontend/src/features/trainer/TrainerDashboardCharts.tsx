@@ -82,6 +82,10 @@ export function TrainerDashboardCharts({
               <p className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
                 {t('common:actions.loading')}
               </p>
+            ) : revenueData.length === 0 ? (
+              <p className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
+                {t('common:empty.noData')}
+              </p>
             ) : (
               <ResponsiveContainer width="100%" height="100%" minHeight={180}>
                 <LineChart data={revenueData}>

@@ -11,7 +11,7 @@ export function ClientProfilePage() {
   const user = useAuthStore((s) => s.user)
   const handleLogout = useLogout('client')
   const { data: dashboard } = useClientDashboard()
-  const balance = dashboard?.profile.packageBalance ?? 0
+  const balance = dashboard?.profile?.packageBalance ?? 0
 
   return (
     <div className="space-y-6">
@@ -19,7 +19,7 @@ export function ClientProfilePage() {
         <p className="label-caps">{t('profile.title')}</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight">{user?.name ?? t('profile.defaultName')}</h1>
         <p className="mt-2 text-base text-[var(--text-secondary)]">{user?.email}</p>
-        {dashboard?.profile.trainer ? (
+        {dashboard?.profile?.trainer ? (
           <p className="mt-1 text-sm text-[var(--text-muted)]">
             {t('workouts.trainer', { name: dashboard.profile.trainer })}
           </p>
