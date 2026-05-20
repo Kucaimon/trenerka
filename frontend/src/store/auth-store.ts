@@ -35,7 +35,7 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         setAuthToken(null)
         set({ user: null, token: null, trainerProfile: null })
-        localStorage.removeItem('trenerka-auth')
+        void useAuthStore.persist.clearStorage()
       },
       isRole: (role) => get().user?.role === role,
       isTrainerProfileComplete: () => isTrainerProfileComplete(get().trainerProfile),

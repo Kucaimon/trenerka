@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import {
   BarChart3,
@@ -19,6 +19,7 @@ import {
   Search,
   Settings,
   Users,
+  User,
   ListTree,
   FolderOpen,
 } from 'lucide-react'
@@ -28,6 +29,7 @@ import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 import { config } from '@/lib/config'
 import { useUiStore } from '@/store/ui-store'
 import { useAuthStore } from '@/store/auth-store'
+import { useLogout } from '@/lib/auth/logout'
 import { Button } from '@/components/ui/button'
 import { LogoLink } from '@/components/shared/LogoLink'
 import { CommandPalette } from '@/components/layout/command-palette'
@@ -93,6 +95,7 @@ function useMobileMoreNav(): NavItem[] {
     { to: '/trainer/finance', icon: CreditCard, label: t('nav.finance') },
     { to: '/trainer/analytics', icon: BarChart3, label: t('nav.analytics') },
     { to: '/trainer/settings', icon: Settings, label: t('nav.settings') },
+    { to: '/trainer/profile', icon: User, label: t('profile.title') },
     { to: '/trainer/files', icon: FolderOpen, label: t('nav.files') },
     { to: '/trainer/notifications', icon: Bell, label: t('nav.notifications') },
     skills,
@@ -106,6 +109,7 @@ const moreRoutePrefixes = [
   '/trainer/finance',
   '/trainer/analytics',
   '/trainer/settings',
+  '/trainer/profile',
   '/trainer/files',
   '/trainer/notifications',
 ]
@@ -263,8 +267,7 @@ export function TrainerLayout() {
   const collapsed = useUiStore((s) => s.sidebarCollapsed)
   const toggle = useUiStore((s) => s.toggleSidebar)
   const setCommandOpen = useUiStore((s) => s.setCommandOpen)
-  const logout = useAuthStore((s) => s.logout)
-  const navigate = useNavigate()
+  const handleLogout = useLogout('trainer')
   const location = useLocation()
   const user = useAuthStore((s) => s.user)
   const { t } = useTranslation(['trainer', 'common'])
@@ -345,13 +348,11 @@ export function TrainerLayout() {
                 </div>
               ) : null}
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
                 className="w-full justify-start gap-3 text-[var(--text-muted)]"
-                onClick={() => {
-                  logout()
-                  navigate('/')
-                }}
+                onClick={handleLogout}
               >
                 <LogOut className="h-4 w-4" />
                 {!collapsed && t('common:actions.logout')}
@@ -428,6 +429,32 @@ export function TrainerLayout() {
             />
           ))}
         </nav>
+        {isMobile && user ? (
+          <div className="border-t border-[var(--border)] p-4">
+            <div className="mb-3 flex items-center gap-2.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-[#111]">
+                {user.name.slice(0, 1)}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">{user.name}</p>
+                <p className="text-xs text-[var(--text-muted)]">{t('role')}</p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-full gap-2"
+              onClick={() => {
+                setMoreOpen(false)
+                handleLogout()
+              }}
+            >
+              <LogOut className="h-4 w-4" />
+              {t('common:actions.logout')}
+            </Button>
+          </div>
+        ) : null}
       </MobileBottomSheet>
 
       <CommandPalette />

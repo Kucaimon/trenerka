@@ -5,8 +5,9 @@ import { z } from 'zod'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { Camera } from 'lucide-react'
+import { Camera, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/auth-store'
+import { useLogout } from '@/lib/auth/logout'
 import { fetchTrainerProfile, updateTrainerProfile } from '@/features/api/auth-service'
 import { PageHeader } from '@/components/shared/page-header'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -30,6 +31,7 @@ export function ProfilePage() {
   const user = useAuthStore((s) => s.user)
   const trainerProfile = useAuthStore((s) => s.trainerProfile)
   const setTrainerProfile = useAuthStore((s) => s.setTrainerProfile)
+  const handleLogout = useLogout('trainer')
   const [params] = useSearchParams()
   const setupMode = params.get('setup') === '1'
   const fileRef = useRef<HTMLInputElement>(null)
@@ -229,9 +231,15 @@ export function ProfilePage() {
               </div>
             </div>
 
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? t('common:actions.saving') : t('common:actions.save')}
-            </Button>
+            <div className="flex flex-wrap gap-3">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? t('common:actions.saving') : t('common:actions.save')}
+              </Button>
+              <Button type="button" variant="outline" className="gap-2" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+                {t('common:actions.logout')}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

@@ -48,6 +48,10 @@ export async function wpFetch<T>(
 
   if (!res.ok) {
     const body = await res.json().catch(() => undefined)
+    const apiMessage =
+      body && typeof body === 'object' && 'message' in body && typeof body.message === 'string'
+        ? body.message
+        : res.statusText
     if (res.status === 401 && !config.useMockData) {
       const role = useAuthStore.getState().user?.role
       const loginPath =
@@ -57,7 +61,7 @@ export async function wpFetch<T>(
         window.location.assign(loginPath)
       }
     }
-    throw new WpApiError(res.statusText, res.status, body)
+    throw new WpApiError(apiMessage, res.status, body)
   }
 
   return res.json() as Promise<T>

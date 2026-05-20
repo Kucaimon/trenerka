@@ -1,15 +1,15 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ChevronRight, LogOut, Wallet } from 'lucide-react'
 import { useAuthStore } from '@/store/auth-store'
+import { useLogout } from '@/lib/auth/logout'
 import { useClientDashboard } from '@/features/api/hooks'
 import { Button } from '@/components/ui/button'
 
 export function ClientProfilePage() {
   const { t } = useTranslation(['client', 'common'])
   const user = useAuthStore((s) => s.user)
-  const logout = useAuthStore((s) => s.logout)
-  const navigate = useNavigate()
+  const handleLogout = useLogout('client')
   const { data: dashboard } = useClientDashboard()
   const balance = dashboard?.profile.packageBalance ?? 0
 
@@ -44,14 +44,7 @@ export function ClientProfilePage() {
         <ChevronRight className="h-5 w-5 text-[var(--text-muted)]" />
       </Link>
 
-      <Button
-        variant="outline"
-        className="w-full gap-2"
-        onClick={() => {
-          logout()
-          navigate('/')
-        }}
-      >
+      <Button type="button" variant="outline" className="w-full gap-2" onClick={handleLogout}>
         <LogOut className="h-4 w-4" />
         {t('common:actions.logout')}
       </Button>
