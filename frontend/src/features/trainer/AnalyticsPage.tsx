@@ -88,7 +88,7 @@ export function AnalyticsPage() {
         </Card>
         )}
 
-        {config.useMockData && (
+        {(config.useMockData || retentionData.length > 0) && (
         <Card>
           <CardHeader>
             <CardTitle>{t('analytics.charts.retention')}</CardTitle>
@@ -107,7 +107,7 @@ export function AnalyticsPage() {
         </Card>
         )}
 
-        {config.useMockData && (
+        {(config.useMockData || weekdayData.length > 0) && (
         <Card>
           <CardHeader>
             <CardTitle>{t('analytics.charts.weekdayActivity')}</CardTitle>
@@ -126,7 +126,7 @@ export function AnalyticsPage() {
         </Card>
         )}
 
-        {config.useMockData && (
+        {(config.useMockData || subscriptionData.some((s) => s.value > 0)) && (
         <Card>
           <CardHeader>
             <CardTitle>{t('analytics.charts.subscriptionMix')}</CardTitle>
@@ -154,7 +154,7 @@ export function AnalyticsPage() {
         </Card>
         )}
 
-        {config.useMockData && (
+        {(config.useMockData || attendanceData.length > 0) && (
         <Card className="xl:col-span-2">
           <CardHeader>
             <CardTitle>{t('analytics.charts.attendance')}</CardTitle>

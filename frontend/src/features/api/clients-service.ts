@@ -53,6 +53,13 @@ export async function getClientProgress(clientId: string): Promise<ProgressMeasu
   return res.measurements
 }
 
+export async function getClientWorkoutCompletions(clientId: string): Promise<string[]> {
+  await apiDelay()
+  if (config.useMockData) return mockApi.client.workoutCompletions(clientId)
+  const res = await wpFetch<{ workoutIds: string[] }>(wpEndpoints.clientWorkoutCompletions(clientId))
+  return res.workoutIds
+}
+
 export async function getClientAssignedProgram(
   clientId: string,
 ): Promise<{ program: Program | null; startDate?: string } | null> {

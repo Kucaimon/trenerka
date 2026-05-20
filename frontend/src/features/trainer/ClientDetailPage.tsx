@@ -8,6 +8,7 @@ import {
   useClient,
   useClientAssignedProgram,
   useClientProgressReports,
+  useClientWorkoutCompletions,
   useEvents,
   useMessages,
   usePayments,
@@ -42,6 +43,7 @@ export function ClientDetailPage() {
   const { data: allPayments = [] } = usePayments()
   const { data: assigned } = useClientAssignedProgram(id!)
   const { data: progress = [] } = useClientProgressReports(id!)
+  const { data: completedWorkoutIds = [] } = useClientWorkoutCompletions(id!)
   const { data: events = [] } = useEvents()
   const { data: messages = [] } = useMessages(id!)
   const updateClient = useUpdateClient()
@@ -279,7 +281,11 @@ export function ClientDetailPage() {
                         })}
                       </p>
                     </div>
-                    <Badge variant="secondary">{t('clients.attendance.completed')}</Badge>
+                    <Badge variant={e.status === 'completed' ? 'success' : 'secondary'}>
+                      {e.status === 'completed'
+                        ? t('clients.attendance.completed')
+                        : t(`common:status.${e.status}`, { defaultValue: e.status ?? 'scheduled' })}
+                    </Badge>
                   </div>
                 ))
               )}
@@ -296,16 +302,24 @@ export function ClientDetailPage() {
               {!program?.workouts?.length ? (
                 <p className="px-5 py-8 text-center text-sm text-[var(--text-muted)]">{t('clients.workouts.empty')}</p>
               ) : (
-                program.workouts.map((w) => (
-                  <div key={w.id} className="px-5 py-3">
-                    <p className="text-sm font-medium">
-                      {w.dayLabel} · {w.title}
-                    </p>
-                    <p className="text-[11px] text-[var(--text-muted)]">
-                      {w.exercises.length} упр.
-                    </p>
-                  </div>
-                ))
+                program.workouts.map((w) => {
+                  const done = completedWorkoutIds.includes(w.id)
+                  return (
+                    <div key={w.id} className="flex items-center justify-between px-5 py-3">
+                      <div>
+                        <p className="text-sm font-medium">
+                          {w.dayLabel} · {w.title}
+                        </p>
+                        <p className="text-[11px] text-[var(--text-muted)]">
+                          {w.exercises.length} {t('clients.workouts.exercisesShort')}
+                        </p>
+                      </div>
+                      <Badge variant={done ? 'success' : 'secondary'}>
+                        {done ? t('clients.workouts.done') : t('clients.workouts.planned')}
+                      </Badge>
+                    </div>
+                  )
+                })
               )}
             </CardContent>
           </Card>

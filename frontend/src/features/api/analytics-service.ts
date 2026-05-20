@@ -5,6 +5,11 @@ import { wpFetch } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
 import type { Payment, RevenueReportPoint, TrainerAnalytics } from '@/types'
 
+export type AttendanceChartPoint = { week: string; sessions: number }
+export type WeekdayChartPoint = { day: string; sessions: number }
+export type RetentionChartPoint = { month: string; rate: number }
+export type SubscriptionChartPoint = { name: string; value: number; color?: string }
+
 export async function getTrainerAnalytics(): Promise<TrainerAnalytics> {
   await apiDelay()
   if (config.useMockData) return mockApi.analytics.trainer()
@@ -33,26 +38,26 @@ export async function getRevenueChart(): Promise<RevenueReportPoint[]> {
     }))
 }
 
-export async function getRetentionChart() {
+export async function getRetentionChart(): Promise<RetentionChartPoint[]> {
   if (config.useMockData) return mockApi.analytics.retention()
-  return []
+  return wpFetch<RetentionChartPoint[]>(wpEndpoints.analytics.retention)
 }
 
-export async function getAttendanceChart() {
+export async function getAttendanceChart(): Promise<AttendanceChartPoint[]> {
   if (config.useMockData) return mockApi.analytics.attendance()
-  return []
+  return wpFetch<AttendanceChartPoint[]>(wpEndpoints.analytics.attendance)
 }
 
-export async function getWeekdayActivityChart() {
+export async function getWeekdayActivityChart(): Promise<WeekdayChartPoint[]> {
   await apiDelay()
   if (config.useMockData) return mockApi.analytics.weekday()
-  return []
+  return wpFetch<WeekdayChartPoint[]>(wpEndpoints.analytics.weekday)
 }
 
-export async function getSubscriptionMixChart() {
+export async function getSubscriptionMixChart(): Promise<SubscriptionChartPoint[]> {
   await apiDelay()
   if (config.useMockData) return mockApi.analytics.subscriptions()
-  return []
+  return wpFetch<SubscriptionChartPoint[]>(wpEndpoints.analytics.subscriptions)
 }
 
 export async function downloadClientProgressPdf(clientId: string): Promise<void> {

@@ -378,6 +378,10 @@ export const mockApi = {
     payments(clientId: string): Payment[] {
       return store.payments.filter((p) => p.clientId === clientId)
     },
+    workoutCompletions(_clientId: string): string[] {
+      void _clientId
+      return [...store.workoutCompletions]
+    },
   },
 
   analytics: {

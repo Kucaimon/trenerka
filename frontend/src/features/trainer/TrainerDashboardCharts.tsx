@@ -34,6 +34,11 @@ export function TrainerDashboardCharts({
       <DashboardGridItem span={4}>
         <AnalyticsWidget title={t('dashboard.preview.attendance')} height={200}>
           <div className="chart-mobile h-[180px] min-h-[160px]">
+            {attendanceChart.length === 0 ? (
+              <p className="flex h-full items-center justify-center text-sm text-[var(--text-muted)]">
+                {t('common:empty.noData')}
+              </p>
+            ) : (
             <ResponsiveContainer width="100%" height="100%" minHeight={160}>
               <BarChart data={attendanceChart}>
                 <CartesianGrid stroke={CHART.grid} vertical={false} />
@@ -43,6 +48,7 @@ export function TrainerDashboardCharts({
                 <Bar dataKey="sessions" fill={CHART.accent} radius={[3, 3, 0, 0]} maxBarSize={28} />
               </BarChart>
             </ResponsiveContainer>
+            )}
           </div>
         </AnalyticsWidget>
       </DashboardGridItem>

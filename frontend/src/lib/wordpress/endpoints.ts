@@ -26,8 +26,13 @@ export const wpEndpoints = {
   },
   analytics: {
     trainer: '/trenerka/v1/analytics/trainer',
+    attendance: '/trenerka/v1/analytics/attendance',
+    weekday: '/trenerka/v1/analytics/weekday',
+    retention: '/trenerka/v1/analytics/retention',
+    subscriptions: '/trenerka/v1/analytics/subscriptions',
     clientPdf: (id: string) => `/trenerka/v1/analytics/client/${id}/pdf`,
   },
+  clientWorkoutCompletions: (clientId: string) => `/trenerka/v1/clients/${clientId}/workout-completions`,
   admin: {
     stats: '/trenerka/v1/admin/stats',
     users: '/trenerka/v1/admin/users',

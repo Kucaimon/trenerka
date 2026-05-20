@@ -213,7 +213,10 @@
     },
     "workouts": {
       "title": "Program workouts",
-      "empty": "No program assigned"
+      "empty": "No program assigned",
+      "done": "Completed",
+      "planned": "Planned",
+      "exercisesShort": "ex."
     },
     "files": {
       "title": "Client files",
