@@ -10,6 +10,8 @@ import {
   Dumbbell,
   LayoutDashboard,
   Layers,
+  ExternalLink,
+  GraduationCap,
   LogOut,
   Menu,
   MessageSquare,
@@ -23,7 +25,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
-import { MobileLanguageList } from '@/components/shared/MobileLanguageList'
+import { config } from '@/lib/config'
 import { useUiStore } from '@/store/ui-store'
 import { useAuthStore } from '@/store/auth-store'
 import { Button } from '@/components/ui/button'
@@ -47,11 +49,13 @@ import {
 import type { LucideIcon } from 'lucide-react'
 
 type NavItem = {
-  to: string
+  to?: string
+  href?: string
   icon: LucideIcon
   label: string
   end?: boolean
   badge?: number
+  external?: boolean
 }
 
 type NavGroup = {
@@ -69,8 +73,19 @@ function useMobileBottomNav(): MobileTabItem[] {
   ]
 }
 
+function useSkillsNavItem(): NavItem {
+  const { t } = useTranslation('common')
+  return {
+    href: config.skillsUrl,
+    icon: GraduationCap,
+    label: t('skills'),
+    external: true,
+  }
+}
+
 function useMobileMoreNav(): NavItem[] {
   const { t } = useTranslation('trainer')
+  const skills = useSkillsNavItem()
   return [
     { to: '/trainer/workouts/builder', icon: Dumbbell, label: t('nav.builder') },
     { to: '/trainer/programs', icon: Layers, label: t('nav.programs') },
@@ -80,6 +95,7 @@ function useMobileMoreNav(): NavItem[] {
     { to: '/trainer/settings', icon: Settings, label: t('nav.settings') },
     { to: '/trainer/files', icon: FolderOpen, label: t('nav.files') },
     { to: '/trainer/notifications', icon: Bell, label: t('nav.notifications') },
+    skills,
   ]
 }
 
@@ -104,6 +120,7 @@ function useNavGroups(): NavGroup[] {
   const { t } = useTranslation('trainer')
   const { data: clients = [] } = useClients()
   const { data: analytics } = useTrainerAnalytics()
+  const skills = useSkillsNavItem()
   const activeClients = clients.filter((c) => c.status === 'active').length
   const unread = analytics?.unreadMessages ?? 0
 
@@ -138,9 +155,68 @@ function useNavGroups(): NavGroup[] {
         { to: '/trainer/files', icon: FolderOpen, label: t('nav.files') },
         { to: '/trainer/notifications', icon: Bell, label: t('nav.notifications') },
         { to: '/trainer/settings', icon: Settings, label: t('nav.settings') },
+        skills,
       ],
     },
   ]
+}
+
+function TrainerNavItem({
+  item,
+  collapsed,
+  onNavigate,
+}: {
+  item: NavItem
+  collapsed: boolean
+  onNavigate?: () => void
+}) {
+  const className = cn(
+    'snav-item touch-target focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]',
+    collapsed && 'justify-center',
+  )
+  const content = (
+    <>
+      <item.icon className="h-4 w-4 shrink-0 opacity-80" strokeWidth={1.75} />
+      {!collapsed && (
+        <>
+          <span className="truncate">{item.label}</span>
+          {item.external ? (
+            <ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0 opacity-50" aria-hidden />
+          ) : null}
+          {!item.external && item.badge != null && item.badge > 0 ? (
+            <span className="ml-auto rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[10px] font-bold text-[#111]">
+              {item.badge}
+            </span>
+          ) : null}
+        </>
+      )}
+    </>
+  )
+
+  if (item.href) {
+    return (
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+        onClick={onNavigate}
+      >
+        {content}
+      </a>
+    )
+  }
+
+  return (
+    <NavLink
+      to={item.to!}
+      end={item.end}
+      className={({ isActive }) => cn(className, isActive && 'active')}
+      onClick={onNavigate}
+    >
+      {content}
+    </NavLink>
+  )
 }
 
 export function TrainerLayout() {
@@ -217,9 +293,6 @@ export function TrainerLayout() {
           }
           footer={
             <>
-              <div className={cn('mb-3', collapsed && 'flex justify-center')}>
-                <LanguageSwitcher showLabel={!collapsed} className={cn(!collapsed && 'w-full justify-start')} />
-              </div>
               {!collapsed && user ? (
                 <div className="mb-3 flex items-center gap-2.5">
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--accent)] text-xs font-bold text-[#111]">
@@ -249,30 +322,11 @@ export function TrainerLayout() {
           {navGroups.map((group) => (
             <AppSidebarGroup key={group.label} label={group.label} collapsed={collapsed}>
               {group.items.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  end={item.end}
-                  className={({ isActive }) =>
-                    cn(
-                      'snav-item touch-target focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]',
-                      collapsed && 'justify-center',
-                      isActive && 'active',
-                    )
-                  }
-                >
-                  <item.icon className="h-4 w-4 shrink-0 opacity-80" strokeWidth={1.75} />
-                  {!collapsed && (
-                    <>
-                      <span className="truncate">{item.label}</span>
-                      {item.badge != null && item.badge > 0 && (
-                        <span className="ml-auto rounded-full bg-[var(--accent)] px-1.5 py-0.5 text-[10px] font-bold text-[#111]">
-                          {item.badge}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </NavLink>
+                <TrainerNavItem
+                  key={item.to ?? item.href}
+                  item={item}
+                  collapsed={collapsed}
+                />
               ))}
             </AppSidebarGroup>
           ))}
@@ -281,7 +335,12 @@ export function TrainerLayout() {
 
       <div className="trainer-main ds-app-main flex min-h-0 min-w-0 w-full flex-1 flex-col">
         <AppTopBar className="px-3 md:px-8">
-          {isMobile ? <LogoLink size="sm" className="shrink-0" /> : null}
+          {isMobile ? (
+            <>
+              <LogoLink size="sm" className="shrink-0" />
+              <LanguageSwitcher variant="ghost" compact className="border-transparent px-2" />
+            </>
+          ) : null}
           {!isMobile ? (
             <Button
               variant="ghost"
@@ -305,7 +364,9 @@ export function TrainerLayout() {
               ⌘K
             </kbd>
           </Button>
-          {!isMobile ? <LanguageSwitcher compact /> : null}
+          {!isMobile ? (
+            <LanguageSwitcher variant="ghost" compact className="border-transparent px-2" />
+          ) : null}
         </AppTopBar>
 
         <AppContent variant="trainer">
@@ -319,25 +380,37 @@ export function TrainerLayout() {
 
       <MobileBottomSheet open={moreOpen} onClose={() => setMoreOpen(false)} title={t('nav.sections')}>
         <nav className="grid grid-cols-2 gap-2 p-4">
-          {mobileMoreNav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                cn(
-                  'flex min-h-[48px] items-center gap-2.5 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors',
-                  isActive && 'bg-[rgba(184,245,61,0.08)] text-[var(--accent)]',
-                )
-              }
-              onClick={() => setMoreOpen(false)}
-            >
-              <item.icon className="h-5 w-5 shrink-0 opacity-80" strokeWidth={1.75} />
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-          <div className="col-span-2 border-t border-[var(--border)] pt-3">
-            <MobileLanguageList onSelect={() => setMoreOpen(false)} />
-          </div>
+          {mobileMoreNav.map((item) =>
+            item.href ? (
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-[48px] items-center gap-2.5 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors"
+                onClick={() => setMoreOpen(false)}
+              >
+                <item.icon className="h-5 w-5 shrink-0 opacity-80" strokeWidth={1.75} />
+                <span className="truncate">{item.label}</span>
+                <ExternalLink className="ml-auto h-4 w-4 shrink-0 opacity-50" aria-hidden />
+              </a>
+            ) : (
+              <NavLink
+                key={item.to}
+                to={item.to!}
+                className={({ isActive }) =>
+                  cn(
+                    'flex min-h-[48px] items-center gap-2.5 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--text-secondary)] transition-colors',
+                    isActive && 'bg-[rgba(184,245,61,0.08)] text-[var(--accent)]',
+                  )
+                }
+                onClick={() => setMoreOpen(false)}
+              >
+                <item.icon className="h-5 w-5 shrink-0 opacity-80" strokeWidth={1.75} />
+                <span>{item.label}</span>
+              </NavLink>
+            ),
+          )}
         </nav>
       </MobileBottomSheet>
 

@@ -54,20 +54,49 @@ export function ProfilePage() {
     if (!user?.id) return
     let cancelled = false
     const load = async () => {
-      const existing = useAuthStore.getState().trainerProfile
-      const profile = existing ?? (await fetchTrainerProfile(user.id))
-      if (cancelled) return
-      if (profile) {
-        setTrainerProfile(profile)
+      try {
+        const profile = await fetchTrainerProfile(user.id)
+        if (cancelled) return
+        if (profile && profile.userId === user.id) {
+          setTrainerProfile(profile)
+          reset({
+            fullName: profile.fullName ?? '',
+            specialization: profile.specialization ?? '',
+            experience: profile.experience ?? '',
+            phone: profile.phone ?? '',
+          })
+          setAvatarPreview(profile.avatarUrl)
+          return
+        }
+        setTrainerProfile(null)
         reset({
-          fullName: profile.fullName,
-          specialization: profile.specialization,
-          experience: profile.experience,
-          phone: profile.phone,
+          fullName: user.name ?? '',
+          specialization: '',
+          experience: '',
+          phone: '',
         })
-        setAvatarPreview(profile.avatarUrl)
-      } else {
-        reset({ fullName: user.name, specialization: '', experience: '', phone: '' })
+        setAvatarPreview(undefined)
+      } catch {
+        if (cancelled) return
+        const cached = useAuthStore.getState().trainerProfile
+        if (cached?.userId === user.id) {
+          reset({
+            fullName: cached.fullName ?? '',
+            specialization: cached.specialization ?? '',
+            experience: cached.experience ?? '',
+            phone: cached.phone ?? '',
+          })
+          setAvatarPreview(cached.avatarUrl)
+        } else {
+          setTrainerProfile(null)
+          reset({
+            fullName: user.name ?? '',
+            specialization: '',
+            experience: '',
+            phone: '',
+          })
+          setAvatarPreview(undefined)
+        }
       }
     }
     void load()

@@ -23,10 +23,12 @@ export const useAuthStore = create<AuthState>()(
       trainerProfile: null,
       login: (user, token, trainerProfile = null) => {
         setAuthToken(token)
+        const profile =
+          user.role === 'trainer' && trainerProfile?.userId === user.id ? trainerProfile : null
         set({
           user,
           token,
-          trainerProfile: user.role === 'trainer' ? trainerProfile : null,
+          trainerProfile: user.role === 'trainer' ? profile : null,
         })
       },
       setTrainerProfile: (profile) => set({ trainerProfile: profile }),
