@@ -2,6 +2,7 @@ import i18n from '@/i18n'
 import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
 import { mockApi } from '@/lib/mock-api/store'
+import { fileToDataUrl } from '@/lib/mock-api/users'
 import { wpFetch, getAuthToken } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
 import type { Message } from '@/types'
@@ -66,7 +67,7 @@ export async function uploadAttachment(file: File): Promise<string> {
   }
   if (config.useMockData) {
     await apiDelay(500)
-    return URL.createObjectURL(file)
+    return fileToDataUrl(file)
   }
   const form = new FormData()
   form.append('file', file)

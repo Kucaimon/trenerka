@@ -14,7 +14,9 @@ import { config } from '@/lib/config'
 import type { UserRole } from '@/types'
 import { Mail, UserPlus } from 'lucide-react'
 
-type FormData = { email: string; password: string; confirmPassword: string }
+type TrainerFormData = { fullName: string; email: string; password: string; confirmPassword: string }
+type ClientFormData = { email: string; password: string; confirmPassword: string }
+type FormData = TrainerFormData | ClientFormData
 
 export function RegisterPage({ role }: { role: UserRole }) {
   const { t } = useTranslation(['auth', 'common'])
@@ -26,7 +28,19 @@ export function RegisterPage({ role }: { role: UserRole }) {
   const [email, setEmail] = useState('')
   const [verifyLink, setVerifyLink] = useState<string | null>(null)
 
-  const schema = z
+  const trainerSchema = z
+    .object({
+      fullName: z.string().min(2, t('common:validation.nameMin2')),
+      email: z.string().email(t('validation.email')),
+      password: z.string().min(8, t('validation.passwordMin8')),
+      confirmPassword: z.string().min(8, t('validation.passwordMin8')),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('validation.passwordMismatch'),
+      path: ['confirmPassword'],
+    })
+
+  const clientSchema = z
     .object({
       email: z.string().email(t('validation.email')),
       password: z.string().min(8, t('validation.passwordMin8')),
@@ -41,12 +55,18 @@ export function RegisterPage({ role }: { role: UserRole }) {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<FormData>({ resolver: zodResolver(schema) })
+  } = useForm<TrainerFormData | ClientFormData>({
+    resolver: zodResolver(isTrainer ? trainerSchema : clientSchema),
+  })
 
   const onSubmit = async (data: FormData) => {
     try {
       if (isTrainer) {
-        const result = await registerTrainer({ email: data.email, password: data.password })
+        const result = await registerTrainer({
+          email: data.email,
+          password: data.password,
+          fullName: 'fullName' in data ? data.fullName : undefined,
+        })
         setEmail(data.email)
         if (config.useMockData && result.verifyToken) {
           setVerifyLink(`/verify-email?token=${encodeURIComponent(result.verifyToken)}`)
@@ -128,6 +148,15 @@ export function RegisterPage({ role }: { role: UserRole }) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {isTrainer ? (
+            <div className="space-y-1.5">
+              <Label htmlFor="fullName">{t('register.fullName')}</Label>
+              <Input id="fullName" autoComplete="name" {...register('fullName')} />
+              {'fullName' in errors && errors.fullName && (
+                <p className="text-xs text-red-400">{errors.fullName.message}</p>
+              )}
+            </div>
+          ) : null}
           <div className="space-y-1.5">
             <Label htmlFor="email">{t('login.email')}</Label>
             <Input id="email" type="email" autoComplete="email" {...register('email')} />

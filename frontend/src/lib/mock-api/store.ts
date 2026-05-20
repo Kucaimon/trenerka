@@ -9,16 +9,12 @@ import {
   mockNotifications,
   mockPayments,
   mockProgress,
-  mockRevenueData,
-  mockRetentionData,
-  mockAttendanceData,
-  mockWeekdayActivity,
-  mockSubscriptionMix,
   mockClientFiles,
 } from '@/lib/mock-data'
 import { currentMonthPrefix } from '@/lib/mock-data/dates'
 import { listExercisesFrom } from '@/lib/mock-data/exercise-list'
 import type { ExerciseListParams } from '@/features/api/exercise-list'
+import { getTrainerDisplayName, registerMockClientUser } from '@/lib/mock-api/users'
 import type {
   CalendarEvent,
   Client,
@@ -29,14 +25,25 @@ import type {
   NewsItem,
   Notification,
   Payment,
+  PaymentState,
   Program,
   ProgressMeasurement,
   TrainerAnalytics,
   AdminStats,
   AdminUser,
+  RevenueReportPoint,
 } from '@/types'
 
-const STORAGE_KEY = 'trenerka_mock_store_v4'
+const STORAGE_KEY = 'trenerka_mock_store_v5'
+
+interface ClientFile {
+  id: string
+  clientId: string
+  name: string
+  url: string
+  mimeType?: string
+  createdAt: string
+}
 
 interface MockStore {
   clients: Client[]
@@ -51,6 +58,7 @@ interface MockStore {
   news: NewsItem[]
   workoutCompletions: string[]
   blockedUserIds: string[]
+  clientFiles: ClientFile[]
 }
 
 function uid(prefix = 'id'): string {
@@ -83,6 +91,15 @@ function seed(): MockStore {
               { id: 'we2', exerciseId: 'ex-2', name: 'Приседания', muscleGroup: 'Ноги', sets: 5, reps: '5', restSeconds: 120, technique: 'Колени по линии носков.' },
             ],
           },
+          {
+            id: 'w2',
+            weekNumber: 1,
+            dayLabel: 'Ср',
+            title: 'Силовая B',
+            exercises: [
+              { id: 'we3', exerciseId: 'ex-3', name: 'Тяга в наклоне', muscleGroup: 'Спина', sets: 4, reps: '10', restSeconds: 90, technique: 'Спина прямая.' },
+            ],
+          },
         ],
       },
     ],
@@ -99,6 +116,14 @@ function seed(): MockStore {
     news: mockNews,
     workoutCompletions: [],
     blockedUserIds: [],
+    clientFiles: mockClientFiles.map((f) => ({
+      id: f.id,
+      clientId: f.clientId,
+      name: f.name,
+      url: `data:text/plain;charset=utf-8,${encodeURIComponent(f.name)}`,
+      mimeType: f.type,
+      createdAt: `${f.uploadedAt}T12:00:00.000Z`,
+    })),
   }
 }
 
@@ -124,6 +149,70 @@ function refresh(): void {
   store = load()
 }
 
+function monthKey(date: string): string {
+  return date.slice(0, 7)
+}
+
+function computePaymentState(client: Client): PaymentState {
+  if (client.paymentState && client.status !== 'archive') return client.paymentState
+  if (client.packageBalance <= 0) return 'overdue'
+  if (client.packageBalance <= 3) return 'pending'
+  return 'paid'
+}
+
+function computeWorkoutCompletionPct(clientId: string): number {
+  const cp = store.clientPrograms.find((x) => x.clientId === clientId && x.status === 'active')
+  if (!cp) return 0
+  const program = store.programs.find((p) => p.id === cp.programId)
+  const workouts = program?.workouts ?? []
+  if (!workouts.length) return 0
+  const done = workouts.filter((w) => store.workoutCompletions.includes(w.id)).length
+  return Math.round((done / workouts.length) * 100)
+}
+
+function computeSessionsThisWeek(clientId: string): number {
+  const now = new Date()
+  const weekStart = new Date(now)
+  weekStart.setDate(now.getDate() - ((now.getDay() + 6) % 7))
+  weekStart.setHours(0, 0, 0, 0)
+  return store.events.filter((e) => {
+    if (e.clientId !== clientId) return false
+    const d = new Date(e.start)
+    return d >= weekStart
+  }).length
+}
+
+function computeLastActivityMinutes(clientId: string): number | undefined {
+  const times: number[] = []
+  for (const m of store.messages.filter((msg) => msg.clientId === clientId)) {
+    times.push(new Date(m.createdAt).getTime())
+  }
+  for (const p of store.payments.filter((pay) => pay.clientId === clientId)) {
+    times.push(new Date(`${p.date}T12:00:00`).getTime())
+  }
+  if (!times.length) return undefined
+  const latest = Math.max(...times)
+  return Math.max(1, Math.floor((Date.now() - latest) / 60_000))
+}
+
+function enrichClientRecord(client: Client): Client {
+  const upcoming = store.events
+    .filter((e) => e.clientId === client.id && new Date(e.start) > new Date())
+    .sort((a, b) => a.start.localeCompare(b.start))[0]
+  const lastEvent = store.events
+    .filter((e) => e.clientId === client.id)
+    .sort((a, b) => b.start.localeCompare(a.start))[0]
+  return {
+    ...client,
+    paymentState: computePaymentState(client),
+    workoutCompletionPct: computeWorkoutCompletionPct(client.id),
+    sessionsThisWeek: computeSessionsThisWeek(client.id),
+    lastActivityMinutesAgo: computeLastActivityMinutes(client.id),
+    upcomingSessionAt: upcoming?.start,
+    lastSession: lastEvent?.start.slice(0, 10),
+  }
+}
+
 export const mockApi = {
   reset() {
     localStorage.removeItem(STORAGE_KEY)
@@ -134,23 +223,31 @@ export const mockApi = {
   clients: {
     list(): Client[] {
       refresh()
-      return [...store.clients]
+      return store.clients.map(enrichClientRecord)
     },
     get(id: string) {
-      return store.clients.find((c) => c.id === id)
+      const c = store.clients.find((x) => x.id === id)
+      return c ? enrichClientRecord(c) : undefined
     },
-    create(data: Omit<Client, 'id' | 'joinedAt'>) {
+    create(data: Omit<Client, 'id' | 'joinedAt'>, options?: { loginPassword?: string }) {
       const client: Client = { ...data, id: uid('c'), joinedAt: new Date().toISOString().slice(0, 10) }
-      const temporaryPassword = `tmp${Math.random().toString(36).slice(2, 8)}`
+      const temporaryPassword = options?.loginPassword ?? `tmp${Math.random().toString(36).slice(2, 8)}`
       store.clients.push(client)
       save(store)
-      return { client, temporaryPassword }
+      registerMockClientUser({
+        email: client.email,
+        password: temporaryPassword,
+        name: client.name,
+        clientProfileId: client.id,
+      })
+      return { client: enrichClientRecord(client), temporaryPassword }
     },
     update(id: string, data: Partial<Client>) {
       const i = store.clients.findIndex((c) => c.id === id)
       if (i >= 0) store.clients[i] = { ...store.clients[i]!, ...data }
       save(store)
-      return store.clients[i]
+      const c = store.clients[i]
+      return c ? enrichClientRecord(c) : undefined
     },
     remove(id: string) {
       const i = store.clients.findIndex((c) => c.id === id)
@@ -298,6 +395,16 @@ export const mockApi = {
         attachmentUrl: data.attachmentUrl,
       }
       store.messages.push(msg)
+      if (data.attachmentUrl) {
+        store.clientFiles.unshift({
+          id: uid('file'),
+          clientId: data.clientId,
+          name: data.text.trim() || 'Вложение из чата',
+          url: data.attachmentUrl,
+          mimeType: 'attachment',
+          createdAt: new Date().toISOString(),
+        })
+      }
       save(store)
       return msg
     },
@@ -320,12 +427,12 @@ export const mockApi = {
   },
 
   client: {
-    dashboard(clientId = 'c1'): ClientDashboard {
+    dashboard(clientId: string): ClientDashboard {
       const profile = store.clients.find((c) => c.id === clientId)
       const cp = store.clientPrograms.find((x) => x.clientId === clientId && x.status === 'active')
       const program = cp ? store.programs.find((p) => p.id === cp.programId) : null
       const next = store.events
-        .filter((e) => e.clientId === clientId)
+        .filter((e) => e.clientId === clientId && new Date(e.start) >= new Date())
         .sort((a, b) => a.start.localeCompare(b.start))[0]
       const programWorkouts = program?.workouts ?? []
       const doneCount = programWorkouts.filter((w) => store.workoutCompletions.includes(w.id)).length
@@ -333,7 +440,7 @@ export const mockApi = {
         clientProfileId: clientId,
         profile: {
           name: profile?.name.split(' ')[0] ?? 'Клиент',
-          trainer: 'Алексей Тренеров',
+          trainer: getTrainerDisplayName(),
           packageBalance: profile?.packageBalance ?? 0,
         },
         currentProgram: program?.name ?? 'Не назначена',
@@ -342,7 +449,7 @@ export const mockApi = {
         notifications: store.notifications.slice(0, 5),
       }
     },
-    workouts(clientId = 'c1'): ClientWorkoutDay[] {
+    workouts(clientId: string): ClientWorkoutDay[] {
       const cp = store.clientPrograms.find((x) => x.clientId === clientId && x.status === 'active')
       if (!cp) return []
       const program = store.programs.find((p) => p.id === cp.programId)
@@ -363,24 +470,28 @@ export const mockApi = {
         })),
       }))
     },
-    progress(clientId = 'c1'): ProgressMeasurement[] {
-      void clientId
-      return [...store.progress]
+    progress(clientId: string): ProgressMeasurement[] {
+      return store.progress.filter((p) => p.clientId === clientId)
     },
     saveProgress(data: ProgressMeasurement) {
-      store.progress.push({ ...data, clientId: data.clientId ?? 'c1' })
+      store.progress.push({ ...data })
       save(store)
     },
     completeWorkout(workoutId: string) {
-      store.workoutCompletions.push(workoutId)
-      save(store)
+      if (!store.workoutCompletions.includes(workoutId)) {
+        store.workoutCompletions.push(workoutId)
+        save(store)
+      }
     },
     payments(clientId: string): Payment[] {
       return store.payments.filter((p) => p.clientId === clientId)
     },
-    workoutCompletions(_clientId: string): string[] {
-      void _clientId
-      return [...store.workoutCompletions]
+    workoutCompletions(clientId: string): string[] {
+      const cp = store.clientPrograms.find((x) => x.clientId === clientId && x.status === 'active')
+      if (!cp) return []
+      const program = store.programs.find((p) => p.id === cp.programId)
+      const ids = new Set(program?.workouts?.map((w) => w.id) ?? [])
+      return store.workoutCompletions.filter((id) => ids.has(id))
     },
   },
 
@@ -391,31 +502,89 @@ export const mockApi = {
         monthlyRevenue: store.payments
           .filter((p) => p.date.startsWith(currentMonthPrefix()))
           .reduce((s, p) => s + p.amount, 0),
-        weeklySessions: store.events.length,
+        weeklySessions: store.events.filter((e) => {
+          const d = new Date(e.start)
+          const now = new Date()
+          const diff = (now.getTime() - d.getTime()) / 86_400_000
+          return diff >= 0 && diff < 7
+        }).length,
         unreadMessages: store.messages.filter((m) => m.sender === 'client' && !m.read).length,
       }
     },
-    revenue() {
-      return mockRevenueData
+    revenue(): RevenueReportPoint[] {
+      const byMonth = new Map<string, { revenue: number; clients: Set<string> }>()
+      for (const p of store.payments) {
+        const month = monthKey(p.date)
+        const entry = byMonth.get(month) ?? { revenue: 0, clients: new Set<string>() }
+        entry.revenue += p.amount
+        entry.clients.add(p.clientId)
+        byMonth.set(month, entry)
+      }
+      return [...byMonth.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-6)
+        .map(([month, v]) => ({
+          month,
+          revenue: v.revenue,
+          clients: v.clients.size,
+        }))
     },
     retention() {
-      return mockRetentionData
+      const active = store.clients.filter((c) => c.status === 'active').length
+      const total = store.clients.length || 1
+      const rate = Math.round((active / total) * 100)
+      const now = new Date()
+      return Array.from({ length: 6 }, (_, i) => {
+        const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1)
+        const label = d.toLocaleDateString('ru-RU', { month: 'short' })
+        return { month: label, rate: Math.max(0, Math.min(100, rate - (5 - i) * 2)) }
+      })
     },
     attendance() {
-      return mockAttendanceData
+      const byWeek = new Map<string, number>()
+      for (const e of store.events) {
+        const d = new Date(e.start)
+        const weekStart = new Date(d)
+        weekStart.setDate(d.getDate() - d.getDay())
+        const key = weekStart.toISOString().slice(0, 10)
+        byWeek.set(key, (byWeek.get(key) ?? 0) + 1)
+      }
+      return [...byWeek.entries()]
+        .sort(([a], [b]) => a.localeCompare(b))
+        .slice(-8)
+        .map(([week, sessions]) => ({ week, sessions }))
     },
     weekday() {
-      return mockWeekdayActivity
+      const labels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+      const counts = [0, 0, 0, 0, 0, 0, 0]
+      for (const e of store.events) {
+        const day = (new Date(e.start).getDay() + 6) % 7
+        counts[day] += 1
+      }
+      return labels.map((day, i) => ({ day, sessions: counts[i]! }))
     },
     subscriptions() {
-      return mockSubscriptionMix
+      const tiers = [
+        { name: '0 занятий', min: 0, max: 0 },
+        { name: '1–5', min: 1, max: 5 },
+        { name: '6–10', min: 6, max: 10 },
+        { name: '11+', min: 11, max: 999 },
+      ]
+      const colors = ['#64748b', '#94a3b8', '#d9f500', '#22c55e']
+      return tiers.map((tier, i) => ({
+        name: tier.name,
+        value: store.clients.filter(
+          (c) => c.packageBalance >= tier.min && c.packageBalance <= tier.max,
+        ).length,
+        color: colors[i],
+      }))
     },
   },
 
   admin: {
     stats(): AdminStats {
       return {
-        trainers: 3,
+        trainers: 1,
         clients: store.clients.length,
         paymentsTotal: store.payments.reduce((s, p) => s + p.amount, 0),
         exercises: store.exercises.length,
@@ -424,7 +593,7 @@ export const mockApi = {
     users(): AdminUser[] {
       const blocked = (id: string) => store.blockedUserIds.includes(id)
       return [
-        { id: 't1', email: 'trainer@trenerka.ru', name: 'Алексей Тренеров', role: 'trainer', blocked: blocked('t1') },
+        { id: 't1', email: 'trainer@trenerka.ru', name: getTrainerDisplayName(), role: 'trainer', blocked: blocked('t1') },
         { id: 'cl1', email: 'client@trenerka.ru', name: 'Анна Смирнова', role: 'client', blocked: blocked('cl1') },
         { id: 'a1', email: 'admin@trenerka.ru', name: 'Админ Trenerka', role: 'admin', blocked: blocked('a1') },
       ]
@@ -460,7 +629,20 @@ export const mockApi = {
 
   files: {
     byClient(clientId: string) {
-      return mockClientFiles.filter((f) => f.clientId === clientId)
+      return store.clientFiles.filter((f) => f.clientId === clientId)
+    },
+    add(clientId: string, file: { name: string; url: string; mimeType?: string }) {
+      const entry: ClientFile = {
+        id: uid('file'),
+        clientId,
+        name: file.name,
+        url: file.url,
+        mimeType: file.mimeType,
+        createdAt: new Date().toISOString(),
+      }
+      store.clientFiles.unshift(entry)
+      save(store)
+      return entry
     },
   },
 }

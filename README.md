@@ -18,23 +18,26 @@ trenerka/
     └── ACCEPTANCE.md
 ```
 
-## Быстрый старт (mock-режим)
+## Demo / staging (без WordPress)
+
+Режим для локальной разработки и Vercel preview (`trenerka-mu.vercel.app`): данные в **localStorage**, без backend.
 
 ```bash
 cd frontend
-cp .env.demo .env
-# или: cp .env.example .env и VITE_USE_MOCK_DATA=true
+cp .env.staging .env
+# или: cp .env.demo .env
 npm install
 npm run dev
 ```
 
-Для локальной разработки с WordPress: скопируйте `frontend/.env.local` в `frontend/.env` и укажите `VITE_WP_API_URL`.
+Сборка как на Vercel staging:
 
-Production-сборка: `frontend/.env.production` (`VITE_USE_MOCK_DATA=false`).
+```bash
+cd frontend
+npm run build:staging
+```
 
-Откройте **http://localhost:5173** (Vite по умолчанию).
-
-Если порт занят старым процессом, Vite предложит **5174** — смотрите вывод `npm run dev` в терминале. Освободить 5173: `lsof -ti:5173 | xargs kill` (macOS/Linux).
+Откройте **http://localhost:5173** (порт смотрите в выводе `npm run dev`).
 
 ### Демо-аккаунты
 
@@ -44,10 +47,29 @@ Production-сборка: `frontend/.env.production` (`VITE_USE_MOCK_DATA=false`)
 | Клиент | client@trenerka.ru | demo123 | `/login/client` |
 | Админ | admin@trenerka.ru | demo123 | `/login/admin` |
 
-## Production build
+**Новый тренер:** `/register/trainer` → подтвердите email по ссылке на экране (mock) → войдите → профиль заполните своими данными.
+
+**Новый клиент от тренера:** CRM → добавить клиента → в toast будет **временный пароль** → клиент входит на `/login/client`.
+
+## Vercel (staging без WP)
+
+В **Project → Settings → Environment Variables** (Production + Preview):
+
+| Переменная | Значение |
+|------------|----------|
+| `VITE_USE_MOCK_DATA` | `true` |
+| `VITE_WP_API_URL` | *(пусто или не задавать)* |
+| `VITE_SKILLS_URL` | `https://fitnesakademiya.ru` |
+
+**Root Directory:** `frontend` · **Build Command:** `npm run build:staging` (или `npm run build` при `.env.staging` в репо).
+
+После смены env — **Redeploy**. Подробнее: [docs/VERCEL.md](docs/VERCEL.md).
+
+## Production build (WordPress)
 
 ```bash
 cd frontend
+cp .env.production .env   # VITE_USE_MOCK_DATA=false
 npm run build
 npm run lint
 npm test
@@ -58,7 +80,7 @@ E2E (mock, поднимает dev-сервер): `npm run test:e2e`
 ## WordPress (production backend)
 
 1. Установите WordPress
-2. Активируйте плагин `wordpress/trenerka-core/` (создаёт таблицы + REST API)
+2. Активируйте плагин `wordpress/trenerka-core/`
 3. Активируйте тему `wordpress/theme-trenerka/`
 4. Установите [JWT Authentication for WP REST API](https://wordpress.org/plugins/jwt-authentication-for-wp-rest-api/)
 5. В `.env` установите `VITE_USE_MOCK_DATA=false` и `VITE_WP_API_URL`
@@ -69,14 +91,17 @@ E2E (mock, поднимает dev-сервер): `npm run test:e2e`
 
 | Переменная | Описание |
 |------------|----------|
-| `VITE_WP_API_URL` | URL WordPress REST API |
-| `VITE_USE_MOCK_DATA` | `false` по умолчанию — WordPress; `true` — локальное демо |
+| `VITE_WP_API_URL` | URL WordPress REST API (не нужен при mock) |
+| `VITE_USE_MOCK_DATA` | `true` — demo/staging; `false` — WordPress |
+| `VITE_SKILLS_URL` | Ссылка на курсы Фитнес Академии |
+
+Файлы: `.env.staging` (demo), `.env.demo`, `.env.production` (WP).
 
 ## Маршруты
 
 - `/` — лендинг
 - `/login/trainer`, `/login/client`, `/login/admin` — вход
-- `/register/trainer` — регистрация
+- `/register/trainer` — регистрация тренера
 - `/trainer/*` — панель тренера
 - `/client/*` — приложение клиента
 - `/admin/*` — админка

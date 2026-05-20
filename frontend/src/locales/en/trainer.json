@@ -64,12 +64,15 @@
   },
   "filesPage": {
     "title": "Files",
-    "description": "Client documents and media. File upload will be available in a future release.",
+    "description": "Client documents and media from CRM and chat.",
     "clientsCount": "{{count}} clients",
+    "selectClient": "Client",
+    "clientFiles": "Client files",
+    "filesCount": "{{count}} files",
     "training": "Training",
     "trainingHint": "Fitness Academy courses and materials",
     "emptyTitle": "No files yet",
-    "empty": "Uploaded client documents will appear here once the file API is connected."
+    "empty": "This client has no uploaded documents yet. Chat attachments are saved automatically."
   },
   "settings": {
     "title": "Settings",

@@ -3,83 +3,33 @@ import { config } from '@/lib/config'
 import { apiDelay } from '@/lib/api/delay'
 import { isTrainerProfileComplete } from '@/lib/auth/profile-complete'
 import { mockApi } from '@/lib/mock-api/store'
+import {
+  findMockUserByEmail,
+  loadMockUsers,
+  mockProfiles,
+  readPendingTrainers,
+  readResetTokens,
+  saveMockProfile,
+  upsertMockUser,
+  writePendingTrainers,
+  writeResetTokens,
+} from '@/lib/mock-api/users'
 import { wpFetch, setAuthToken } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
 import type { TrainerProfile, User, UserRole } from '@/types'
 import type { WpAuthResponse } from '@/lib/wordpress/types'
 
-const MOCK_PROFILES_KEY = 'trenerka-trainer-profiles'
-const MOCK_PENDING_KEY = 'trenerka-pending-trainers'
-const MOCK_RESET_KEY = 'trenerka-reset-tokens'
-
-interface PendingTrainer {
-  email: string
-  password: string
-  token: string
-}
-
-interface MockResetToken {
-  email: string
-  token: string
-  expiresAt: number
-}
-
-const defaultMockProfiles: Record<string, TrainerProfile> = {
-  t1: {
-    userId: 't1',
-    fullName: 'Алексей Тренеров',
-    specialization: 'Силовой тренинг',
-    experience: '8 лет',
-    phone: '+7 900 000-00-01',
-  },
-}
-
-const mockUsers: Record<string, { password: string; user: User }> = {
-  'trainer@trenerka.ru': {
-    password: 'demo123',
-    user: { id: 't1', email: 'trainer@trenerka.ru', name: 'Алексей Тренеров', role: 'trainer' },
-  },
-  'client@trenerka.ru': {
-    password: 'demo123',
-    user: {
-      id: 'cl1',
-      email: 'client@trenerka.ru',
-      name: 'Анна Смирнова',
-      role: 'client',
-      clientProfileId: 'c1',
-    },
-  },
-  'admin@trenerka.ru': {
-    password: 'demo123',
-    user: { id: 'a1', email: 'admin@trenerka.ru', name: 'Админ Trenerka', role: 'admin' },
-  },
-}
-
-function readJson<T>(key: string, fallback: T): T {
-  try {
-    const raw = localStorage.getItem(key)
-    return raw ? (JSON.parse(raw) as T) : fallback
-  } catch {
-    return fallback
-  }
-}
-
-function writeJson(key: string, value: unknown): void {
-  localStorage.setItem(key, JSON.stringify(value))
-}
-
-function mockProfiles(): Record<string, TrainerProfile> {
-  return { ...defaultMockProfiles, ...readJson<Record<string, TrainerProfile>>(MOCK_PROFILES_KEY, {}) }
-}
-
-function saveMockProfile(profile: TrainerProfile): void {
-  const all = mockProfiles()
-  all[profile.userId] = profile
-  writeJson(MOCK_PROFILES_KEY, all)
-}
-
 function createVerifyToken(email: string): string {
   return btoa(`verify:${email}:${Date.now()}`).replace(/=/g, '')
+}
+
+function displayNameFromEmail(email: string): string {
+  const local = email.split('@')[0] ?? email
+  return local
+    .split(/[._-]/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
 }
 
 export async function login(
@@ -90,7 +40,7 @@ export async function login(
   if (config.useMockData) {
     await apiDelay(600)
     const normalized = email.toLowerCase()
-    const entry = mockUsers[normalized]
+    const entry = findMockUserByEmail(normalized)
     if (!entry || entry.password !== password || entry.user.role !== role) {
       throw new Error(i18n.t('auth:errors.invalidCredentials'))
     }
@@ -130,18 +80,24 @@ export async function fetchCurrentUser(): Promise<User | null> {
 export async function registerTrainer(data: {
   email: string
   password: string
+  fullName?: string
 }): Promise<{ verifyToken?: string }> {
   await apiDelay(800)
   if (config.useMockData) {
     const email = data.email.toLowerCase()
-    if (mockUsers[email]) {
+    if (findMockUserByEmail(email)) {
       throw new Error(i18n.t('auth:errors.emailExists'))
     }
-    const pending = readJson<PendingTrainer[]>(MOCK_PENDING_KEY, [])
+    const pending = readPendingTrainers()
     const token = createVerifyToken(email)
     const next = pending.filter((p) => p.email !== email)
-    next.push({ email, password: data.password, token })
-    writeJson(MOCK_PENDING_KEY, next)
+    next.push({
+      email,
+      password: data.password,
+      token,
+      fullName: data.fullName?.trim() || displayNameFromEmail(email),
+    })
+    writePendingTrainers(next)
     return { verifyToken: token }
   }
   await wpFetch(wpEndpoints.auth.registerTrainer, {
@@ -159,30 +115,22 @@ export async function registerClient(data: {
   await apiDelay(800)
   if (config.useMockData) {
     const email = data.email.toLowerCase()
-    if (mockUsers[email]) {
+    if (findMockUserByEmail(email)) {
       throw new Error(i18n.t('auth:errors.emailExists'))
     }
-    const name = data.name?.trim() || email.split('@')[0] || email
-    const userId = `cl-${Date.now()}`
-    const { client } = mockApi.clients.create({
-      name,
-      email,
-      phone: '',
-      status: 'active',
-      packageBalance: 0,
-      goal: '',
-      notes: '',
-    })
-    mockUsers[email] = {
-      password: data.password,
-      user: {
-        id: userId,
-        email,
+    const name = data.name?.trim() || displayNameFromEmail(email)
+    mockApi.clients.create(
+      {
         name,
-        role: 'client',
-        clientProfileId: client.id,
+        email,
+        phone: '',
+        status: 'active',
+        packageBalance: 0,
+        goal: '',
+        notes: '',
       },
-    }
+      { loginPassword: data.password },
+    )
     return
   }
   throw new Error(i18n.t('auth:register.clientInviteOnly'))
@@ -191,23 +139,21 @@ export async function registerClient(data: {
 export async function verifyEmail(token: string): Promise<void> {
   await apiDelay(500)
   if (config.useMockData) {
-    const pending = readJson<PendingTrainer[]>(MOCK_PENDING_KEY, [])
+    const pending = readPendingTrainers()
     const match = pending.find((p) => p.token === token)
     if (!match) {
       throw new Error(i18n.t('auth:verify.invalidToken'))
     }
     const userId = `t-${Date.now()}`
-    mockUsers[match.email] = {
+    const fullName = match.fullName?.trim() || displayNameFromEmail(match.email)
+    upsertMockUser(match.email, {
       password: match.password,
-      user: { id: userId, email: match.email, name: match.email.split('@')[0], role: 'trainer' },
-    }
-    writeJson(
-      MOCK_PENDING_KEY,
-      pending.filter((p) => p.token !== token),
-    )
+      user: { id: userId, email: match.email, name: fullName, role: 'trainer' },
+    })
+    writePendingTrainers(pending.filter((p) => p.token !== token))
     saveMockProfile({
       userId,
-      fullName: '',
+      fullName,
       specialization: '',
       experience: '',
       phone: '',
@@ -224,13 +170,13 @@ export async function resetPassword(email: string): Promise<{ resetToken?: strin
   await apiDelay(600)
   if (config.useMockData) {
     const normalized = email.toLowerCase()
-    if (!mockUsers[normalized]) {
+    if (!findMockUserByEmail(normalized)) {
       return {}
     }
     const token = btoa(`reset:${normalized}:${Date.now()}`).replace(/=/g, '')
-    const tokens = readJson<MockResetToken[]>(MOCK_RESET_KEY, [])
+    const tokens = readResetTokens()
     tokens.push({ email: normalized, token, expiresAt: Date.now() + 3600_000 })
-    writeJson(MOCK_RESET_KEY, tokens)
+    writeResetTokens(tokens)
     return { resetToken: token }
   }
   await wpFetch(wpEndpoints.auth.resetPassword, {
@@ -243,19 +189,17 @@ export async function resetPassword(email: string): Promise<{ resetToken?: strin
 export async function confirmResetPassword(token: string, password: string): Promise<void> {
   await apiDelay(600)
   if (config.useMockData) {
-    const tokens = readJson<MockResetToken[]>(MOCK_RESET_KEY, [])
+    const tokens = readResetTokens()
     const match = tokens.find((t) => t.token === token && t.expiresAt > Date.now())
     if (!match) {
       throw new Error(i18n.t('auth:reset.invalidToken'))
     }
-    const entry = mockUsers[match.email]
+    const entry = findMockUserByEmail(match.email)
     if (entry) {
       entry.password = password
+      upsertMockUser(match.email, entry)
     }
-    writeJson(
-      MOCK_RESET_KEY,
-      tokens.filter((t) => t.token !== token),
-    )
+    writeResetTokens(tokens.filter((t) => t.token !== token))
     return
   }
   await wpFetch('/trenerka/v1/auth/reset-password/confirm', {
@@ -282,10 +226,12 @@ export async function updateTrainerProfile(
   if (config.useMockData) {
     const profile: TrainerProfile = { userId, ...data }
     saveMockProfile(profile)
-    const entry = Object.values(mockUsers).find((u) => u.user.id === userId)
+    const users = loadMockUsers()
+    const entry = Object.values(users).find((u) => u.user.id === userId)
     if (entry) {
       entry.user.name = data.fullName
       entry.user.avatar = data.avatarUrl
+      upsertMockUser(entry.user.email, entry)
     }
     return profile
   }

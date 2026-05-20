@@ -22,6 +22,7 @@ import { CHART } from '@/lib/chart-theme'
 import { useClientProgress, useClientDashboard, useSaveClientProgress } from '@/features/api/hooks'
 import { collectProgressPhotos } from '@/lib/client-workouts'
 import { uploadMedia } from '@/lib/wordpress/upload'
+import { fileToDataUrl } from '@/lib/mock-api/users'
 import { config } from '@/lib/config'
 import { toast } from 'sonner'
 import { useRef, useState } from 'react'
@@ -57,9 +58,7 @@ export function ProgressPage() {
             Math.round(((start.weight - latest.weight) / (start.weight - targetWeight)) * 100),
           ),
         )
-      : measurements.length
-        ? 10
-        : 0
+      : 0
 
   const donutData = [
     { name: t('progress.donut.done'), value: Math.max(progressPct, 8) },
@@ -258,7 +257,7 @@ export function ProgressPage() {
               setUploadingPhoto(true)
               try {
                 if (config.useMockData) {
-                  photos = [URL.createObjectURL(photoFile)]
+                  photos = [await fileToDataUrl(photoFile)]
                 } else {
                   photos = [await uploadMedia(photoFile)]
                 }

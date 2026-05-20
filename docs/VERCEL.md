@@ -1,100 +1,93 @@
 # Деплой Trenerka на Vercel
 
-Инструкция для **нового** проекта Vercel после удаления старого. Репозиторий: [Kucaimon/trenerka](https://github.com/Kucaimon/trenerka), ветка `main`.
+Инструкция для **staging/demo** на Vercel без WordPress (например `trenerka-mu.vercel.app`). Репозиторий: [Kucaimon/trenerka](https://github.com/Kucaimon/trenerka), ветка `main`.
 
-В репозитории уже есть:
+В репозитории:
 
-- `frontend/vercel.json` — SPA-rewrites для React Router (если Root Directory = `frontend`)
-- `vercel.json` в корне — сборка из `frontend/` без смены Root Directory в UI
+- `frontend/vercel.json` — SPA rewrites
+- `frontend/.env.staging` — `VITE_USE_MOCK_DATA=true`
+- `npm run build:staging` — сборка в demo-режиме
 
-Рекомендуется **вариант B** (Root Directory = `frontend`) — проще и совпадает с локальной разработкой.
+**Рекомендуется:** Root Directory = `frontend`.
 
 ---
 
-## Вариант B (рекомендуется): Root Directory = `frontend`
-
-### 1. Создать проект
-
-1. Откройте [vercel.com/new](https://vercel.com/new) и войдите в аккаунт.
-2. **Import Git Repository** → выберите **Kucaimon/trenerka** (подключите GitHub, если ещё не подключён).
-3. На шаге **Configure Project** задайте:
+## 1. Создать / настроить проект
 
 | Поле | Значение |
 |------|----------|
-| **Project Name** | `trenerka` (для URL `trenerka.vercel.app`) |
+| **Project Name** | `trenerka-mu` (или своё) |
 | **Framework Preset** | **Vite** |
-| **Root Directory** | `frontend` → **Edit** → выберите папку `frontend` → **Continue** |
-| **Build Command** | `npm run build` (подставится автоматически) |
+| **Root Directory** | `frontend` |
+| **Build Command** | `npm run build:staging` |
 | **Output Directory** | `dist` |
-| **Install Command** | `npm install` или `npm ci` |
+| **Install Command** | `npm ci` |
 
-4. **Environment Variables** (см. раздел ниже) → **Deploy**.
+---
 
-### 2. Переменные окружения (демо)
+## 2. Environment Variables (обязательно для demo)
 
-В **Project → Settings → Environment Variables** добавьте для **Production**, **Preview** и **Development**:
+Для **Production**, **Preview**, **Development**:
 
 | Имя | Значение | Зачем |
 |-----|----------|--------|
-| `VITE_USE_MOCK_DATA` | `false` | `true` — демо без WordPress (trainer@trenerka.ru / demo123) |
-| `VITE_WP_API_URL` | *(не обязательно для демо)* | Нужен только при `VITE_USE_MOCK_DATA=false` |
+| `VITE_USE_MOCK_DATA` | `true` | Demo без WordPress |
+| `VITE_WP_API_URL` | *(пусто)* | Не используется в mock |
+| `VITE_SKILLS_URL` | `https://fitnesakademiya.ru` | Ссылка на курсы |
 
-После изменения env vars сделайте **Redeploy** (Deployments → … → Redeploy).
+> Если задать только переменные в UI и **не** использовать `build:staging`, убедитесь что `VITE_USE_MOCK_DATA=true` в Vercel — иначе приложение попытается ходить в несуществующий WP.
 
-### 3. Публичный preview (без пароля)
-
-1. **Project → Settings → Deployment Protection**
-2. Для **Production** (и при необходимости Preview): отключите **Vercel Authentication** / **Password Protection**, если нужен открытый доступ по ссылке.
-3. Сохраните и при необходимости пересоберите деплой.
-
-### 4. Какой URL использовать
-
-- **Production:** `https://<project-name>.vercel.app`  
-  Пример при имени проекта `trenerka`: **`https://trenerka.vercel.app`**
-- Каждый push в `main` обновляет production.
-- Preview-деплои: `https://trenerka-<hash>-<team>.vercel.app` (для PR/веток).
-
-Проверка: откройте production URL → лендинг `/` → вход `/login/trainer` с демо-аккаунтом.
-
-### 5. Обновить ссылку на GitHub (по желанию)
-
-После первого успешного деплоя: репозиторий **Settings → Website** → укажите ваш `https://trenerka.vercel.app`.
+После изменения env: **Deployments → … → Redeploy**.
 
 ---
 
-## Вариант A: корень репозитория (без смены Root Directory)
+## 3. Публичный доступ
 
-Если **Root Directory** оставить пустым (корень репо), Vercel прочитает корневой `vercel.json`:
-
-- Install: `cd frontend && npm ci`
-- Build: `cd frontend && npm run build`
-- Output: `frontend/dist`
-- SPA rewrites уже в `vercel.json`
-
-Framework Preset: **Vite** или **Other**. Env vars — те же, что в варианте B.
+**Settings → Deployment Protection** — отключите Vercel Authentication для Production, если нужна открытая ссылка.
 
 ---
 
-## Локальная проверка перед деплоем
+## 4. Проверка
+
+1. Откройте `https://<project>.vercel.app/`
+2. `/login/trainer` → `trainer@trenerka.ru` / `demo123`
+3. Дашборд, CRM, календарь, финансы, чат — данные из localStorage, сохраняются после reload
+
+---
+
+## 5. Демо-аккаунты
+
+| Роль | Email | Пароль |
+|------|-------|--------|
+| Тренер | trainer@trenerka.ru | demo123 |
+| Клиент | client@trenerka.ru | demo123 |
+| Админ | admin@trenerka.ru | demo123 |
+
+Новый клиент: тренер создаёт в CRM → временный пароль в toast.
+
+---
+
+## 6. Локально перед деплоем
 
 ```bash
 cd frontend
-cp .env.example .env
+cp .env.staging .env
 npm ci
-npm run build
+npm run build:staging
+npm run lint
+npm test
 ```
-
-Артефакт: `frontend/dist/`.
 
 ---
 
-## WordPress (не Vercel)
+## WordPress (не Vercel demo)
 
-Когда появится backend на WordPress:
+Когда backend на WordPress готов:
 
 1. `VITE_USE_MOCK_DATA` = `false`
 2. `VITE_WP_API_URL` = `https://ваш-домен/wp-json`
-3. Redeploy на Vercel.
+3. Build: `npm run build`
+4. Redeploy
 
 Подробнее: [DEPLOYMENT.md](./DEPLOYMENT.md), [WORDPRESS.md](./WORDPRESS.md).
 
@@ -104,9 +97,7 @@ npm run build
 
 | Симптом | Решение |
 |---------|---------|
-| 404 на `/trainer/...` после обновления страницы | Root Directory должен быть `frontend` (используется `frontend/vercel.json`) **или** корневой `vercel.json` с rewrites |
-| Пустой экран / нет демо-логина | Проверьте `VITE_USE_MOCK_DATA=true` и **Redeploy** |
-| Сборка падает на `tsc` | Локально: `cd frontend && npm run build`, исправьте ошибки TypeScript |
-| Старый URL `trenerka-five.vercel.app` | Проект удалён — создайте новый по этой инструкции |
-
-CLI `vercel` не обязателен: достаточно импорта через веб-интерфейс.
+| 404 на `/trainer/...` после F5 | Root Directory = `frontend`, есть `vercel.json` rewrites |
+| Пустой экран / нет логина | `VITE_USE_MOCK_DATA=true` + Redeploy |
+| Данные не сохраняются | Нормально в приватном режиме / другой браузер — mock в localStorage |
+| Сборка падает | `cd frontend && npm run build:staging` локально |
