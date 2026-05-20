@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Check, ExternalLink, Timer, Video } from 'lucide-react'
+import { ArrowLeft, Check, Download, ExternalLink, FileText, Timer, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/shared/progress-bar'
 import { useClientWorkouts, useCompleteClientWorkout } from '@/features/api/hooks'
@@ -130,19 +130,41 @@ export function WorkoutSessionPage() {
           <SessionMetric label={t('session.metrics.reps')} value={exercise.reps} />
           <SessionMetric label={t('session.metrics.rest')} value={`${exercise.rest}${t('common:units.sec')}`} />
         </div>
-        <p className="mt-5 text-sm leading-6 text-[var(--text-secondary)]">{exercise.technique}</p>
+        {exercise.technique ? (
+          <p className="mt-5 text-sm leading-6 text-[var(--text-secondary)]">{exercise.technique}</p>
+        ) : null}
+        {exercise.imageUrl ? (
+          <figure className="mt-4 overflow-hidden rounded-xl border border-[var(--border)]">
+            <img
+              src={exercise.imageUrl}
+              alt={exercise.name}
+              className="max-h-56 w-full object-cover"
+            />
+            <figcaption className="border-t border-[var(--border)] px-3 py-2 text-[11px] text-[var(--text-muted)]">
+              {t('session.photoTechnique')}
+            </figcaption>
+          </figure>
+        ) : null}
         {exercise.videoUrl ? (
-          <Button variant="secondary" className="mt-5 w-full" asChild>
+          <Button variant="secondary" className="mt-4 w-full" asChild>
             <a href={exercise.videoUrl} target="_blank" rel="noopener noreferrer">
               <Video className="h-4 w-4" /> {t('session.videoTechnique')}
               <ExternalLink className="ml-auto h-3.5 w-3.5 opacity-60" />
             </a>
           </Button>
         ) : (
-          <Button variant="secondary" className="mt-5 w-full" disabled>
+          <Button variant="secondary" className="mt-4 w-full" disabled>
             <Video className="h-4 w-4" /> {t('session.videoUnavailable')}
           </Button>
         )}
+        {exercise.pdfUrl ? (
+          <Button variant="outline" className="mt-2 w-full" asChild>
+            <a href={exercise.pdfUrl} target="_blank" rel="noopener noreferrer" download>
+              <FileText className="h-4 w-4" /> {t('session.downloadPdf')}
+              <Download className="ml-auto h-3.5 w-3.5 opacity-60" />
+            </a>
+          </Button>
+        ) : null}
 
         {rest ? (
           <div className="mt-6 rounded-xl border border-[var(--border)] bg-black/20 p-5">

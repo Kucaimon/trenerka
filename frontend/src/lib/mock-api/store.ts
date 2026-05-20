@@ -467,6 +467,8 @@ export const mockApi = {
           rest: ex.restSeconds,
           technique: ex.technique ?? '',
           videoUrl: ex.videoUrl,
+          imageUrl: ex.imageUrl,
+          pdfUrl: ex.pdfUrl,
         })),
       }))
     },

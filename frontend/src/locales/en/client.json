@@ -95,6 +95,8 @@
     },
     "videoTechnique": "Technique video",
     "videoUnavailable": "No video linked",
+    "downloadPdf": "Download instructions",
+    "photoTechnique": "Technique photo",
     "restBetweenSets": "Rest between sets",
     "completeWorkout": "Finish workout",
     "nextExercise": "Next exercise",

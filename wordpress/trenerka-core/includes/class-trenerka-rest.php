@@ -642,6 +642,7 @@ class Trenerka_REST {
             'difficulty' => sanitize_text_field($request->get_param('difficulty') ?? 'intermediate'),
             'image_url' => esc_url_raw($request->get_param('imageUrl') ?? ''),
             'video_url' => esc_url_raw($request->get_param('videoUrl') ?? ''),
+            'pdf_url' => esc_url_raw($request->get_param('pdfUrl') ?? $request->get_param('attachmentUrl') ?? ''),
         ];
     }
 
@@ -656,6 +657,7 @@ class Trenerka_REST {
             'difficulty' => $row['difficulty'] ?? 'intermediate',
             'imageUrl' => $row['image_url'] ?? '',
             'videoUrl' => $row['video_url'] ?? '',
+            'pdfUrl' => $row['pdf_url'] ?? '',
             'isPublic' => (bool) ($row['is_public'] ?? false),
         ];
     }
@@ -684,19 +686,21 @@ class Trenerka_REST {
         $name = sanitize_text_field($body['name'] ?? 'Программа');
         $weeks = (int) ($body['weeks'] ?? 4);
         $description = sanitize_textarea_field($body['description'] ?? '');
+        $pdf_url = esc_url_raw($body['pdfUrl'] ?? '');
         $table = Trenerka_Database::table('programs');
         if ($id) {
             $owner = (int) $wpdb->get_var($wpdb->prepare("SELECT trainer_user_id FROM {$table} WHERE id = %d", $id));
             if ($owner !== self::trainer_id()) {
                 return new WP_Error('forbidden', 'Нет доступа', ['status' => 403]);
             }
-            $wpdb->update($table, compact('name', 'weeks', 'description'), ['id' => $id]);
+            $wpdb->update($table, compact('name', 'weeks', 'description', 'pdf_url'), ['id' => $id]);
         } else {
             $wpdb->insert($table, [
                 'trainer_user_id' => self::trainer_id(),
                 'name' => $name,
                 'weeks' => $weeks,
                 'description' => $description,
+                'pdf_url' => $pdf_url,
             ]);
             $id = (int) $wpdb->insert_id;
         }
@@ -743,6 +747,9 @@ class Trenerka_REST {
                     'reps' => sanitize_text_field((string) ($ex['reps'] ?? '10')),
                     'rest_seconds' => (int) ($ex['restSeconds'] ?? 90),
                     'video_url' => esc_url_raw($ex['videoUrl'] ?? ''),
+                    'technique' => sanitize_textarea_field($ex['technique'] ?? ''),
+                    'image_url' => esc_url_raw($ex['imageUrl'] ?? ''),
+                    'pdf_url' => esc_url_raw($ex['pdfUrl'] ?? ''),
                     'sort_order' => $j,
                 ]);
             }
@@ -770,7 +777,7 @@ class Trenerka_REST {
         $formatted_workouts = [];
         foreach ($workouts ?: [] as $w) {
             $exercises = $wpdb->get_results($wpdb->prepare(
-                "SELECT we.*, e.name, e.muscle_group, e.equipment, e.technique, e.video_url as exercise_video
+                "SELECT we.*, e.name, e.muscle_group, e.equipment, e.technique as exercise_technique, e.image_url as exercise_image, e.video_url as exercise_video
                  FROM {$wet} we
                  LEFT JOIN {$et} e ON e.id = we.exercise_id
                  WHERE we.workout_id = %d ORDER BY we.sort_order ASC",
@@ -782,6 +789,14 @@ class Trenerka_REST {
                 'dayLabel' => $w['day_label'],
                 'title' => $w['title'],
                 'exercises' => array_map(static function ($ex) {
+                    $technique = trim((string) ($ex['technique'] ?? ''));
+                    if ($technique === '') {
+                        $technique = $ex['exercise_technique'] ?? '';
+                    }
+                    $image_url = $ex['image_url'] ?? '';
+                    if ($image_url === '') {
+                        $image_url = $ex['exercise_image'] ?? '';
+                    }
                     return [
                         'id' => (string) $ex['id'],
                         'exerciseId' => (string) $ex['exercise_id'],
@@ -791,7 +806,9 @@ class Trenerka_REST {
                         'reps' => $ex['reps'],
                         'restSeconds' => (int) $ex['rest_seconds'],
                         'videoUrl' => $ex['video_url'] ?: ($ex['exercise_video'] ?? ''),
-                        'technique' => $ex['technique'] ?? '',
+                        'technique' => $technique,
+                        'imageUrl' => $image_url,
+                        'pdfUrl' => $ex['pdf_url'] ?? '',
                     ];
                 }, $exercises ?: []),
             ];
@@ -804,6 +821,7 @@ class Trenerka_REST {
             'id' => (string) $row['id'],
             'name' => $row['name'],
             'description' => $row['description'] ?? '',
+            'pdfUrl' => $row['pdf_url'] ?? '',
             'weeks' => (int) ($row['weeks'] ?? 4),
         ];
     }
@@ -1312,7 +1330,7 @@ class Trenerka_REST {
         $formatted = [];
         foreach ($workouts ?: [] as $w) {
             $exercises = $wpdb->get_results($wpdb->prepare(
-                "SELECT we.*, e.name, e.muscle_group, e.technique, e.video_url as exercise_video
+                "SELECT we.*, e.name, e.muscle_group, e.technique as exercise_technique, e.image_url as exercise_image, e.video_url as exercise_video
                  FROM {$wet} we LEFT JOIN {$et} e ON e.id = we.exercise_id
                  WHERE we.workout_id = %d ORDER BY we.sort_order ASC",
                 $w['id']
@@ -1323,15 +1341,27 @@ class Trenerka_REST {
                 'day' => $w['day_label'],
                 'title' => $w['title'],
                 'status' => isset($completed_ids[$wid]) ? 'done' : 'planned',
-                'exercises' => array_map(static fn ($ex) => [
+                'exercises' => array_map(static function ($ex) {
+                    $technique = trim((string) ($ex['technique'] ?? ''));
+                    if ($technique === '') {
+                        $technique = $ex['exercise_technique'] ?? '';
+                    }
+                    $image_url = $ex['image_url'] ?? '';
+                    if ($image_url === '') {
+                        $image_url = $ex['exercise_image'] ?? '';
+                    }
+                    return [
                     'name' => $ex['name'],
                     'muscle' => $ex['muscle_group'],
                     'sets' => (int) $ex['sets'],
                     'reps' => $ex['reps'],
                     'rest' => (int) $ex['rest_seconds'],
-                    'technique' => $ex['technique'] ?? '',
+                    'technique' => $technique,
                     'videoUrl' => $ex['video_url'] ?: ($ex['exercise_video'] ?? ''),
-                ], $exercises ?: []),
+                    'imageUrl' => $image_url,
+                    'pdfUrl' => $ex['pdf_url'] ?? '',
+                    ];
+                }, $exercises ?: []),
             ];
         }
         return ['workouts' => $formatted];

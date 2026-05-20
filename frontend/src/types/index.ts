@@ -51,6 +51,7 @@ export interface Exercise {
   technique?: string
   imageUrl?: string
   videoUrl?: string
+  pdfUrl?: string
   isPublic?: boolean
   /** Numbered technique steps (infographic-style detail) */
   steps?: string[]
@@ -76,6 +77,8 @@ export interface WorkoutExerciseItem {
   restSeconds: number
   videoUrl?: string
   technique?: string
+  imageUrl?: string
+  pdfUrl?: string
 }
 
 export interface ProgramWorkout {
@@ -90,6 +93,7 @@ export interface Program {
   id: string
   name: string
   description?: string
+  pdfUrl?: string
   weeks: number
   workouts?: ProgramWorkout[]
 }
@@ -228,6 +232,8 @@ export interface ClientWorkoutDay {
     rest: number
     technique: string
     videoUrl?: string
+    imageUrl?: string
+    pdfUrl?: string
   }[]
 }
 

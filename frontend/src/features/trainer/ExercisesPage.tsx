@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -19,6 +19,9 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { ExerciseMediaFields, type ExerciseMediaValues } from '@/components/trainer/ExerciseMediaFields'
+import { config } from '@/lib/config'
+import { uploadMedia } from '@/lib/wordpress/upload'
 import { PageHeader } from '@/components/shared/page-header'
 import type { Exercise } from '@/types'
 import { cn } from '@/lib/utils'
@@ -63,6 +66,10 @@ export function ExercisesPage() {
   const [page, setPage] = useState(1)
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Exercise | null>(null)
+  const [media, setMedia] = useState<ExerciseMediaValues>({})
+  const [imageFile, setImageFile] = useState<File | undefined>()
+  const [pdfFile, setPdfFile] = useState<File | undefined>()
+  const [uploading, setUploading] = useState(false)
 
   const { data: catalog } = useExercisesAll()
   const totalCatalog = catalog?.length ?? 0
@@ -144,9 +151,16 @@ export function ExercisesPage() {
     setPage(1)
   }
 
+  const resetMedia = useCallback(() => {
+    setMedia({})
+    setImageFile(undefined)
+    setPdfFile(undefined)
+  }, [])
+
   const openCreate = () => {
     setEditing(null)
     reset({ name: '', muscleGroup: '', equipment: '', difficulty: 'intermediate', description: '', technique: '' })
+    resetMedia()
     setOpen(true)
   }
 
@@ -160,21 +174,50 @@ export function ExercisesPage() {
       description: ex.description ?? '',
       technique: ex.technique ?? '',
     })
+    setMedia({
+      description: ex.description ?? '',
+      technique: ex.technique ?? '',
+      videoUrl: ex.videoUrl ?? '',
+      imageUrl: ex.imageUrl ?? '',
+      pdfUrl: ex.pdfUrl ?? '',
+    })
+    setImageFile(undefined)
+    setPdfFile(undefined)
     setOpen(true)
   }
 
   const onSubmit = async (data: FormValues) => {
+    setUploading(true)
     try {
+      let imageUrl = media.imageUrl
+      let pdfUrl = media.pdfUrl
+      if (imageFile) {
+        imageUrl = config.useMockData ? URL.createObjectURL(imageFile) : await uploadMedia(imageFile)
+      }
+      if (pdfFile) {
+        pdfUrl = config.useMockData ? URL.createObjectURL(pdfFile) : await uploadMedia(pdfFile)
+      }
+      const payload = {
+        ...data,
+        description: media.description ?? data.description,
+        technique: media.technique ?? data.technique,
+        videoUrl: media.videoUrl,
+        imageUrl,
+        pdfUrl,
+      }
       if (editing) {
-        await updateEx.mutateAsync({ id: editing.id, data })
+        await updateEx.mutateAsync({ id: editing.id, data: payload })
         toast.success(t('exercisesPage.updated'))
       } else {
-        await createEx.mutateAsync({ ...data, isPublic: false })
+        await createEx.mutateAsync({ ...payload, isPublic: false })
         toast.success(t('exercisesPage.added'))
       }
       setOpen(false)
+      resetMedia()
     } catch {
       toast.error(t('common:saveError'))
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -365,7 +408,7 @@ export function ExercisesPage() {
       ) : null}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent className="max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editing ? t('common:actions.edit') : t('exercisesPage.newExercise')}</DialogTitle>
           </DialogHeader>
@@ -393,8 +436,21 @@ export function ExercisesPage() {
                 <option value="advanced">{t('exercisesPage.difficulty.advanced')}</option>
               </select>
             </div>
-            <Button type="submit" className="w-full" disabled={createEx.isPending || updateEx.isPending}>
-              {t('common:actions.save')}
+            <ExerciseMediaFields
+              values={media}
+              onChange={(patch) => setMedia((prev) => ({ ...prev, ...patch }))}
+              onImageFile={setImageFile}
+              onPdfFile={setPdfFile}
+              imageFileName={imageFile?.name}
+              pdfFileName={pdfFile?.name}
+              disabled={uploading}
+            />
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={createEx.isPending || updateEx.isPending || uploading}
+            >
+              {uploading ? t('exerciseMedia.uploading') : t('common:actions.save')}
             </Button>
           </form>
         </DialogContent>
