@@ -17,7 +17,6 @@ import { SiteFooter } from '@/components/layout/site-footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { mockCalendarEvents } from '@/lib/mock-data'
 import { formatLongDate } from '@/lib/i18n-format'
 import { cn, formatRub } from '@/lib/utils'
 
@@ -32,18 +31,12 @@ const WORKFLOW_ICONS = [Users, Activity, Calendar, BarChart3, TrendingUp] as con
 const BENEFIT_ICONS = [Calendar, TrendingUp, Wallet, MessageSquare] as const
 const PLAN_KEYS = ['basic', 'pro', 'vip'] as const
 const PLAN_PRICES = { basic: 0, pro: 2490, vip: 5990 } as const
-const PREVIEW_STAT_KEYS = ['activeClients', 'monthlyIncome', 'sessions', 'retention'] as const
-
 function asStringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.map(String) : []
 }
 
-function asStatTuple(value: unknown): [string, string] | null {
-  if (!Array.isArray(value) || value.length < 2) return null
-  return [String(value[0]), String(value[1])]
-}
-
 type CrmRow = { name: string; payment: string; paymentKey: string; next: string }
+type ScheduleEvent = { time: string; title: string }
 
 export function LandingPage() {
   return (
@@ -156,22 +149,7 @@ function HeroProductMock() {
           <p className="mt-0.5 text-xs text-[var(--text-secondary)]">
             {t('preview.dateLine', { date: previewDate })}
           </p>
-          <motion.div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-            {PREVIEW_STAT_KEYS.map((key) => {
-              const stat = asStatTuple(t(`preview.stats.${key}`, { returnObjects: true }))
-              if (!stat) return null
-              const [label, val] = stat
-              return (
-                <div
-                  key={key}
-                  className="rounded-md border border-[var(--border)] bg-[var(--surface2)] px-2.5 py-2"
-                >
-                  <p className="text-[9px] uppercase tracking-wide text-[var(--text-muted)]">{label}</p>
-                  <p className="font-display mt-0.5 text-base font-extrabold leading-none">{val}</p>
-                </div>
-              )
-            })}
-          </motion.div>
+          <p className="mt-3 text-xs leading-relaxed text-[var(--text-muted)]">{t('preview.summary')}</p>
         </div>
       </motion.div>
     </motion.div>
@@ -251,6 +229,7 @@ function BenefitsSection() {
 function TrainerExperienceSection() {
   const { t } = useTranslation('landing')
   const rows = t('trainerPreview.rows', { returnObjects: true }) as CrmRow[]
+  const scheduleEvents = t('preview.scheduleEvents', { returnObjects: true }) as ScheduleEvent[]
   const paymentVariant = (key: string) =>
     key === 'paid' ? 'success' : key === 'overdue' ? 'destructive' : ('warning' as const)
 
@@ -296,12 +275,14 @@ function TrainerExperienceSection() {
                 {t('preview.scheduleTitle')}
               </p>
               <div className="mt-2 space-y-0">
-                {mockCalendarEvents.slice(0, 4).map((e) => (
+                {scheduleEvents.slice(0, 4).map((e) => (
                   <motion.div
-                    key={e.id}
+                    key={`${e.time}-${e.title}`}
                     className="flex items-center gap-2 border-b border-[var(--border)] py-2 last:border-0"
                   >
-                    <span className="w-9 shrink-0 text-[11px] tabular-nums text-[var(--text-muted)]">10:00</span>
+                    <span className="w-9 shrink-0 text-[11px] tabular-nums text-[var(--text-muted)]">
+                      {e.time}
+                    </span>
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
                     <p className="truncate text-[13px] font-medium">{e.title}</p>
                   </motion.div>
@@ -489,7 +470,7 @@ function CtaSection() {
             <Link to="/register/trainer">{t('cta.create')}</Link>
           </Button>
           <Button size="default" variant="outline" className="h-9 px-4 text-sm" asChild>
-            <Link to="/login/trainer">{t('cta.demo')}</Link>
+            <Link to="/login/trainer">{t('cta.login')}</Link>
           </Button>
         </div>
       </motion.div>

@@ -4,7 +4,7 @@
     "headlineAccent": "in one place",
     "subtitle": "Save up to 5 hours a week on admin. Easy tracking of clients, workouts and payments. Full mobile experience for you and your clients.",
     "ctaPrimary": "ابدأ مجاناً ←",
-    "ctaSecondary": "عرض تجريبي",
+    "ctaSecondary": "تسجيل الدخول",
     "note": "مجاني حتى 10 عملاء",
     "title1": "إدارة التدريبات",
     "title2": "والعملاء",
@@ -36,7 +36,7 @@
   "preview": {
     "windowTitle": "Trenerka · Dashboard",
     "greeting": "Good morning, Maria 👋",
-    "dateLine": "{{date}} · 9 workouts today",
+    "dateLine": "{{date}} · الجدول والعملاء",
     "sidebar": [
       "Dashboard",
       "Clients",
@@ -46,29 +46,26 @@
       "Chats",
       "Analytics"
     ],
-    "stats": {
-      "activeClients": [
-        "Active clients",
-        "32",
-        "+3 this week"
-      ],
-      "monthlyIncome": [
-        "Monthly income",
-        "₽127,400",
-        "+18% vs last"
-      ],
-      "sessions": [
-        "Sessions",
-        "52",
-        "this week"
-      ],
-      "retention": [
-        "Retention",
-        "94%",
-        "+2 pp"
-      ]
-    },
-    "scheduleTitle": "Today's schedule"
+    "scheduleTitle": "Today's schedule",
+    "scheduleEvents": [
+      {
+        "time": "10:00",
+        "title": "Anna S. — قوة"
+      },
+      {
+        "time": "14:00",
+        "title": "Dmitry K. — أرجل"
+      },
+      {
+        "time": "09:00",
+        "title": "Elena V. — كارديو"
+      },
+      {
+        "time": "11:00",
+        "title": "Igor P. — ظهر"
+      }
+    ],
+    "summary": "العملاء والبرامج والتقويم والمالية في مساحة واحدة للمدرب."
   },
   "workflow": {
     "eyebrow": "Workflow",
@@ -202,8 +199,8 @@
   },
   "cta": {
     "title": "Start coaching clients in Trenerka",
-    "text": "14 days free. Demo account is ready.",
+    "text": "14 يومًا مجانًا. بدون بطاقة في البداية.",
     "create": "Create account",
-    "demo": "View demo"
+    "login": "تسجيل الدخول"
   }
 }

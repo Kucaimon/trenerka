@@ -4,7 +4,7 @@
     "headlineAccent": "in one place",
     "subtitle": "Save up to 5 hours a week on admin. Easy tracking of clients, workouts and payments. Full mobile experience for you and your clients.",
     "ctaPrimary": "無料で始める →",
-    "ctaSecondary": "Watch demo",
+    "ctaSecondary": "ログイン",
     "note": "Free up to 10 clients · No card",
     "title1": "トレーニング",
     "title2": "とクライアントを",
@@ -36,7 +36,7 @@
   "preview": {
     "windowTitle": "Trenerka · Dashboard",
     "greeting": "Good morning, Maria 👋",
-    "dateLine": "{{date}} · 9 workouts today",
+    "dateLine": "{{date}} · スケジュールとクライアント",
     "sidebar": [
       "Dashboard",
       "Clients",
@@ -46,29 +46,26 @@
       "Chats",
       "Analytics"
     ],
-    "stats": {
-      "activeClients": [
-        "Active clients",
-        "32",
-        "+3 this week"
-      ],
-      "monthlyIncome": [
-        "Monthly income",
-        "₽127,400",
-        "+18% vs last"
-      ],
-      "sessions": [
-        "Sessions",
-        "52",
-        "this week"
-      ],
-      "retention": [
-        "Retention",
-        "94%",
-        "+2 pp"
-      ]
-    },
-    "scheduleTitle": "Today's schedule"
+    "scheduleTitle": "Today's schedule",
+    "scheduleEvents": [
+      {
+        "time": "10:00",
+        "title": "Anna S. — 筋力"
+      },
+      {
+        "time": "14:00",
+        "title": "Dmitry K. — 脚"
+      },
+      {
+        "time": "09:00",
+        "title": "Elena V. — 有酸素"
+      },
+      {
+        "time": "11:00",
+        "title": "Igor P. — 背中"
+      }
+    ],
+    "summary": "クライアント、プログラム、カレンダー、財務をトレーナー用ワークスペースで一元管理。"
   },
   "workflow": {
     "eyebrow": "Workflow",
@@ -202,8 +199,8 @@
   },
   "cta": {
     "title": "Start coaching clients in Trenerka",
-    "text": "14 days free. Demo account is ready.",
+    "text": "14日間無料。クレジットカード不要。",
     "create": "Create account",
-    "demo": "View demo"
+    "login": "ログイン"
   }
 }

@@ -4,7 +4,7 @@
     "headlineAccent": "in one place",
     "subtitle": "Save up to 5 hours a week on admin. Easy tracking of clients, workouts and payments. Full mobile experience for you and your clients.",
     "ctaPrimary": "免费开始 →",
-    "ctaSecondary": "观看演示",
+    "ctaSecondary": "登录",
     "note": "Free up to 10 clients · No card",
     "title1": "管理训练",
     "title2": "与客户",
@@ -36,7 +36,7 @@
   "preview": {
     "windowTitle": "Trenerka · Dashboard",
     "greeting": "Good morning, Maria 👋",
-    "dateLine": "{{date}} · 9 workouts today",
+    "dateLine": "{{date}} · 日程与客户",
     "sidebar": [
       "Dashboard",
       "Clients",
@@ -46,29 +46,26 @@
       "Chats",
       "Analytics"
     ],
-    "stats": {
-      "activeClients": [
-        "Active clients",
-        "32",
-        "+3 this week"
-      ],
-      "monthlyIncome": [
-        "Monthly income",
-        "₽127,400",
-        "+18% vs last"
-      ],
-      "sessions": [
-        "Sessions",
-        "52",
-        "this week"
-      ],
-      "retention": [
-        "Retention",
-        "94%",
-        "+2 pp"
-      ]
-    },
-    "scheduleTitle": "Today's schedule"
+    "scheduleTitle": "Today's schedule",
+    "scheduleEvents": [
+      {
+        "time": "10:00",
+        "title": "Anna S. — 力量"
+      },
+      {
+        "time": "14:00",
+        "title": "Dmitry K. — 腿部"
+      },
+      {
+        "time": "09:00",
+        "title": "Elena V. — 有氧"
+      },
+      {
+        "time": "11:00",
+        "title": "Igor P. — 背部"
+      }
+    ],
+    "summary": "客户、计划、日历与财务，统一在教练工作台。"
   },
   "workflow": {
     "eyebrow": "Workflow",
@@ -202,8 +199,8 @@
   },
   "cta": {
     "title": "Start coaching clients in Trenerka",
-    "text": "14 days free. Demo account is ready.",
+    "text": "免费试用14天。无需信用卡。",
     "create": "Create account",
-    "demo": "View demo"
+    "login": "登录"
   }
 }

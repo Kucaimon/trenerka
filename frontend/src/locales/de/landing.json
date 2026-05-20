@@ -4,7 +4,7 @@
     "headlineAccent": "in one place",
     "subtitle": "Plattform der nächsten Generation für Personal Trainer.",
     "ctaPrimary": "Kostenlos starten →",
-    "ctaSecondary": "Demo ansehen",
+    "ctaSecondary": "Anmelden",
     "note": "Kostenlos bis 10 Kunden · Keine Kreditkarte",
     "title1": "Trainings",
     "title2": "und Kunden",
@@ -36,7 +36,7 @@
   "preview": {
     "windowTitle": "Trenerka · Dashboard",
     "greeting": "Good morning, Maria 👋",
-    "dateLine": "{{date}} · 9 workouts today",
+    "dateLine": "{{date}} · Terminplan und Kunden",
     "sidebar": [
       "Dashboard",
       "Clients",
@@ -46,29 +46,26 @@
       "Chats",
       "Analytics"
     ],
-    "stats": {
-      "activeClients": [
-        "Active clients",
-        "32",
-        "+3 this week"
-      ],
-      "monthlyIncome": [
-        "Monthly income",
-        "₽127,400",
-        "+18% vs last"
-      ],
-      "sessions": [
-        "Sessions",
-        "52",
-        "this week"
-      ],
-      "retention": [
-        "Retention",
-        "94%",
-        "+2 pp"
-      ]
-    },
-    "scheduleTitle": "Today's schedule"
+    "scheduleTitle": "Today's schedule",
+    "scheduleEvents": [
+      {
+        "time": "10:00",
+        "title": "Anna S. — Kraft"
+      },
+      {
+        "time": "14:00",
+        "title": "Dmitry K. — Beine"
+      },
+      {
+        "time": "09:00",
+        "title": "Elena V. — Cardio"
+      },
+      {
+        "time": "11:00",
+        "title": "Igor P. — Rücken"
+      }
+    ],
+    "summary": "Kunden, Programme, Kalender und Finanzen in einem Trainer-Workspace."
   },
   "workflow": {
     "eyebrow": "Workflow",
@@ -202,8 +199,8 @@
   },
   "cta": {
     "title": "Start coaching clients in Trenerka",
-    "text": "14 days free. Demo account is ready.",
+    "text": "14 Tage kostenlos. Keine Kreditkarte nötig.",
     "create": "Create account",
-    "demo": "View demo"
+    "login": "Anmelden"
   }
 }

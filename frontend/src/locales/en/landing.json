@@ -4,7 +4,7 @@
     "headlineAccent": "in one place",
     "subtitle": "Save up to 5 hours a week on admin. Easy tracking of clients, workouts and payments. Full mobile experience for you and your clients.",
     "ctaPrimary": "Start for free",
-    "ctaSecondary": "Watch demo",
+    "ctaSecondary": "Sign in",
     "note": "Free up to 10 clients · No card"
   },
   "benefits": {
@@ -33,7 +33,8 @@
   "preview": {
     "windowTitle": "Trenerka · Dashboard",
     "greeting": "Good morning, Maria 👋",
-    "dateLine": "{{date}} · 9 workouts today",
+    "dateLine": "{{date}} · schedule and clients",
+    "summary": "Clients, programs, calendar and finances in one trainer workspace.",
     "sidebar": [
       "Dashboard",
       "Clients",
@@ -43,29 +44,26 @@
       "Chats",
       "Analytics"
     ],
-    "stats": {
-      "activeClients": [
-        "Active clients",
-        "32",
-        "+3 this week"
-      ],
-      "monthlyIncome": [
-        "Monthly income",
-        "₽127,400",
-        "+18% vs last"
-      ],
-      "sessions": [
-        "Sessions",
-        "52",
-        "this week"
-      ],
-      "retention": [
-        "Retention",
-        "94%",
-        "+2 pp"
-      ]
-    },
-    "scheduleTitle": "Today's schedule"
+    "scheduleTitle": "Today's schedule",
+    "scheduleEvents": [
+      {
+        "time": "10:00",
+        "title": "Anna S. — Strength"
+      },
+      {
+        "time": "14:00",
+        "title": "Dmitry K. — Legs"
+      },
+      {
+        "time": "09:00",
+        "title": "Elena V. — Cardio"
+      },
+      {
+        "time": "11:00",
+        "title": "Igor P. — Back"
+      }
+    ],
+    "summary": "Clients, schedule, and finances — in one workspace at app.trenerka-fit.ru."
   },
   "workflow": {
     "eyebrow": "Workflow",
@@ -199,8 +197,8 @@
   },
   "cta": {
     "title": "Start coaching clients in Trenerka",
-    "text": "14 days free. Demo account is ready.",
+    "text": "14 days free. No credit card required.",
     "create": "Create account",
-    "demo": "View demo"
+    "login": "Sign in"
   }
 }
