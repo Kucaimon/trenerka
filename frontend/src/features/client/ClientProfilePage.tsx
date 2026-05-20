@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { ChevronRight, LogOut, Wallet } from 'lucide-react'
 import { useAuthStore } from '@/store/auth-store'
 import { useClientDashboard } from '@/features/api/hooks'
-import { SkillsButton } from '@/components/shared/SkillsButton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
@@ -49,7 +48,6 @@ export function ClientProfilePage() {
       <div className="glass-panel space-y-4 p-5">
         <p className="label-caps">{t('profile.filesTitle')}</p>
         <p className="text-sm leading-6 text-[var(--text-secondary)]">{t('profile.filesHint')}</p>
-        <SkillsButton fullWidth />
         <Badge variant="accent">{t('profile.premium')}</Badge>
         <Button
           variant="outline"
