@@ -387,7 +387,11 @@
 }
 
 .saas-product-mock--hero .saas-product-mock__body {
-  min-height: 220px;
+  min-height: 200px;
+}
+
+.saas-product-mock--compact .saas-product-mock__body {
+  min-height: 0;
 }
 
 .saas-product-mock--hero .saas-product-mock__content {

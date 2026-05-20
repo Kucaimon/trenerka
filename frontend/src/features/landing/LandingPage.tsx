@@ -22,13 +22,12 @@ import { formatLongDate } from '@/lib/i18n-format'
 import { cn, formatRub } from '@/lib/utils'
 
 const fade = {
-  initial: { opacity: 0, y: 14 },
+  initial: { opacity: 0, y: 10 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const },
+  viewport: { once: true, margin: '-48px' },
+  transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
 } as const
 
-const SECTION_PY = 'px-5 py-16 md:py-20 sm:px-10'
 const WORKFLOW_ICONS = [Users, Activity, Calendar, BarChart3, TrendingUp] as const
 const BENEFIT_ICONS = [Calendar, TrendingUp, Wallet, MessageSquare] as const
 const PLAN_KEYS = ['basic', 'pro', 'vip'] as const
@@ -51,14 +50,14 @@ export function LandingPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.35 }}
+      transition={{ duration: 0.3 }}
       className="min-h-screen overflow-x-hidden bg-[var(--black)] text-[var(--text-primary)]"
     >
       <SiteHeader />
       <main className="pt-[54px]">
         <HeroSection />
-        <BenefitsSection />
         <WorkflowSection />
+        <BenefitsSection />
         <TrainerExperienceSection />
         <ClientExperienceSection />
         <PricingSection />
@@ -74,29 +73,43 @@ function HeroSection() {
   const { t } = useTranslation('landing')
 
   return (
-    <section className={cn('concept-hero', SECTION_PY, 'pt-10 sm:pt-14')}>
-      <motion.div {...fade} className="mx-auto max-w-[1200px]">
-        <h1 className="ds-h1 max-w-3xl">
-          {t('hero.headline')}{' '}
-          <span className="text-[var(--accent)]">{t('hero.headlineAccent')}</span>
-        </h1>
-        <p className="ds-body mt-4 max-w-xl text-[var(--text-secondary)]">{t('hero.subtitle')}</p>
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.12, duration: 0.35 }}
-          className="mt-6 flex flex-col gap-3 sm:flex-row"
-        >
-          <Button size="lg" asChild>
-            <Link to="/register/trainer">{t('hero.ctaPrimary')}</Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild>
-            <Link to="/login/trainer">{t('hero.ctaSecondary')}</Link>
-          </Button>
-        </motion.div>
-        <p className="ds-caption mt-3 text-[var(--text-muted)]">{t('hero.note')}</p>
-        <HeroProductMock />
-      </motion.div>
+    <section className="concept-hero concept-landing-section">
+      <div className="concept-landing-inner">
+        <div className="concept-hero-grid">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="concept-hero-copy"
+          >
+            <h1 className="ds-h1 max-w-xl text-[clamp(1.75rem,4vw,2.25rem)]">
+              {t('hero.headline')}{' '}
+              <span className="text-[var(--accent)]">{t('hero.headlineAccent')}</span>
+            </h1>
+            <p className="mt-3 max-w-md text-sm leading-relaxed text-[var(--text-secondary)]">
+              {t('hero.subtitle')}
+            </p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
+              className="mt-5 flex flex-wrap items-center gap-4"
+            >
+              <Button size="default" className="h-9 px-4 text-sm font-semibold" asChild>
+                <Link to="/register/trainer">{t('hero.ctaPrimary')}</Link>
+              </Button>
+              <Link
+                to="/login/trainer"
+                className="text-sm font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+              >
+                {t('hero.ctaSecondary')} →
+              </Link>
+            </motion.div>
+            <p className="mt-2.5 text-xs text-[var(--text-muted)]">{t('hero.note')}</p>
+          </motion.div>
+          <HeroProductMock />
+        </div>
+      </div>
     </section>
   )
 }
@@ -108,10 +121,10 @@ function HeroProductMock() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.18, duration: 0.45 }}
-      className="saas-product-mock saas-product-mock--hero mt-8"
+      transition={{ delay: 0.12, duration: 0.4 }}
+      className="saas-product-mock saas-product-mock--hero concept-hero-mock"
     >
       <div className="saas-product-mock__chrome">
         <span className="saas-product-mock__dot" style={{ background: '#ff5f57' }} />
@@ -122,156 +135,46 @@ function HeroProductMock() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.28, duration: 0.4 }}
+        transition={{ delay: 0.2, duration: 0.35 }}
         className="saas-product-mock__body"
       >
         <aside className="saas-product-mock__sidebar">
           {sidebar.slice(0, 5).map((label, i) => (
             <motion.div
               key={label}
-              initial={{ opacity: 0, x: -6 }}
+              initial={{ opacity: 0, x: -4 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.32 + i * 0.04 }}
+              transition={{ delay: 0.24 + i * 0.03 }}
               className={cn('saas-product-mock__nav-item', i === 0 && 'saas-product-mock__nav-item--active')}
             >
               {label}
             </motion.div>
           ))}
         </aside>
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.35 }}
-          className="saas-product-mock__content"
-        >
-          <p className="font-display text-base font-bold">{t('preview.greeting')}</p>
-          <p className="mt-0.5 text-[12px] text-[var(--text-secondary)]">{t('preview.dateLine', { date: previewDate })}</p>
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="saas-product-mock__content">
+          <p className="font-display text-sm font-bold">{t('preview.greeting')}</p>
+          <p className="mt-0.5 text-xs text-[var(--text-secondary)]">
+            {t('preview.dateLine', { date: previewDate })}
+          </p>
+          <motion.div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
             {PREVIEW_STAT_KEYS.map((key) => {
               const stat = asStatTuple(t(`preview.stats.${key}`, { returnObjects: true }))
               if (!stat) return null
               const [label, val] = stat
               return (
-                <motion.div key={key} className="rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] p-3">
-                  <p className="text-[10px] uppercase tracking-wide text-[var(--text-muted)]">{label}</p>
-                  <p className="font-display mt-1 text-lg font-extrabold">{val}</p>
-                </motion.div>
+                <div
+                  key={key}
+                  className="rounded-md border border-[var(--border)] bg-[var(--surface2)] px-2.5 py-2"
+                >
+                  <p className="text-[9px] uppercase tracking-wide text-[var(--text-muted)]">{label}</p>
+                  <p className="font-display mt-0.5 text-base font-extrabold leading-none">{val}</p>
+                </div>
               )
             })}
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </motion.div>
     </motion.div>
-  )
-}
-
-function BenefitsSection() {
-  const { t } = useTranslation('landing')
-  const cards = t('benefits.cards', { returnObjects: true }) as Array<{ title: string; text: string }>
-
-  return (
-    <section id="benefits" className={SECTION_PY}>
-      <motion.div {...fade} className="mx-auto max-w-[1200px]">
-        <SectionIntro eyebrow={t('benefits.eyebrow')} title={t('benefits.title')} text={t('benefits.text')} />
-        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.map((card, index) => {
-            const Icon = BENEFIT_ICONS[index] ?? Activity
-            return (
-              <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05, duration: 0.35 }}
-                className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4"
-              >
-                <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-[8px] border border-[var(--border)] bg-[var(--surface2)]">
-                  <Icon className="h-4 w-4 text-[var(--accent)]" />
-                </div>
-                <p className="text-sm font-semibold">{card.title}</p>
-                <p className="ds-caption mt-1 text-[var(--text-secondary)]">{card.text}</p>
-              </motion.div>
-            )
-          })}
-        </div>
-      </motion.div>
-    </section>
-  )
-}
-
-function PricingSection() {
-  const { t } = useTranslation('landing')
-
-  return (
-    <section id="pricing" className={cn('border-y border-[var(--border)] bg-[var(--graphite)]', SECTION_PY)}>
-      <motion.div {...fade} className="mx-auto max-w-[1000px] text-center">
-        <SectionIntro
-          eyebrow={t('pricing.eyebrow')}
-          title={t('pricing.title')}
-          text={t('pricing.text')}
-          center
-        />
-        <div className="mt-10 grid gap-3 text-left lg:grid-cols-3">
-          {PLAN_KEYS.map((key) => {
-            const price = PLAN_PRICES[key]
-            const popular = key === 'pro'
-            const priceLabel = t(`pricing.plans.${key}.priceLabel`, { defaultValue: '' })
-            const features = asStringArray(t(`pricing.plans.${key}.features`, { returnObjects: true }))
-            const disabledRaw = t(`pricing.plans.${key}.disabled`, { returnObjects: true, defaultValue: [] })
-            const disabled = asStringArray(disabledRaw)
-
-            return (
-              <motion.div
-                key={key}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className={cn(
-                  'relative rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-6',
-                  popular && 'border-[var(--border-strong)] bg-[#0d1a07]',
-                )}
-              >
-                {popular ? (
-                  <Badge variant="accent" className="absolute right-4 top-4 uppercase">
-                    {t('pricing.popular')}
-                  </Badge>
-                ) : null}
-                <p className="text-sm font-bold uppercase tracking-[0.06em] text-[var(--text-secondary)]">
-                  {t(`pricing.plans.${key}.name`)}
-                </p>
-                <p className="font-display mt-4 text-4xl font-extrabold leading-none tracking-tight">
-                  {priceLabel || formatRub(price)}
-                </p>
-                <p className="mt-1 text-sm text-[var(--text-muted)]">{t(`pricing.plans.${key}.period`)}</p>
-                <ul className="mt-6 space-y-0">
-                  {features.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-center gap-2.5 border-b border-[var(--border)] py-2 text-[13px] text-[var(--text-secondary)]"
-                    >
-                      <Check className="h-3.5 w-3.5 shrink-0 text-[var(--accent)]" />
-                      {feature}
-                    </li>
-                  ))}
-                  {disabled.map((feature) => (
-                    <li
-                      key={feature}
-                      className="flex items-center gap-2.5 border-b border-[var(--border)] py-2 text-[13px] text-[var(--text-muted)]"
-                    >
-                      <span>—</span>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Button className="mt-6 w-full" variant={popular ? 'default' : 'secondary'} asChild>
-                  <Link to="/register/trainer">{t(`pricing.plans.${key}.cta`)}</Link>
-                </Button>
-              </motion.div>
-            )
-          })}
-        </div>
-      </motion.div>
-    </section>
   )
 }
 
@@ -280,35 +183,62 @@ function WorkflowSection() {
   const steps = t('workflow.steps', { returnObjects: true }) as Array<{ title: string; text: string }>
 
   return (
-    <section id="product" className={cn('border-y border-[var(--border)] bg-[var(--graphite)]', SECTION_PY)}>
-      <motion.div {...fade} className="mx-auto max-w-[1200px]">
+    <section id="product" className="concept-landing-section border-y border-[var(--border)] bg-[var(--graphite)]">
+      <motion.div {...fade} className="concept-landing-inner">
         <SectionIntro eyebrow={t('workflow.eyebrow')} title={t('workflow.title')} text={t('workflow.text')} />
-        <motion.div
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.05 } } }}
-          className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5"
-        >
+        <ol className="concept-workflow-rail mt-8">
           {steps.map((step, index) => {
             const Icon = WORKFLOW_ICONS[index] ?? Activity
             return (
-              <motion.div
+              <motion.li
                 key={step.title}
-                variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
-                className="relative rounded-[10px] border border-[var(--border)] bg-[var(--surface)] p-4"
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.04, duration: 0.3 }}
+                className="concept-workflow-step"
               >
-                {index < steps.length - 1 ? (
-                  <span
-                    className="pointer-events-none absolute -right-2 top-1/2 hidden h-px w-4 -translate-y-1/2 bg-[var(--border-strong)] lg:block"
-                    aria-hidden
-                  />
-                ) : null}
-                <motion.div className="mb-3 flex h-9 w-9 items-center justify-center rounded-[8px] border border-[var(--border)] bg-[var(--surface2)]">
-                  <Icon className="h-4 w-4 text-[var(--accent)]" />
+                <motion.div className="concept-workflow-step__icon" aria-hidden>
+                  <Icon className="h-3.5 w-3.5 text-[var(--accent)]" />
                 </motion.div>
-                <p className="text-sm font-semibold">{step.title}</p>
-                <p className="ds-caption mt-1 text-[var(--text-secondary)]">{step.text}</p>
+                <p className="concept-workflow-step__title">{step.title}</p>
+                <p className="concept-workflow-step__text">{step.text}</p>
+              </motion.li>
+            )
+          })}
+        </ol>
+      </motion.div>
+    </section>
+  )
+}
+
+function BenefitsSection() {
+  const { t } = useTranslation('landing')
+  const cards = t('benefits.cards', { returnObjects: true }) as Array<{ title: string; text: string }>
+
+  return (
+    <section id="benefits" className="concept-landing-section">
+      <motion.div {...fade} className="concept-landing-inner">
+        <SectionIntro eyebrow={t('benefits.eyebrow')} title={t('benefits.title')} text={t('benefits.text')} />
+        <motion.div className="mt-8 grid gap-px overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--border)] sm:grid-cols-2">
+          {cards.map((card, index) => {
+            const Icon = BENEFIT_ICONS[index] ?? Activity
+            return (
+              <motion.div
+                key={card.title}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.04, duration: 0.3 }}
+                className="flex gap-3 bg-[var(--surface)] p-4 sm:p-5"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-[var(--border)] bg-[var(--surface2)]">
+                  <Icon className="h-3.5 w-3.5 text-[var(--accent)]" strokeWidth={2} />
+                </div>
+                <motion.div className="min-w-0">
+                  <p className="text-sm font-semibold leading-snug">{card.title}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-[var(--text-secondary)]">{card.text}</p>
+                </motion.div>
               </motion.div>
             )
           })}
@@ -325,81 +255,58 @@ function TrainerExperienceSection() {
     key === 'paid' ? 'success' : key === 'overdue' ? 'destructive' : ('warning' as const)
 
   return (
-    <section className={SECTION_PY}>
-      <motion.div {...fade} className="mx-auto max-w-[1200px]">
-        <SectionIntro eyebrow={t('trainerPreview.eyebrow')} title={t('trainerPreview.title')} text={t('trainerPreview.text')} />
-        <div className="saas-product-mock mt-8">
+    <section className="concept-landing-section border-t border-[var(--border)]">
+      <motion.div {...fade} className="concept-landing-inner">
+        <SectionIntro
+          eyebrow={t('trainerPreview.eyebrow')}
+          title={t('trainerPreview.title')}
+          text={t('trainerPreview.text')}
+        />
+        <div className="saas-product-mock saas-product-mock--compact mt-6 max-w-3xl">
           <div className="saas-product-mock__chrome">
             <span className="saas-product-mock__dot" style={{ background: '#ff5f57' }} />
             <span className="saas-product-mock__dot" style={{ background: '#febc2e' }} />
             <span className="saas-product-mock__dot" style={{ background: '#28c840' }} />
             <span className="saas-product-mock__title">{t('trainerPreview.windowTitle')}</span>
           </div>
-          <div className="saas-product-mock__body min-h-[280px]">
-            <div className="saas-product-mock__content grid gap-4 p-4 lg:grid-cols-2">
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] p-3"
-              >
-                <p className="text-sm font-semibold">{t('trainerPreview.crmTitle')}</p>
-                <div className="mt-2 divide-y divide-[var(--border)]">
-                  {rows.map((row) => (
-                    <motion.div
-                      key={row.name}
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      className="flex items-center justify-between gap-2 py-2 text-[13px] first:pt-0 last:pb-0"
-                    >
-                      <div className="min-w-0">
-                        <p className="truncate font-medium">{row.name}</p>
-                        <p className="text-[11px] text-[var(--text-muted)]">{row.next}</p>
-                      </div>
-                      <Badge variant={paymentVariant(row.paymentKey)} className="shrink-0 text-[10px]">
-                        {row.payment}
-                      </Badge>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.08 }}
-                className="space-y-3"
-              >
-                <motion.div className="rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] p-3">
-                  <p className="text-sm font-semibold">{t('preview.scheduleTitle')}</p>
-                  <div className="mt-2 space-y-1.5">
-                    {mockCalendarEvents.slice(0, 3).map((e) => (
-                      <div key={e.id} className="flex gap-2 border-b border-[var(--border)] py-2 last:border-0">
-                        <span className="text-[11px] text-[var(--text-muted)]">10:00</span>
-                        <span className="mt-1 h-2 w-2 rounded-full bg-[var(--accent)]" />
-                        <p className="text-[13px] font-medium">{e.title}</p>
-                      </div>
-                    ))}
+          <div className="grid divide-y divide-[var(--border)] sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+            <div className="p-3 sm:p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                {t('trainerPreview.crmTitle')}
+              </p>
+              <div className="mt-2 divide-y divide-[var(--border)]">
+                {rows.map((row) => (
+                  <div
+                    key={row.name}
+                    className="flex items-center justify-between gap-2 py-2 text-[13px] first:pt-0 last:pb-0"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate font-medium">{row.name}</p>
+                      <p className="text-[11px] text-[var(--text-muted)]">{row.next}</p>
+                    </div>
+                    <Badge variant={paymentVariant(row.paymentKey)} className="shrink-0 text-[10px]">
+                      {row.payment}
+                    </Badge>
                   </div>
-                </motion.div>
-                <motion.div className="rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] p-3">
-                  <p className="text-sm font-semibold">{t('trainerPreview.analyticsTitle')}</p>
-                  <motion.div className="mt-3 grid grid-cols-2 gap-2">
-                    {PREVIEW_STAT_KEYS.slice(2, 4).map((key) => {
-                      const stat = asStatTuple(t(`preview.stats.${key}`, { returnObjects: true }))
-                      if (!stat) return null
-                      const [label, val] = stat
-                      return (
-                        <motion.div key={key} className="rounded-[6px] border border-[var(--border)] bg-[var(--surface)] p-2.5">
-                          <p className="text-[9px] uppercase text-[var(--text-muted)]">{label}</p>
-                          <p className="mt-0.5 text-base font-bold">{val}</p>
-                        </motion.div>
-                      )
-                    })}
+                ))}
+              </div>
+            </div>
+            <div className="p-3 sm:p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+                {t('preview.scheduleTitle')}
+              </p>
+              <div className="mt-2 space-y-0">
+                {mockCalendarEvents.slice(0, 4).map((e) => (
+                  <motion.div
+                    key={e.id}
+                    className="flex items-center gap-2 border-b border-[var(--border)] py-2 last:border-0"
+                  >
+                    <span className="w-9 shrink-0 text-[11px] tabular-nums text-[var(--text-muted)]">10:00</span>
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
+                    <p className="truncate text-[13px] font-medium">{e.title}</p>
                   </motion.div>
-                </motion.div>
-              </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -414,62 +321,151 @@ function ClientExperienceSection() {
   const widgets = asStringArray(t('clientPreview.widgets', { returnObjects: true }))
 
   return (
-    <section id="client-preview" className={cn('border-y border-[var(--border)] bg-[var(--graphite)]', SECTION_PY)}>
-      <motion.div {...fade} className="mx-auto grid max-w-[1200px] items-center gap-10 lg:grid-cols-[1fr_auto]">
-        <SectionIntro eyebrow={t('clientPreview.eyebrow')} title={t('clientPreview.title')} text={t('clientPreview.text')} />
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45 }}
-          className="mx-auto w-[272px] rounded-[24px] border border-[var(--border-strong)] bg-[var(--surface)] p-2"
-        >
-          <div className="rounded-[20px] border border-[var(--border)] bg-[var(--black)] p-4">
-            <div className="mx-auto mb-3 h-1 w-14 rounded-full bg-white/20" />
-            <p className="text-sm font-semibold">{t('clientPreview.greeting')}</p>
-            <div className="mt-3 flex gap-2">
-              {widgets.map((label) => (
-                <span
-                  key={label}
-                  className="flex-1 rounded-[6px] border border-[var(--border)] bg-[var(--surface2)] px-2 py-1.5 text-center text-[10px] font-medium text-[var(--text-secondary)]"
-                >
-                  {label}
-                </span>
-              ))}
-            </div>
-            <div className="mt-3 flex items-center gap-2 rounded-[8px] border border-[var(--border)] bg-[var(--surface2)] px-3 py-2">
-              <Flame className="h-4 w-4 text-[var(--accent)]" />
-              <div>
-                <p className="text-[10px] uppercase text-[var(--text-muted)]">{t('clientPreview.streakLabel')}</p>
-                <p className="text-sm font-bold">{t('clientPreview.streakValue')}</p>
+    <section
+      id="client-preview"
+      className="concept-landing-section border-y border-[var(--border)] bg-[var(--graphite)]"
+    >
+      <motion.div {...fade} className="concept-landing-inner">
+        <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto] lg:gap-12">
+          <SectionIntro
+            eyebrow={t('clientPreview.eyebrow')}
+            title={t('clientPreview.title')}
+            text={t('clientPreview.text')}
+          />
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.35 }}
+            className="concept-client-phone mx-auto w-full max-w-[240px]"
+          >
+            <div className="concept-client-phone__frame">
+              <motion.div className="mx-auto mb-2.5 h-1 w-10 rounded-full bg-white/15" />
+              <p className="text-sm font-semibold">{t('clientPreview.greeting')}</p>
+              <div className="mt-2.5 flex gap-1.5">
+                {widgets.map((label) => (
+                  <span
+                    key={label}
+                    className="flex-1 rounded border border-[var(--border)] bg-[var(--surface2)] px-1.5 py-1 text-center text-[9px] font-medium text-[var(--text-secondary)]"
+                  >
+                    {label}
+                  </span>
+                ))}
               </div>
-              <div className="ml-auto text-right">
-                <p className="text-[10px] uppercase text-[var(--text-muted)]">{t('clientPreview.weekLabel')}</p>
-                <p className="text-sm font-bold">{t('clientPreview.weekValue')}</p>
-              </div>
-            </div>
-            <div className="mt-3 rounded-[8px] border border-[var(--border-strong)] bg-[var(--accent-dim)]/30 p-3">
-              <p className="text-[10px] uppercase text-[var(--text-muted)]">{t('clientPreview.today')}</p>
-              <p className="mt-1 text-base font-bold">{t('clientPreview.workoutTitle')}</p>
-              <p className="text-[12px] text-[var(--text-secondary)]">{t('clientPreview.workoutMeta')}</p>
-            </div>
-            <div className="mt-2 space-y-1.5">
-              {exercises.map((item, index) => (
-                <div
-                  key={item}
-                  className="flex items-center justify-between rounded-[6px] border border-[var(--border)] px-2.5 py-2 text-[12px]"
-                >
-                  <span>{item}</span>
-                  {index === 0 ? <Check className="h-3.5 w-3.5 text-[var(--accent)]" /> : null}
+              <div className="mt-2.5 flex items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--surface2)] px-2.5 py-2">
+                <Flame className="h-3.5 w-3.5 text-[var(--accent)]" />
+                <div>
+                  <p className="text-[9px] uppercase text-[var(--text-muted)]">{t('clientPreview.streakLabel')}</p>
+                  <p className="text-xs font-bold">{t('clientPreview.streakValue')}</p>
                 </div>
-              ))}
+                <motion.div className="ml-auto text-right">
+                  <p className="text-[9px] uppercase text-[var(--text-muted)]">{t('clientPreview.weekLabel')}</p>
+                  <p className="text-xs font-bold">{t('clientPreview.weekValue')}</p>
+                </motion.div>
+              </div>
+              <div className="mt-2.5 rounded-md border border-[var(--border)] bg-[var(--accent-dim)]/20 px-2.5 py-2">
+                <p className="text-[9px] uppercase text-[var(--text-muted)]">{t('clientPreview.today')}</p>
+                <p className="mt-0.5 text-sm font-bold">{t('clientPreview.workoutTitle')}</p>
+                <p className="text-[11px] text-[var(--text-secondary)]">{t('clientPreview.workoutMeta')}</p>
+              </div>
+              <div className="mt-2 space-y-1">
+                {exercises.slice(0, 3).map((item, index) => (
+                  <div
+                    key={item}
+                    className="flex items-center justify-between rounded border border-[var(--border)] px-2 py-1.5 text-[11px]"
+                  >
+                    <span>{item}</span>
+                    {index === 0 ? <Check className="h-3 w-3 text-[var(--accent)]" /> : null}
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2 flex items-center gap-1.5 text-[10px] text-[var(--text-muted)]">
+                <MessageSquare className="h-3 w-3" />
+                {t('clientPreview.chatHint')}
+              </p>
             </div>
-            <motion.div className="mt-3 flex items-center gap-2 text-[11px] text-[var(--text-muted)]">
-              <MessageSquare className="h-3.5 w-3.5" />
-              {t('clientPreview.chatHint')}
-            </motion.div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
+      </motion.div>
+    </section>
+  )
+}
+
+function PricingSection() {
+  const { t } = useTranslation('landing')
+
+  return (
+    <section id="pricing" className="concept-landing-section">
+      <motion.div {...fade} className="concept-landing-inner max-w-[1000px]">
+        <SectionIntro
+          eyebrow={t('pricing.eyebrow')}
+          title={t('pricing.title')}
+          text={t('pricing.text')}
+          center
+        />
+        <div className="mt-8 grid gap-3 lg:grid-cols-3">
+          {PLAN_KEYS.map((key) => {
+            const price = PLAN_PRICES[key]
+            const popular = key === 'pro'
+            const priceLabel = t(`pricing.plans.${key}.priceLabel`, { defaultValue: '' })
+            const features = asStringArray(t(`pricing.plans.${key}.features`, { returnObjects: true }))
+            const disabledRaw = t(`pricing.plans.${key}.disabled`, { returnObjects: true, defaultValue: [] })
+            const disabled = asStringArray(disabledRaw)
+
+            return (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3 }}
+                className={cn(
+                  'flex flex-col rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5',
+                  popular && 'border-[var(--border-strong)] ring-1 ring-[var(--accent)]/15',
+                )}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+                    {t(`pricing.plans.${key}.name`)}
+                  </p>
+                  {popular ? (
+                    <span className="rounded-full border border-[var(--accent)]/25 bg-[var(--accent-dim)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--accent)]">
+                      {t('pricing.popular')}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="font-display mt-3 text-3xl font-extrabold leading-none tracking-tight">
+                  {priceLabel || formatRub(price)}
+                </p>
+                <p className="mt-1 text-xs text-[var(--text-muted)]">{t(`pricing.plans.${key}.period`)}</p>
+                <ul className="mt-4 flex-1 space-y-0 border-t border-[var(--border)] pt-3">
+                  {features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="flex items-start gap-2 py-1.5 text-xs text-[var(--text-secondary)]"
+                    >
+                      <Check className="mt-0.5 h-3 w-3 shrink-0 text-[var(--accent)]" />
+                      {feature}
+                    </li>
+                  ))}
+                  {disabled.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2 py-1.5 text-xs text-[var(--text-muted)]">
+                      <span className="mt-0.5 w-3 shrink-0 text-center">—</span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  className="mt-4 h-9 w-full text-sm"
+                  variant={popular ? 'default' : 'secondary'}
+                  asChild
+                >
+                  <Link to="/register/trainer">{t(`pricing.plans.${key}.cta`)}</Link>
+                </Button>
+              </motion.div>
+            )
+          })}
+        </div>
       </motion.div>
     </section>
   )
@@ -479,32 +475,46 @@ function CtaSection() {
   const { t } = useTranslation('landing')
 
   return (
-    <section className={cn(SECTION_PY, 'pb-20')}>
+    <section className="concept-landing-cta">
       <motion.div
         {...fade}
-        className="mx-auto max-w-3xl rounded-[10px] border border-[var(--border)] bg-[var(--surface)] px-6 py-8 text-center sm:px-10"
+        className="concept-landing-inner flex flex-col items-center justify-between gap-4 py-8 text-center sm:flex-row sm:text-left"
       >
-        <h2 className="ds-h2">{t('cta.title')}</h2>
-        <p className="ds-body mx-auto mt-2 max-w-lg text-[var(--text-secondary)]">{t('cta.text')}</p>
-        <motion.div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-          <Button size="lg" asChild>
+        <div>
+          <h2 className="ds-h2 text-lg">{t('cta.title')}</h2>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">{t('cta.text')}</p>
+        </div>
+        <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+          <Button size="default" className="h-9 px-4 text-sm" asChild>
             <Link to="/register/trainer">{t('cta.create')}</Link>
           </Button>
-          <Button size="lg" variant="outline" asChild>
+          <Button size="default" variant="outline" className="h-9 px-4 text-sm" asChild>
             <Link to="/login/trainer">{t('cta.demo')}</Link>
           </Button>
-        </motion.div>
+        </div>
       </motion.div>
     </section>
   )
 }
 
-function SectionIntro({ eyebrow, title, text, center }: { eyebrow: string; title: string; text: string; center?: boolean }) {
+function SectionIntro({
+  eyebrow,
+  title,
+  text,
+  center,
+}: {
+  eyebrow: string
+  title: string
+  text: string
+  center?: boolean
+}) {
   return (
-    <div className={center ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
-      <p className="ds-label text-[var(--text-muted)]">{eyebrow}</p>
-      <h2 className="ds-h2 mt-2">{title}</h2>
-      <p className={cn('ds-body mt-2 text-[var(--text-secondary)]', center && 'mx-auto')}>{text}</p>
-    </div>
+    <motion.div className={cn('max-w-xl', center && 'mx-auto text-center')}>
+      <p className="ds-label">{eyebrow}</p>
+      <h2 className="ds-h2 mt-1.5">{title}</h2>
+      <p className={cn('mt-1.5 text-sm leading-relaxed text-[var(--text-secondary)]', center && 'mx-auto')}>
+        {text}
+      </p>
+    </motion.div>
   )
 }
