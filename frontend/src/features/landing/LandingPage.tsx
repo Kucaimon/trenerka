@@ -55,7 +55,7 @@ export function LandingPage() {
       className="min-h-screen overflow-x-hidden bg-[var(--black)] text-[var(--text-primary)]"
     >
       <SiteHeader />
-      <main className="pt-[60px]">
+      <main className="pt-[54px]">
         <HeroSection />
         <BenefitsSection />
         <WorkflowSection />
@@ -414,7 +414,7 @@ function ClientExperienceSection() {
   const widgets = asStringArray(t('clientPreview.widgets', { returnObjects: true }))
 
   return (
-    <section className={cn('border-y border-[var(--border)] bg-[var(--graphite)]', SECTION_PY)}>
+    <section id="client-preview" className={cn('border-y border-[var(--border)] bg-[var(--graphite)]', SECTION_PY)}>
       <motion.div {...fade} className="mx-auto grid max-w-[1200px] items-center gap-10 lg:grid-cols-[1fr_auto]">
         <SectionIntro eyebrow={t('clientPreview.eyebrow')} title={t('clientPreview.title')} text={t('clientPreview.text')} />
         <motion.div

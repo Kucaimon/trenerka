@@ -12,7 +12,7 @@
 
 | Пункт DOCX | Статус | Реализация |
 |------------|--------|------------|
-| Header: логотип, название, «Вход для тренеров» / «Вход для клиентов» | **done** | `site-header.tsx` → `/login/trainer`, `/login/client` |
+| Header: логотип, название, вход тренера / клиента | **done** | `site-header.tsx`: dropdown «Войти» → `/login/trainer`, `/login/client` (отклонение от DOCX: одна кнопка вместо двух — по продуктовому решению) |
 | Первый экран: заголовок ТЗ, подзаголовок (время, учёт, mobile), CTA «Начать бесплатно» | **done** | `LandingPage` HeroSection, `landing.json` hero |
 | Блок преимуществ: 3–4 карточки с иконками | **done** | `BenefitsSection` (#benefits): расписание, прогресс, финансы, чат |
 | Тарифы: Базовый / Pro / VIP | **done** | `PricingSection` (#pricing), `landing.json` pricing |

@@ -37,9 +37,12 @@
   },
   "nav": {
     "product": "产品",
+    "features": "功能",
+    "clientExperience": "客户体验",
+    "pricing": "定价",
+    "account": "账户",
     "builder": "构建器",
     "analytics": "分析",
-    "pricing": "定价",
     "closeMenu": "关闭菜单",
     "openMenu": "打开菜单",
     "mobileMenu": "移动菜单"

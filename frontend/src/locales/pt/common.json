@@ -37,9 +37,12 @@
   },
   "nav": {
     "product": "Produto",
+    "features": "Recursos",
+    "clientExperience": "Experiência do cliente",
+    "pricing": "Preços",
+    "account": "Conta",
     "builder": "Construtor",
     "analytics": "Análises",
-    "pricing": "Preços",
     "closeMenu": "Fechar menu",
     "openMenu": "Abrir menu",
     "mobileMenu": "Menu móvel"

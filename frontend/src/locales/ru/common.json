@@ -37,9 +37,12 @@
   },
   "nav": {
     "product": "Продукт",
+    "features": "Возможности",
+    "clientExperience": "Кабинет клиента",
+    "pricing": "Тарифы",
+    "account": "Аккаунт",
     "builder": "Конструктор",
     "analytics": "Аналитика",
-    "pricing": "Тарифы",
     "closeMenu": "Закрыть меню",
     "openMenu": "Открыть меню",
     "mobileMenu": "Мобильное меню"

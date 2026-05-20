@@ -37,9 +37,12 @@
   },
   "nav": {
     "product": "Product",
+    "features": "Features",
+    "clientExperience": "Client experience",
+    "pricing": "Pricing",
+    "account": "Account",
     "builder": "Builder",
     "analytics": "Analytics",
-    "pricing": "Pricing",
     "closeMenu": "Close menu",
     "openMenu": "Open menu",
     "mobileMenu": "Mobile menu"

@@ -37,9 +37,12 @@
   },
   "nav": {
     "product": "المنتج",
+    "features": "الميزات",
+    "clientExperience": "تجربة العميل",
+    "pricing": "الأسعار",
+    "account": "الحساب",
     "builder": "المنشئ",
     "analytics": "التحليلات",
-    "pricing": "الأسعار",
     "closeMenu": "إغلاق القائمة",
     "openMenu": "فتح القائمة",
     "mobileMenu": "قائمة الجوال"

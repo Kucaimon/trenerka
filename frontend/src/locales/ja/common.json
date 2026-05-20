@@ -37,9 +37,12 @@
   },
   "nav": {
     "product": "製品",
+    "features": "機能",
+    "clientExperience": "クライアント体験",
+    "pricing": "料金",
+    "account": "アカウント",
     "builder": "ビルダー",
     "analytics": "分析",
-    "pricing": "料金",
     "closeMenu": "メニューを閉じる",
     "openMenu": "メニューを開く",
     "mobileMenu": "モバイルメニュー"

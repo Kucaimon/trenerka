@@ -37,9 +37,12 @@
   },
   "nav": {
     "product": "Produit",
+    "features": "Fonctionnalités",
+    "clientExperience": "Expérience client",
+    "pricing": "Tarifs",
+    "account": "Compte",
     "builder": "Constructeur",
     "analytics": "Analytique",
-    "pricing": "Tarifs",
     "closeMenu": "Fermer le menu",
     "openMenu": "Ouvrir le menu",
     "mobileMenu": "Menu mobile"
