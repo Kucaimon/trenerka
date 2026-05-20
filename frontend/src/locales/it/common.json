@@ -79,7 +79,9 @@
     "mainNav": "Main navigation",
     "close": "Close",
     "menu": "Menu",
-    "search": "Search"
+    "search": "Search",
+    "scrollToTop": "Scroll to top",
+    "loginNav": "Sign in"
   },
   "units": {
     "kg": "kg",

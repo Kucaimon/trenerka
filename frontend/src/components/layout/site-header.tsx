@@ -38,14 +38,19 @@ export function SiteHeader() {
             </a>
           ))}
         </nav>
-        <div className="concept-nav-actions hidden shrink-0 items-center gap-2 lg:flex">
+        <div className="concept-nav-actions hidden shrink-0 items-center gap-1 lg:flex">
           <LanguageSwitcher showLabel />
-          <Button variant="ghost" size="sm" className="hidden xl:inline-flex" asChild>
-            <Link to="/login/client">{t('actions.loginClient')}</Link>
-          </Button>
-          <Button variant="outline" size="sm" className="hidden sm:inline-flex" asChild>
-            <Link to="/login/trainer">{t('actions.loginTrainer')}</Link>
-          </Button>
+          <nav className="flex items-center gap-0.5" aria-label={t('aria.loginNav')}>
+            <Button variant="ghost" size="sm" className="h-8 px-2.5 text-[13px] font-medium" asChild>
+              <Link to="/login/trainer">{t('actions.loginTrainer')}</Link>
+            </Button>
+            <span className="text-[var(--text-muted)]" aria-hidden>
+              ·
+            </span>
+            <Button variant="ghost" size="sm" className="h-8 px-2.5 text-[13px] font-medium" asChild>
+              <Link to="/login/client">{t('actions.loginClient')}</Link>
+            </Button>
+          </nav>
           <Button size="sm" asChild>
             <Link to="/register/trainer">{t('actions.startFree')}</Link>
           </Button>
@@ -117,16 +122,22 @@ export function SiteHeader() {
             </div>
 
             <div className="concept-nav-drawer__footer">
-              <Button variant="outline" size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
-                <Link to="/login/trainer" onClick={closeMenu}>
+              <nav className="concept-nav-drawer__login" aria-label={t('aria.loginNav')}>
+                <Link
+                  to="/login/trainer"
+                  className="concept-nav-drawer__link touch-target"
+                  onClick={closeMenu}
+                >
                   {t('actions.loginTrainer')}
                 </Link>
-              </Button>
-              <Button variant="secondary" size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
-                <Link to="/login/client" onClick={closeMenu}>
+                <Link
+                  to="/login/client"
+                  className="concept-nav-drawer__link touch-target"
+                  onClick={closeMenu}
+                >
                   {t('actions.loginClient')}
                 </Link>
-              </Button>
+              </nav>
               <Button size="lg" className="min-h-[48px] w-full whitespace-normal" asChild>
                 <Link to="/register/trainer" onClick={closeMenu}>
                   {t('actions.startFree')}

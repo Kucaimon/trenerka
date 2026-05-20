@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { SiteHeader } from '@/components/layout/site-header'
 import { SiteFooter } from '@/components/layout/site-footer'
+import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { mockCalendarEvents } from '@/lib/mock-data'
@@ -64,6 +65,7 @@ export function LandingPage() {
         <CtaSection />
       </main>
       <SiteFooter />
+      <ScrollToTop />
     </motion.div>
   )
 }
