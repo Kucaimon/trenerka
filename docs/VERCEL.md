@@ -10,6 +10,8 @@
 
 **Рекомендуется:** Root Directory = `frontend`.
 
+В корне и в `frontend/vercel.json` заданы `build:staging` и `env` (`VITE_USE_MOCK_DATA`, `VITE_SKILLS_URL`) — после push на `main` следующий деплой на Vercel подхватит mock **без** ручного ввода переменных в Dashboard (если в UI не переопределены Build Command / env).
+
 ---
 
 ## 1. Создать / настроить проект
