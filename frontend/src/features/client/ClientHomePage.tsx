@@ -55,7 +55,7 @@ export function ClientHomePage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="mx-auto w-full max-w-4xl space-y-4 pb-6 lg:max-w-none"
+      className="mx-auto w-full max-w-4xl space-y-4 pb-6 md:max-w-6xl lg:max-w-none"
     >
       <header className="flex items-center gap-3 px-1 lg:col-span-2">
         <Avatar className="h-11 w-11 border border-[var(--border-strong)]">
@@ -66,7 +66,7 @@ export function ClientHomePage() {
         <div className="min-w-0 flex-1">
           <h1 className="ds-h2 truncate">{t('home.greeting', { name: firstName })}</h1>
           <p className="ds-caption text-[var(--text-muted)]">
-            {dashboard?.currentProgram ?? t('home.fallback.program')}
+            {dashboard?.currentProgram?.trim() || t('workouts.empty')}
           </p>
         </div>
       </header>

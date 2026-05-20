@@ -52,7 +52,8 @@
 }
 
 @media (min-width: 768px) {
-  .app-shell.app-shell--client.app-shell--desktop {
+  .app-shell.app-shell--client.app-shell--desktop,
+  .client-layout-root .app-shell--client {
     flex-direction: row;
     width: 100%;
     max-width: none;
@@ -63,17 +64,6 @@
     border-radius: 0;
     box-shadow: none;
     overflow: visible;
-  }
-
-  .app-shell--client:not(.app-shell--desktop) {
-    width: 100%;
-    max-width: 48rem;
-    min-height: 100dvh;
-    max-height: none;
-    margin: 0 auto;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
   }
 
   .app-shell--client .app-content,
@@ -103,7 +93,7 @@
   gap: 12px;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 768px) {
   .client-main-content > * {
     max-width: 72rem;
     margin-inline: auto;

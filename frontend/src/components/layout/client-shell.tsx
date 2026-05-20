@@ -111,11 +111,36 @@ export function ClientShell() {
     )
   }
 
+  const desktopTopBar = (
+    <AppTopBar className="client-topbar w-full border-b border-[var(--border)] bg-[var(--surface)]/85 px-6 py-3 backdrop-blur-xl md:px-8">
+      <p className="text-sm font-medium text-[var(--text-primary)]">{t('cabinet')}</p>
+      <div className="ml-auto flex items-center gap-3">
+        <LanguageSwitcher compact />
+        {user ? (
+          <div className="flex items-center gap-2">
+            <span className="hidden max-w-[180px] truncate text-sm font-medium lg:inline">
+              {user.name}
+            </span>
+            <Avatar className="h-8 w-8 border border-[var(--border)]">
+              <AvatarFallback className="bg-[var(--accent)] text-xs font-bold text-[#111]">
+                {userInitial}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+        ) : null}
+      </div>
+    </AppTopBar>
+  )
+
   return (
     <AppShell
       variant="client"
       rootClassName="client-layout-root bg-[var(--bg-base)]"
-      mobileNav={!isSession ? <MobileTabBar items={nav} variant="client" emphasizedIndex={2} /> : undefined}
+      mobileNav={
+        isMobile && !isSession ? (
+          <MobileTabBar items={nav} variant="client" emphasizedIndex={2} />
+        ) : undefined
+      }
     >
       <AppSidebar
         className="client-sidebar trainer-sidebar--saas hidden md:flex"
@@ -148,25 +173,7 @@ export function ClientShell() {
       </AppSidebar>
 
       <div className="client-main ds-app-main flex min-h-0 min-w-0 w-full flex-1 flex-col">
-        <AppTopBar className="client-topbar border-b border-[var(--border)] bg-[var(--surface)]/85 px-5 py-3 backdrop-blur-xl">
-          <LogoLink size="sm" className="shrink-0" />
-          <p className="hidden text-xs text-[var(--text-muted)] sm:block">{t('cabinet')}</p>
-          <div className="ml-auto flex items-center gap-3">
-            <LanguageSwitcher compact />
-            {user ? (
-              <div className="flex items-center gap-2">
-                <span className="hidden max-w-[140px] truncate text-sm font-medium lg:inline">
-                  {user.name}
-                </span>
-                <Avatar className="h-8 w-8 border border-[var(--border)]">
-                  <AvatarFallback className="bg-[var(--accent)] text-xs font-bold text-[#111]">
-                    {userInitial}
-                  </AvatarFallback>
-                </Avatar>
-              </div>
-            ) : null}
-          </div>
-        </AppTopBar>
+        {desktopTopBar}
 
         <AppContent
           variant="client"

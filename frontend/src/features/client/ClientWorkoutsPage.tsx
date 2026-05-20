@@ -19,7 +19,7 @@ export function ClientWorkoutsPage() {
         <section>
           <p className="label-caps">{t('workouts.label')}</p>
           <h1 className="mt-1 font-display text-2xl font-extrabold tracking-tight">
-            {dashboard?.currentProgram ?? '—'}
+            {dashboard?.currentProgram?.trim() || t('workouts.empty')}
           </h1>
           <p className="mt-1 text-sm text-[var(--text-secondary)]">
             {t('workouts.trainer', { name: dashboard?.profile.trainer ?? '—' })}
