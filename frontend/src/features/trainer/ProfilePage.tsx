@@ -24,6 +24,7 @@ type FormData = {
   specialization: string
   experience: string
   phone: string
+  groupChatTitle?: string
 }
 
 export function ProfilePage() {
@@ -43,6 +44,7 @@ export function ProfilePage() {
     specialization: z.string().min(2, t('profile.validation.specialization')),
     experience: z.string().min(1, t('profile.validation.experience')),
     phone: z.string().min(5, t('profile.validation.phone')),
+    groupChatTitle: z.string().max(80).optional(),
   })
 
   const {
@@ -66,6 +68,7 @@ export function ProfilePage() {
             specialization: profile.specialization ?? '',
             experience: profile.experience ?? '',
             phone: profile.phone ?? '',
+            groupChatTitle: profile.groupChatTitle ?? '',
           })
           setAvatarPreview(profile.avatarUrl)
           return
@@ -76,6 +79,7 @@ export function ProfilePage() {
           specialization: '',
           experience: '',
           phone: '',
+          groupChatTitle: '',
         })
         setAvatarPreview(undefined)
       } catch {
@@ -87,6 +91,7 @@ export function ProfilePage() {
             specialization: cached.specialization ?? '',
             experience: cached.experience ?? '',
             phone: cached.phone ?? '',
+            groupChatTitle: cached.groupChatTitle ?? '',
           })
           setAvatarPreview(cached.avatarUrl)
         } else {
@@ -224,6 +229,15 @@ export function ProfilePage() {
               <div className="space-y-1.5">
                 <Label htmlFor="email">{t('profile.fields.email')}</Label>
                 <Input id="email" type="email" value={user?.email ?? ''} disabled />
+              </div>
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label htmlFor="groupChatTitle">{t('profile.fields.groupChatTitle')}</Label>
+                <Input
+                  id="groupChatTitle"
+                  placeholder={t('profile.groupChatTitlePlaceholder')}
+                  {...register('groupChatTitle')}
+                />
+                <p className="text-xs text-[var(--text-muted)]">{t('profile.groupChatTitleHint')}</p>
               </div>
             </div>
 

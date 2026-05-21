@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { SaasPageHeader } from '@/components/saas'
 import { StatCard } from '@/components/shared/stat-card'
 import { useClients, usePayments, queryKeys } from '@/features/api/hooks'
-import { createPayment, exportPaymentsCsv, getPaymentProviderConfig, getPaymentReport } from '@/features/api/payments-service'
+import { createPayment, exportPaymentsXlsx, getPaymentProviderConfig, getPaymentReport } from '@/features/api/payments-service'
 import { formatRub, formatDate } from '@/lib/utils'
 import { Download } from 'lucide-react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
@@ -76,7 +76,7 @@ export function FinancePage() {
           <Button
             variant="secondary"
             size="sm"
-            onClick={() => exportPaymentsCsv(payments, clientMap)}
+            onClick={() => void exportPaymentsXlsx(payments, clientMap)}
           >
             <Download className="h-4 w-4" /> {t('common:actions.exportCsv')}
           </Button>

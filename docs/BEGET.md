@@ -10,7 +10,7 @@
 
 | Домен | Назначение | Что загружать |
 |-------|------------|---------------|
-| `trenerka-fit.ru` | Основной домен (лендинг / редирект) | По желанию: редирект на `app.` или статика |
+| `trenerka-fit.ru` | Основной домен (лендинг / редирект) | **Рекомендуется:** 301-редирект на `https://app.trenerka-fit.ru` (панель Beget → «Перенаправления» или `.htaccess` в корне `trenerka-fit.ru/public_html/`) |
 | `app.trenerka-fit.ru` | React SPA (Vite) | **Содержимое** `frontend/dist/` → `public_html/` |
 | `wp.trenerka-fit.ru` | WordPress 6.x + API | CMS, MySQL, плагины |
 
@@ -203,7 +203,7 @@ Trenerka ограничивает вложения **10 МБ** на уровне
 1. `https://app.trenerka-fit.ru` → **Регистрация тренера** → verify email.
 2. **Вход тренера** → дашборд (данные с API, не mock).
 3. **CRM** → новый клиент → временный пароль.
-4. **Вход клиента** с временным паролем.
+4. **Вход клиента** — `/login/client` с email и **временным паролем** из CRM (тренер добавляет клиента в CRM).
 5. **Сообщения** → текст + файл &lt; 10 МБ.
 
 Если ошибки: `VITE_WP_API_URL`, CORS, секрет JWT, повторная активация Trenerka Core.
@@ -229,14 +229,40 @@ Trenerka ограничивает вложения **10 МБ** на уровне
 - Блок `Authorization` в `.htaccess` WP.
 - Совпадение `JWT_AUTH_SECRET_KEY` (не менять после выдачи токенов).
 
-### Письма в спам
+### Письма в спам / не приходят
 
-- SMTP-плагин (WP Mail SMTP) на production.
+Trenerka отправляет: подтверждение email тренера, welcome клиенту, сброс пароля, напоминания календаря. Всё через `wp_mail` → **нужен SMTP**.
 
-### Cron напоминаний
+| Шаг | Действие |
+|-----|----------|
+| 1 | Плагин **WP Mail SMTP** на `wp.trenerka-fit.ru` |
+| 2 | SMTP Beget: хост `smtp.beget.com`, порт **465** (SSL), логин = полный email ящика, пароль ящика |
+| 3 | Отправитель: `noreply@trenerka-fit.ru` (или ваш ящик на домене) |
+| 4 | Тест из плагина + регистрация тренера на `app.` |
+| 5 | SPF/DKIM для домена в панели Beget (снижает спам) |
 
-```bash
-curl -sS "http://wp.trenerka-fit.ru/wp-cron.php?doing_wp_cron" > /dev/null
+См. также [HANDOFF.md](./HANDOFF.md).
+
+### Cron напоминаний (обязательно на production)
+
+Trenerka отправляет email-напоминания о тренировках через WP Cron (`trenerka_send_reminders` в `trenerka-core`). На shared-хостинге Beget встроенный `wp-cron` при низком трафике **не срабатывает надёжно**.
+
+**Рекомендуемая настройка:**
+
+1. В `wp-config.php` добавьте (перед `/* That's all */`):
+
+```php
+define('DISABLE_WP_CRON', true);
 ```
 
-каждые 5–15 минут в планировщике Beget; опционально `define('DISABLE_WP_CRON', true);` в `wp-config.php`.
+2. В панели Beget → **Cron** → задача каждые **5–15 минут**:
+
+```bash
+curl -sS "https://wp.trenerka-fit.ru/wp-cron.php?doing_wp_cron" > /dev/null
+```
+
+(используйте HTTPS, если SSL включён)
+
+3. Проверка: после создания события в календаре тренера с напоминанием — письмо должно уйти в окне cron (см. также карточку «Напоминания» в `/trainer/notifications`).
+
+Без cron напоминания и фоновые задачи WP **не работают** — это не баг фронтенда.

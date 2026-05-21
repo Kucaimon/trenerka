@@ -6,6 +6,9 @@ export const LandingPage = lazy(() =>
 export const PrivacyPage = lazy(() =>
   import('@/features/legal/PrivacyPage').then((m) => ({ default: m.PrivacyPage })),
 )
+export const TermsPage = lazy(() =>
+  import('@/features/legal/TermsPage').then((m) => ({ default: m.TermsPage })),
+)
 export const LoginPage = lazy(() => import('@/features/auth/LoginPage').then((m) => ({ default: m.LoginPage })))
 export const RegisterPage = lazy(() =>
   import('@/features/auth/RegisterPage').then((m) => ({ default: m.RegisterPage })),
@@ -83,6 +86,12 @@ export const ClientPaymentsPage = lazy(() =>
 export const ClientProfilePage = lazy(() =>
   import('@/features/client/ClientProfilePage').then((m) => ({ default: m.ClientProfilePage })),
 )
+export const ClientNutritionPage = lazy(() =>
+  import('@/features/client/NutritionPage').then((m) => ({ default: m.NutritionPage })),
+)
+export const ClientAchievementsPage = lazy(() =>
+  import('@/features/client/AchievementsPage').then((m) => ({ default: m.AchievementsPage })),
+)
 export const AdminDashboardPage = lazy(() =>
   import('@/features/admin/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })),
 )
@@ -94,4 +103,7 @@ export const UsersAdminPage = lazy(() =>
 )
 export const NewsAdminPage = lazy(() =>
   import('@/features/admin/NewsAdminPage').then((m) => ({ default: m.NewsAdminPage })),
+)
+export const SubscriptionsAdminPage = lazy(() =>
+  import('@/features/admin/SubscriptionsAdminPage').then((m) => ({ default: m.SubscriptionsAdminPage })),
 )

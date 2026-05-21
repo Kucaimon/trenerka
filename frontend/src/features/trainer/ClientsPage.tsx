@@ -1,34 +1,38 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useIsMobile } from '@/components/mobile'
 import { ArrowLeft } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { Search, Download, UserPlus, MessageSquare, CreditCard, CalendarCheck2, Dumbbell } from 'lucide-react'
+import { Search, Download, UserPlus, MessageSquare } from 'lucide-react'
 import { exportClientsSpreadsheet, getClient, getClients } from '@/features/api/clients-service'
-import { useCreateClient, useEvents, useMessages, usePayments, useUpdateClient } from '@/features/api/hooks'
-import { SaasPageHeader } from '@/components/saas'
+import { useCreateClient, useUpdateClient } from '@/features/api/hooks'
+import { EmptyState, LoadingState, SaasPageHeader } from '@/components/saas'
 import { ClientFormDialog, type ClientFormValues } from '@/components/trainer/ClientFormDialog'
 import { ClientsDataTable } from '@/features/trainer/ClientsDataTable'
 import { AssignProgramDialog } from '@/components/trainer/AssignProgramDialog'
+import { ClientDetailTabs } from '@/components/trainer/ClientDetailTabs'
+import { ClientInvitePanel } from '@/components/trainer/ClientInvitePanel'
+import { ClientMemberBadges } from '@/components/trainer/ClientMemberBadges'
 import { toast } from 'sonner'
 import { Pencil } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Textarea } from '@/components/ui/textarea'
-import type { Client, ClientStatus } from '@/types'
-import { buildClientRecentActivity } from '@/lib/client-activity'
-import { formatRelativeActivity } from '@/lib/client-crm'
-import { minutesAgoFromIso, useNow } from '@/hooks/use-now'
-import { formatRub, formatDate } from '@/lib/utils'
+import type { Client, ClientStatus, PaymentState } from '@/types'
+import { effectiveCourseProgress, enrichClient } from '@/lib/client-crm'
 import { cn } from '@/lib/utils'
 
 const STATUS_VARIANTS: Record<ClientStatus, 'success' | 'warning' | 'secondary'> = {
   active: 'success',
   pause: 'warning',
   archive: 'secondary',
+}
+
+const PAYMENT_VARIANTS: Record<PaymentState, 'success' | 'warning' | 'destructive'> = {
+  paid: 'success',
+  pending: 'warning',
+  overdue: 'destructive',
 }
 
 function avatarClass() {
@@ -86,7 +90,7 @@ export function ClientsPage() {
               ]}
               actions={
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" className="h-8 w-8" title={t('common:actions.exportCsv')} onClick={() => exportClientsSpreadsheet(filtered)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" title={t('common:actions.exportCsv')} onClick={() => void exportClientsSpreadsheet(filtered)}>
                     <Download className="h-4 w-4" />
                   </Button>
                   <Button
@@ -101,6 +105,10 @@ export function ClientsPage() {
                 </div>
               }
             />
+          </div>
+
+          <div className="border-b border-[var(--border)] px-3 py-3 md:px-4">
+            <ClientInvitePanel />
           </div>
 
           <div className="crm-filter-bar border-b border-[var(--border)] px-3 py-2 md:px-4">
@@ -130,7 +138,18 @@ export function ClientsPage() {
 
           <div className="flex-1 overflow-y-auto">
             {filtered.length === 0 ? (
-              <p className="px-5 py-10 text-center text-sm text-[var(--text-muted)]">{t('clients.empty')}</p>
+              <div className="p-4">
+                <EmptyState
+                  icon={UserPlus}
+                  title={t('clients.empty')}
+                  description={t('clients.emptyDescription')}
+                  action={
+                    <Button size="sm" onClick={() => setCreateOpen(true)}>
+                      {t('clients.emptyCta')}
+                    </Button>
+                  }
+                />
+              </div>
             ) : isMobileCrm ? (
               filtered.map((c) => (
                 <ClientListItem
@@ -184,8 +203,13 @@ export function ClientsPage() {
               onEdit={() => setEditOpen(true)}
             />
           ) : (
-            <div className="flex h-full items-center justify-center p-10 text-sm text-[var(--text-muted)]">
-              {t('clients.selectPrompt')}
+            <div className="flex h-full items-center justify-center p-6">
+              <EmptyState
+                icon={UserPlus}
+                title={t('clients.selectPrompt')}
+                description={t('clients.emptyDescription')}
+                className="max-w-sm"
+              />
             </div>
           )}
         </main>
@@ -195,10 +219,13 @@ export function ClientsPage() {
         onOpenChange={setCreateOpen}
         title={t('clients.create.title')}
         onSubmit={async (data: ClientFormValues) => {
-          const { client, temporaryPassword } = await createClient.mutateAsync(data)
-          toast.success(t('clients.toast.created'), {
-            description: temporaryPassword ? t('clients.toast.tempPassword', { password: temporaryPassword }) : undefined,
-          })
+          const { client, temporaryPassword, welcomeEmailSent } = await createClient.mutateAsync(data)
+          const description = welcomeEmailSent
+            ? t('clients.toast.welcomeEmailSent', { email: client.email })
+            : temporaryPassword
+              ? t('clients.toast.tempPasswordManual', { password: temporaryPassword })
+              : undefined
+          toast.success(t('clients.toast.created'), { description })
           setCreateOpen(false)
           setSelectedId(client.id)
         }}
@@ -232,12 +259,15 @@ function ClientListItem({
   onSelect: () => void
 }) {
   const { t } = useTranslation(['trainer', 'common'])
+  const enriched = enrichClient(client)
   const variant = STATUS_VARIANTS[client.status]
+  const paymentKey: PaymentState = enriched.paymentState ?? 'paid'
+  const paymentVariant = PAYMENT_VARIANTS[paymentKey]
   return (
     <button
       type="button"
       onClick={onSelect}
-      className={cn('client-card', active && 'active')}
+      className={cn('client-card touch-target', active && 'active')}
     >
       <div className="mb-1.5 flex items-center gap-2.5">
         <div
@@ -248,16 +278,22 @@ function ClientListItem({
         >
           {client.name.slice(0, 1)}
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{client.name}</p>
           <p className="text-[11px] text-[var(--text-muted)]">{client.goal ?? t('clients.fallback.program')}</p>
         </div>
+        <Badge variant={paymentVariant} className="shrink-0 px-1.5 py-0 text-[10px]">
+          {t(`clients.payment.${paymentKey}`)}
+        </Badge>
       </div>
       <div className="flex items-center gap-2 pl-[46px]">
         <Badge variant={variant} className="px-1.5 py-0 text-[10px]">
           {t(`common:status.${client.status}`)}
         </Badge>
-        <span className="text-[11px] text-[var(--text-muted)]">{client.packageBalance} {t('common:units.sessionsShort')}</span>
+        <span className="text-[11px] text-[var(--text-muted)]">
+          {client.packageBalance} {t('common:units.sessionsShort')}
+          {effectiveCourseProgress(enriched) != null ? ` · ${effectiveCourseProgress(enriched)}%` : ''}
+        </span>
       </div>
     </button>
   )
@@ -266,17 +302,8 @@ function ClientListItem({
 function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: () => void }) {
   const { t } = useTranslation(['trainer', 'common'])
   const { data: client } = useQuery({ queryKey: ['client', clientId], queryFn: () => getClient(clientId) })
-  const { data: allPayments = [] } = usePayments()
-  const updateClient = useUpdateClient()
-  const [notes, setNotes] = useState('')
-  const payments = allPayments.filter((p) => p.clientId === clientId)
 
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync notes when switching client
-    if (client?.notes !== undefined) setNotes(client.notes)
-  }, [clientId, client?.notes])
-
-  if (!client) return <p className="p-8 text-[var(--text-muted)]">{t('common:actions.loading')}</p>
+  if (!client) return <LoadingState label={t('common:actions.loading')} className="min-h-[240px]" />
 
   const statusVariant = STATUS_VARIANTS[client.status] ?? 'secondary'
 
@@ -297,8 +324,9 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
             <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
               {client.email} · {client.phone}
             </p>
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
+            <div className="mt-2.5 flex flex-wrap items-center gap-2">
               <Badge variant={statusVariant}>{t(`common:status.${client.status}`)}</Badge>
+              <ClientMemberBadges client={client} />
               <span className="rounded-md border border-[var(--border)] bg-[var(--surface3)] px-2.5 py-0.5 text-[11px] text-[var(--text-secondary)]">
                 {client.goal ?? t('clients.fallback.goal')}
               </span>
@@ -317,135 +345,16 @@ function ClientProfilePanel({ clientId, onEdit }: { clientId: string; onEdit: ()
               clientId={clientId}
               trigger={<Button size="sm">{t('clients.actions.assignProgram')}</Button>}
             />
+            <Button variant="ghost" size="sm" asChild>
+              <Link to={`/trainer/clients/${clientId}`}>{t('clients.actions.fullProfile')}</Link>
+            </Button>
           </div>
         </div>
       </div>
 
-      <div className="space-y-4 p-4 sm:p-8">
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface2)] p-3">
-            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.balance')}</p>
-            <p className="font-display mt-1 text-xl font-extrabold tabular-nums">{client.packageBalance}</p>
-            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">{t('clients.stats.sessionsInPackage')}</p>
-          </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface2)] p-3">
-            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.lastSession')}</p>
-            <p className="font-display mt-1 text-base font-extrabold">{client.lastSession ?? '—'}</p>
-            <CalendarCheck2 className="mt-2 h-4 w-4 text-[var(--accent)]" />
-          </div>
-          <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface2)] p-3">
-            <p className="text-[11px] uppercase tracking-[0.04em] text-[var(--text-muted)]">{t('clients.stats.focus')}</p>
-            <p className="font-display mt-1 text-base font-extrabold">{client.goal ?? '—'}</p>
-            <Dumbbell className="mt-2 h-4 w-4 text-[var(--text-muted)]" />
-          </div>
-        </div>
-
-        <div className="grid gap-4 lg:grid-cols-2">
-          <ClientRecentActivityCard clientId={clientId} />
-          <ClientNotesSnippetCard notes={notes} />
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('clients.payments.title')}</CardTitle>
-          </CardHeader>
-          <CardContent className="divide-y divide-[var(--border)] p-0">
-            {payments.length === 0 ? (
-              <p className="px-5 py-6 text-center text-sm text-[var(--text-muted)]">{t('clients.payments.empty')}</p>
-            ) : (
-              payments.map((p) => (
-                <div key={p.id} className="flex items-center justify-between px-5 py-3 text-sm">
-                  <span className="flex items-center gap-2 font-medium tabular-nums">
-                    <CreditCard className="h-3.5 w-3.5 text-[var(--accent)]" />
-                    {formatRub(p.amount)}
-                  </span>
-                  <span className="text-[var(--text-muted)]">
-                    {formatDate(p.date)} · {p.method}
-                  </span>
-                </div>
-              ))
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('clients.notes.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder={t('clients.notes.placeholder')}
-              rows={4}
-              className="bg-[var(--surface3)]"
-            />
-            <Button
-              className="mt-3"
-              size="sm"
-              variant="secondary"
-              disabled={updateClient.isPending}
-              onClick={() => updateClient.mutate({ id: clientId, data: { notes } })}
-            >
-              {t('clients.notes.save')}
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="p-4 sm:p-8">
+        <ClientDetailTabs key={client.id} client={client} />
       </div>
     </div>
-  )
-}
-
-function ClientRecentActivityCard({ clientId }: { clientId: string }) {
-  const { t } = useTranslation('trainer')
-  const now = useNow()
-  const { data: events = [] } = useEvents()
-  const { data: messages = [] } = useMessages(clientId)
-  const { data: payments = [] } = usePayments()
-  const items = buildClientRecentActivity(
-    clientId,
-    events,
-    messages,
-    payments.filter((p) => p.clientId === clientId),
-  )
-
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold">{t('clients.recentActivity.title')}</CardTitle>
-      </CardHeader>
-      <CardContent className="divide-y divide-[var(--border)] p-0">
-        {items.length === 0 ? (
-          <p className="px-4 py-6 text-sm text-[var(--text-muted)]">{t('clients.recentActivity.empty')}</p>
-        ) : (
-          items.map((item) => (
-            <div key={item.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
-              <span>{t(`clients.recentActivity.${item.type}`)}</span>
-              <span className="text-[11px] text-[var(--text-muted)]">
-                {formatRelativeActivity(minutesAgoFromIso(item.at, now), t)}
-              </span>
-            </div>
-          ))
-        )}
-      </CardContent>
-    </Card>
-  )
-}
-
-function ClientNotesSnippetCard({ notes }: { notes: string }) {
-  const { t } = useTranslation('trainer')
-  const snippet = notes.trim().slice(0, 160)
-
-  return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold">{t('clients.notesSnippet.title')}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="line-clamp-4 text-sm text-[var(--text-secondary)]">
-          {snippet || t('clients.notesSnippet.empty')}
-        </p>
-      </CardContent>
-    </Card>
   )
 }

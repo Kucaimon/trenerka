@@ -5,9 +5,8 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useQueryClient } from '@tanstack/react-query'
-import { useClientDashboard, useSendMessage, queryKeys } from '@/features/api/hooks'
+import { useClientDashboard, useMessages, useSendMessage, queryKeys } from '@/features/api/hooks'
 import { useClientProfileId } from '@/features/api/client-id'
-import { useClientMessages } from '@/features/api/use-client-messages'
 import { markMessageRead, uploadAttachment } from '@/features/api/messages-service'
 import { cn } from '@/lib/utils'
 import { MobileListItem, MobileListStagger } from '@/components/mobile'
@@ -17,14 +16,21 @@ export function ChatPage() {
   const { data: dashboard } = useClientDashboard()
   const clientId = useClientProfileId()
   const threadKey = clientId || 'self'
-  const { data: messages = [], isLoading, isError, refetch } = useClientMessages()
+  const { data: messages = [], isLoading, isError, refetch } = useMessages(clientId || '', { enabled: !!clientId })
   const sendMessage = useSendMessage()
   const qc = useQueryClient()
   const [text, setText] = useState('')
   const [attachmentUrl, setAttachmentUrl] = useState<string | undefined>()
   const [uploading, setUploading] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
   const unreadTrainer = messages.filter((m) => m.sender === 'trainer' && !m.read).length
+
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollTop = el.scrollHeight
+  }, [messages.length, isLoading])
 
   useEffect(() => {
     const unread = messages.filter((m) => m.sender === 'trainer' && !m.read)
@@ -36,10 +42,10 @@ export function ChatPage() {
   }, [messages, qc, threadKey])
 
   const handleSend = async () => {
-    if (!text.trim() || sendMessage.isPending) return
+    if (!text.trim() || sendMessage.isPending || !clientId) return
     try {
       await sendMessage.mutateAsync({
-        clientId: clientId || threadKey,
+        clientId,
         sender: 'client',
         text,
         attachmentUrl,
@@ -82,8 +88,8 @@ export function ChatPage() {
       </MobileListItem>
 
       <MobileListItem className="flex min-h-0 flex-1 flex-col">
-        <div className="mobile-recent-list flex min-h-[280px] flex-1 flex-col overflow-y-auto">
-          <div className="flex flex-1 flex-col gap-3 p-4">
+        <div ref={scrollRef} className="mobile-recent-list flex min-h-[280px] flex-1 flex-col overflow-y-auto">
+          <div className="flex flex-1 flex-col gap-3 p-4 pb-2">
             {isLoading ? (
               <div className="flex flex-1 items-center justify-center gap-2 text-sm text-[var(--text-muted)]">
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -130,7 +136,7 @@ export function ChatPage() {
         </div>
       </MobileListItem>
 
-      <MobileListItem>
+      <MobileListItem className="client-chat-composer sticky bottom-0 z-10 border-t border-[var(--border)] bg-[var(--bg-base)]/95 pb-[calc(var(--safe-area-bottom,0px)+0.5rem)] pt-2 backdrop-blur-xl">
         {attachmentUrl ? (
           <p className="mb-2 truncate text-xs text-[var(--text-secondary)]">{t('chat.attached')}</p>
         ) : null}
@@ -139,7 +145,7 @@ export function ChatPage() {
             ref={fileRef}
             type="file"
             className="hidden"
-            accept="image/*,.pdf"
+            accept="image/*,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             onChange={(e) => void onFile(e.target.files?.[0])}
           />
           <Button
@@ -165,7 +171,7 @@ export function ChatPage() {
           />
           <Button
             className="h-12 rounded-full px-5"
-            disabled={sendMessage.isPending || !text.trim()}
+            disabled={sendMessage.isPending || !text.trim() || !clientId}
             onClick={() => void handleSend()}
           >
             {sendMessage.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : t('common:actions.send')}

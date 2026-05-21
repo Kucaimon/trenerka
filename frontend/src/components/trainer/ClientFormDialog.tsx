@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import type { Client, ClientStatus } from '@/types'
+import type { Client, ClientStatus, LifecycleStatus, MemberType, OnboardingState } from '@/types'
 
 export type ClientFormValues = {
   name: string
@@ -19,6 +19,10 @@ export type ClientFormValues = {
   goal?: string
   notes?: string
   packageBalance: number
+  memberType?: MemberType
+  lifecycleStatus?: LifecycleStatus
+  onboardingState?: OnboardingState
+  courseProgressPct?: number
 }
 
 export function ClientFormDialog({
@@ -48,6 +52,16 @@ export function ClientFormDialog({
         goal: z.string().optional(),
         notes: z.string().optional(),
         packageBalance: z.number().min(0),
+        memberType: z
+          .enum(['client', 'student', 'academy_member', 'course_buyer', 'online_trainee', 'prospect_trainer'])
+          .optional(),
+        lifecycleStatus: z
+          .enum(['lead', 'active_client', 'student', 'academy_member', 'alumni', 'paused', 'churned'])
+          .optional(),
+        onboardingState: z
+          .enum(['invited', 'registered', 'profile_pending', 'program_pending', 'active', 'completed'])
+          .optional(),
+        courseProgressPct: z.number().min(0).max(100).optional(),
       }),
     [t],
   )
@@ -62,6 +76,10 @@ export function ClientFormDialog({
       goal: '',
       notes: '',
       packageBalance: 0,
+      memberType: 'client',
+      lifecycleStatus: 'active_client',
+      onboardingState: 'active',
+      courseProgressPct: 0,
     },
   })
 
@@ -75,6 +93,10 @@ export function ClientFormDialog({
         goal: initial?.goal ?? '',
         notes: initial?.notes ?? '',
         packageBalance: initial?.packageBalance ?? 0,
+        memberType: initial?.memberType ?? 'client',
+        lifecycleStatus: initial?.lifecycleStatus ?? 'active_client',
+        onboardingState: initial?.onboardingState ?? 'active',
+        courseProgressPct: initial?.courseProgressPct ?? 0,
       })
     }
   }, [open, initial, reset])
@@ -82,7 +104,13 @@ export function ClientFormDialog({
   // react-hook-form watch() is incompatible with React Compiler memoization
   // eslint-disable-next-line react-hooks/incompatible-library -- RHF watch
   const status = watch('status')
+  const memberType = watch('memberType')
+  const lifecycleStatus = watch('lifecycleStatus')
+  const onboardingState = watch('onboardingState')
   const statuses: ClientStatus[] = ['active', 'pause', 'archive']
+  const memberTypes: MemberType[] = ['client', 'student', 'academy_member', 'course_buyer', 'online_trainee']
+  const lifecycles: LifecycleStatus[] = ['lead', 'active_client', 'student', 'academy_member', 'alumni', 'paused', 'churned']
+  const onboardings: OnboardingState[] = ['invited', 'registered', 'profile_pending', 'program_pending', 'active', 'completed']
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -129,6 +157,59 @@ export function ClientFormDialog({
             <div className="space-y-1.5">
               <Label>{t('clientForm.fields.packageBalance')}</Label>
               <Input type="number" {...register('packageBalance', { valueAsNumber: true })} />
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label>{t('clientForm.fields.memberType')}</Label>
+              <Select value={memberType} onValueChange={(v) => setValue('memberType', v as MemberType)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {memberTypes.map((m) => (
+                    <SelectItem key={m} value={m}>
+                      {t(`clients.memberType.${m}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t('clientForm.fields.lifecycle')}</Label>
+              <Select value={lifecycleStatus} onValueChange={(v) => setValue('lifecycleStatus', v as LifecycleStatus)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {lifecycles.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {t(`clients.lifecycle.${s}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label>{t('clientForm.fields.onboarding')}</Label>
+              <Select value={onboardingState} onValueChange={(v) => setValue('onboardingState', v as OnboardingState)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {onboardings.map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {t(`clients.onboarding.${s}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>{t('clientForm.fields.courseProgress')}</Label>
+              <Input type="number" min={0} max={100} {...register('courseProgressPct', { valueAsNumber: true })} />
             </div>
           </div>
           <div className="space-y-1.5">

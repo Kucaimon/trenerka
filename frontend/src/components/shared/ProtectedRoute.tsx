@@ -3,6 +3,11 @@ import { Navigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { config } from '@/lib/config'
+import {
+  getDashboardPath,
+  getLoginPath,
+  persistIntendedRole,
+} from '@/lib/auth/role-session'
 import { useAuthStorageReady } from '@/hooks/use-auth-ready'
 import { useAuthStore } from '@/store/auth-store'
 import type { UserRole } from '@/types'
@@ -14,8 +19,7 @@ export function ProtectedRoute({ children, role }: { children: ReactNode; role: 
   const token = useAuthStore((s) => s.token)
   const sessionChecking = useAuthStore((s) => s.sessionChecking)
 
-  const loginPath =
-    role === 'trainer' ? '/login/trainer' : role === 'client' ? '/login/client' : '/login/admin'
+  const loginPath = getLoginPath(role)
 
   if (!storageReady || (!config.useMockData && token && sessionChecking)) {
     return (
@@ -27,12 +31,11 @@ export function ProtectedRoute({ children, role }: { children: ReactNode; role: 
   }
 
   if (!user || !token) {
+    persistIntendedRole(role)
     return <Navigate to={loginPath} replace />
   }
   if (user.role !== role) {
-    const redirect =
-      user.role === 'trainer' ? '/trainer' : user.role === 'client' ? '/client' : '/admin'
-    return <Navigate to={redirect} replace />
+    return <Navigate to={getDashboardPath(user.role)} replace />
   }
   return <>{children}</>
 }

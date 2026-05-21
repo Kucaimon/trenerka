@@ -1,3 +1,7 @@
+import type { LifecycleStatus, MemberType, OnboardingState } from '@/types/member'
+
+export type { ClientAttachment, InviteLink, LifecycleStatus, MaterialCategory, MemberType, OnboardingState } from '@/types/member'
+
 export type UserRole = 'trainer' | 'client' | 'admin'
 
 export interface User {
@@ -17,6 +21,16 @@ export interface TrainerProfile {
   experience: string
   phone: string
   avatarUrl?: string
+  /** Display name for the trainer-wide group chat thread */
+  groupChatTitle?: string
+}
+
+export interface PlatformPlan {
+  id: string
+  name: string
+  priceRub: number
+  clientLimit: number
+  active: boolean
 }
 
 export type ClientStatus = 'active' | 'pause' | 'archive'
@@ -37,8 +51,17 @@ export interface Client {
   paymentState?: PaymentState
   lastActivityMinutesAgo?: number
   workoutCompletionPct?: number
+  /** Manual or program-linked course progress (0–100) */
+  courseProgressPct?: number
   sessionsThisWeek?: number
   upcomingSessionAt?: string
+  /** Fit platform: client, student, academy member, etc. */
+  memberType?: MemberType
+  lifecycleStatus?: LifecycleStatus
+  onboardingState?: OnboardingState
+  /** Last message count for CRM summary */
+  messageCount?: number
+  lastMessageAt?: string
 }
 
 export interface Exercise {
@@ -195,6 +218,7 @@ export interface ProgressMeasurement {
 export interface CreateClientResult {
   client: Client
   temporaryPassword?: string
+  welcomeEmailSent?: boolean
 }
 
 export interface NewsItem {
@@ -210,6 +234,10 @@ export interface ClientDashboard {
     name: string
     trainer: string
     packageBalance: number
+    phone?: string
+    email?: string
+    coachNotes?: string
+    avatarUrl?: string
   }
   currentProgram: string
   nextSession: CalendarEvent | null
@@ -257,6 +285,7 @@ export interface AdminUser {
   name: string
   role: UserRole
   blocked: boolean
+  emailVerified?: boolean
 }
 
 export interface RevenueReportPoint {

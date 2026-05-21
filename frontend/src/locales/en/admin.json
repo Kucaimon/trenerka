@@ -1,21 +1,7 @@
 {
   "dashboard": {
-    "0": "A",
-    "1": "d",
-    "2": "m",
-    "3": "i",
-    "4": "n",
-    "5": " ",
-    "6": "d",
-    "7": "a",
-    "8": "s",
-    "9": "h",
-    "10": "b",
-    "11": "o",
-    "12": "a",
-    "13": "r",
-    "14": "d",
     "title": "Admin panel",
+    "platformNote": "Subscriptions and payment provider — Stage 2. Current scope: stats, users, news.",
     "trainers": "Trainers",
     "clients": "Clients",
     "exercises": "Exercises",
@@ -26,7 +12,31 @@
     "dashboard": "Dashboard",
     "exercises": "Exercises",
     "users": "Users",
-    "news": "News"
+    "news": "News",
+    "subscriptions": "Subscriptions"
+  },
+  "subscriptions": {
+    "title": "Platform subscriptions",
+    "stageBadge": "Stage 2",
+    "description": "Trainer plans, billing, and payment provider configuration are planned for the next release. Stage 1 focuses on trainer CRM, client app, and core REST API.",
+    "plannedTitle": "Planned in Stage 2",
+    "planned": [
+      "Trainer subscription tiers (Basic / Pro / VIP)",
+      "Stripe or YooKassa integration",
+      "Platform revenue dashboard",
+      "Automatic renewal and invoices"
+    ],
+    "footer": "Use the dashboard and users sections for current platform operations.",
+    "back": "Back to dashboard",
+    "plansTitle": "Trainer plans (catalog)",
+    "addPlan": "Add plan",
+    "saved": "Plans saved",
+    "field": {
+      "name": "Name",
+      "price": "Price (₽/mo)",
+      "limit": "Client limit",
+      "active": "Active"
+    }
   },
   "aria": {
     "closeMenu": "Close menu",
@@ -62,9 +72,16 @@
     "title": "Users",
     "unblock": "Unblock",
     "block": "Block",
+    "verified": "Email verified",
+    "unverified": "Email not verified",
+    "blocked": "Blocked",
+    "confirmVerify": "Confirm email",
+    "revokeVerify": "Revoke verification",
     "toast": {
       "unblocked": "User unblocked",
-      "blocked": "User blocked"
+      "blocked": "User blocked",
+      "verified": "Email verified",
+      "unverified": "Verification revoked"
     }
   }
 }

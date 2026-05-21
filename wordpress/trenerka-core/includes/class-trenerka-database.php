@@ -42,6 +42,10 @@ class Trenerka_Database {
                 package_balance int DEFAULT 0,
                 joined_at datetime DEFAULT CURRENT_TIMESTAMP,
                 last_session datetime DEFAULT NULL,
+                member_type varchar(32) DEFAULT 'client',
+                lifecycle_status varchar(32) DEFAULT 'lead',
+                onboarding_state varchar(32) DEFAULT 'registered',
+                course_progress_pct int DEFAULT 0,
                 PRIMARY KEY (id),
                 KEY trainer_user_id (trainer_user_id),
                 KEY email (email)
@@ -196,12 +200,38 @@ class Trenerka_Database {
                 PRIMARY KEY (id),
                 KEY client_id (client_id)
             ) $charset;",
+            "CREATE TABLE " . self::table('client_attachments') . " (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                client_id bigint(20) unsigned NOT NULL,
+                trainer_user_id bigint(20) unsigned NOT NULL,
+                name varchar(255) NOT NULL,
+                url varchar(512) NOT NULL,
+                category varchar(32) DEFAULT 'document',
+                mime_type varchar(128) DEFAULT '',
+                size_bytes int DEFAULT 0,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                KEY client_id (client_id),
+                KEY trainer_user_id (trainer_user_id)
+            ) $charset;",
+            "CREATE TABLE " . self::table('invite_tokens') . " (
+                id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+                trainer_user_id bigint(20) unsigned NOT NULL,
+                token varchar(64) NOT NULL,
+                member_type varchar(32) DEFAULT 'client',
+                expires_at datetime NOT NULL,
+                used_at datetime DEFAULT NULL,
+                created_at datetime DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (id),
+                UNIQUE KEY token (token),
+                KEY trainer_user_id (trainer_user_id)
+            ) $charset;",
         ];
 
         foreach ($tables as $sql) {
             dbDelta($sql);
         }
 
-        update_option('trenerka_db_version', TRENERKA_CORE_VERSION);
+        update_option('trenerka_db_version', '1.1.0');
     }
 }

@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { PageHeader } from '@/components/shared/page-header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { useNotifications, queryKeys } from '@/features/api/hooks'
 import { markNotificationRead } from '@/features/api/notifications-service'
 import { formatDate } from '@/lib/utils'
@@ -27,6 +28,13 @@ export function NotificationsPage() {
         description={t('notifications.description')}
         actions={unread > 0 ? <Badge variant="accent">{t('notifications.badgeNew', { count: unread })}</Badge> : undefined}
       />
+
+      <Card className="mb-4 border-[var(--border)] bg-[var(--surface2)]">
+        <CardContent className="space-y-2 py-4 text-sm text-[var(--text-secondary)]">
+          <p className="font-medium text-[var(--text-primary)]">{t('notifications.remindersTitle')}</p>
+          <p>{t('notifications.remindersBody')}</p>
+        </CardContent>
+      </Card>
 
       {isLoading ? (
         <p className="text-sm text-[var(--text-muted)]">{t('common:actions.loading')}</p>

@@ -14,9 +14,10 @@ import {
   writePendingTrainers,
   writeResetTokens,
 } from '@/lib/mock-api/users'
+import { consumeMockInvite } from '@/features/api/invites-service'
 import { wpFetch, setAuthToken } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
-import type { TrainerProfile, User, UserRole } from '@/types'
+import type { MemberType, TrainerProfile, User, UserRole } from '@/types'
 import type { WpAuthResponse } from '@/lib/wordpress/types'
 
 function createVerifyToken(email: string): string {
@@ -102,7 +103,11 @@ export async function registerTrainer(data: {
   }
   await wpFetch(wpEndpoints.auth.registerTrainer, {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      email: data.email,
+      password: data.password,
+      name: data.fullName,
+    }),
   })
   return {}
 }
@@ -111,7 +116,9 @@ export async function registerClient(data: {
   email: string
   password: string
   name?: string
-}): Promise<void> {
+  inviteToken?: string
+  memberType?: MemberType
+}): Promise<{ onboardingState?: string }> {
   await apiDelay(800)
   if (config.useMockData) {
     const email = data.email.toLowerCase()
@@ -119,6 +126,7 @@ export async function registerClient(data: {
       throw new Error(i18n.t('auth:errors.emailExists'))
     }
     const name = data.name?.trim() || displayNameFromEmail(email)
+    const memberType = data.memberType ?? 'client'
     mockApi.clients.create(
       {
         name,
@@ -128,12 +136,28 @@ export async function registerClient(data: {
         packageBalance: 0,
         goal: '',
         notes: '',
+        memberType,
+        lifecycleStatus: memberType === 'student' ? 'student' : 'active_client',
+        onboardingState: 'profile_pending',
       },
       { loginPassword: data.password },
     )
-    return
+    if (data.inviteToken) consumeMockInvite(data.inviteToken)
+    return { onboardingState: 'profile_pending' }
   }
-  throw new Error(i18n.t('auth:register.clientInviteOnly'))
+  if (!data.inviteToken) {
+    throw new Error(i18n.t('auth:register.clientInviteOnly'))
+  }
+  const res = await wpFetch<{ onboardingState?: string }>(wpEndpoints.auth.registerClient, {
+    method: 'POST',
+    body: JSON.stringify({
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      inviteToken: data.inviteToken,
+    }),
+  })
+  return res
 }
 
 export async function verifyEmail(token: string): Promise<void> {
@@ -164,6 +188,23 @@ export async function verifyEmail(token: string): Promise<void> {
     method: 'POST',
     body: JSON.stringify({ token }),
   })
+}
+
+export async function resendVerificationEmail(email: string): Promise<{ alreadyVerified?: boolean }> {
+  await apiDelay(500)
+  if (config.useMockData) {
+    const pending = readPendingTrainers()
+    const match = pending.find((p) => p.email === email.toLowerCase())
+    if (!match) {
+      return {}
+    }
+    return {}
+  }
+  const res = await wpFetch<{ success: boolean; alreadyVerified?: boolean }>(
+    wpEndpoints.auth.resendVerification,
+    { method: 'POST', body: JSON.stringify({ email }) },
+  )
+  return { alreadyVerified: res.alreadyVerified }
 }
 
 export async function resetPassword(email: string): Promise<{ resetToken?: string }> {

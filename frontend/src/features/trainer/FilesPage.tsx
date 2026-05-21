@@ -1,12 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExternalLink, FileText, FolderOpen } from 'lucide-react'
 import { PageHeader } from '@/components/shared/page-header'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { config } from '@/lib/config'
+import { useQuery } from '@tanstack/react-query'
+import { listClientAttachments } from '@/features/api/attachments-service'
 import { useClients } from '@/features/api/hooks'
-import { mockApi } from '@/lib/mock-api/store'
+import { config } from '@/lib/config'
 
 export function FilesPage() {
   const { t } = useTranslation(['trainer', 'common'])
@@ -14,10 +15,11 @@ export function FilesPage() {
   const [clientId, setClientId] = useState<string | null>(null)
   const activeClientId = clientId ?? clients[0]?.id ?? ''
 
-  const files = useMemo(() => {
-    if (!activeClientId || !config.useMockData) return []
-    return mockApi.files.byClient(activeClientId)
-  }, [activeClientId])
+  const { data: files = [] } = useQuery({
+    queryKey: ['client-attachments', activeClientId],
+    queryFn: () => listClientAttachments(activeClientId),
+    enabled: Boolean(activeClientId),
+  })
 
   const activeClient = clients.find((c) => c.id === activeClientId)
 
@@ -76,7 +78,7 @@ export function FilesPage() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{f.name}</p>
                   <p className="text-[11px] text-[var(--text-muted)]">
-                    {new Date(f.createdAt).toLocaleDateString()}
+                    {t(`clients.materialCategory.${f.category}`)} · {new Date(f.createdAt).toLocaleDateString()}
                   </p>
                 </div>
                 <a

@@ -24,11 +24,18 @@ export async function createClient(data: Omit<Client, 'id' | 'joinedAt'>): Promi
     const { client, temporaryPassword } = mockApi.clients.create(data)
     return { client, temporaryPassword }
   }
-  const res = await wpFetch<Client & { temporary_password?: string }>(wpEndpoints.clients, {
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-  return { client: res, temporaryPassword: res.temporary_password }
+  const res = await wpFetch<Client & { temporary_password?: string; welcome_email_sent?: boolean }>(
+    wpEndpoints.clients,
+    {
+      method: 'POST',
+      body: JSON.stringify(data),
+    },
+  )
+  return {
+    client: res,
+    temporaryPassword: res.temporary_password,
+    welcomeEmailSent: res.welcome_email_sent,
+  }
 }
 
 export async function updateClient(id: string, data: Partial<Client>): Promise<Client | undefined> {
@@ -87,7 +94,16 @@ export function exportClientsCsv(clients: Client[]): void {
   a.click()
 }
 
-/** XLSX не подключён — экспорт в CSV (открывается в Excel). См. docs/API.md */
-export function exportClientsSpreadsheet(clients: Client[]): void {
+export async function exportClientsSpreadsheet(clients: Client[]): Promise<void> {
+  const header = i18n.t('common:export.clientsHeader').split(',')
+  const rows = [
+    header,
+    ...clients.map((c) => [c.name, c.email, c.phone, c.status, String(c.packageBalance), c.goal ?? '']),
+  ]
+  const { downloadXlsx } = await import('@/lib/export/xlsx')
+  await downloadXlsx('clients.xlsx', rows, 'Clients')
+}
+
+export function exportClientsCsvLegacy(clients: Client[]): void {
   exportClientsCsv(clients)
 }

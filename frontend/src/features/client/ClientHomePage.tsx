@@ -15,8 +15,9 @@ import { useClientDashboard, useClientProgress, useClientWorkouts } from '@/feat
 import { pickTodayWorkout, todayDayKey, weekCompletionPercent } from '@/lib/client-workouts'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Loader2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { LoadingState } from '@/components/saas'
+import { Skeleton } from '@/components/ui/skeleton'
 import { formatDateTime } from '@/lib/i18n-format'
 import { CHART } from '@/lib/chart-theme'
 import { cn } from '@/lib/utils'
@@ -55,7 +56,7 @@ export function ClientHomePage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="mx-auto w-full max-w-4xl space-y-4 pb-6 md:max-w-6xl lg:max-w-none"
+      className="client-home-root mx-auto w-full max-w-4xl space-y-4 pb-6 md:max-w-6xl lg:max-w-none"
     >
       <header className="flex items-center gap-3 px-1 lg:col-span-2">
         <Avatar className="h-11 w-11 border border-[var(--border-strong)]">
@@ -71,10 +72,30 @@ export function ClientHomePage() {
         </div>
       </header>
 
+      {!dashboardLoading && !dashboard?.currentProgram?.trim() ? (
+        <Card className="border-[rgba(184,245,61,0.15)] bg-[var(--accent-dim)]/30 lg:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base">{t('home.onboardingTitle')}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm text-[var(--text-secondary)]">
+            <p>{t('home.onboardingProfile', { trainer: trainerName })}</p>
+            <p>{t('home.onboardingProgram')}</p>
+            <div className="flex flex-wrap gap-2">
+              <Button size="sm" variant="secondary" asChild>
+                <Link to="/client/profile">{t('home.completeProfile')}</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link to="/client/chat">{t('home.openChat')}</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
       {dashboardLoading || workoutsLoading ? (
-        <div className="flex items-center gap-2 px-1 text-sm text-[var(--text-muted)] lg:col-span-2">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          {t('common:actions.loading')}
+        <div className="space-y-3 px-1 lg:col-span-2">
+          <Skeleton className="h-36 w-full rounded-xl" />
+          <LoadingState variant="skeleton" rows={2} className="py-0" />
         </div>
       ) : null}
 
@@ -85,6 +106,46 @@ export function ClientHomePage() {
             {t('common:actions.retry')}
           </Button>
         </div>
+      ) : null}
+
+      {!dashboardLoading && !workoutsLoading ? (
+        <Card
+          className={cn(
+            'border-[var(--border-strong)] lg:col-span-2',
+            todayWorkout
+              ? 'bg-gradient-to-br from-[var(--surface)] to-[var(--accent-dim)]'
+              : 'bg-[var(--surface2)]',
+          )}
+        >
+          <CardContent className="p-4 md:p-5">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--accent)]">
+              {t('home.todayWorkout.label')}
+            </p>
+            <h2 className="mt-1 text-xl font-bold tracking-tight md:text-2xl">
+              {todayWorkout?.title ?? t('home.todayWorkout.restDay')}
+            </h2>
+            {todayWorkout ? (
+              <>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  {t('home.todayWorkout.meta', {
+                    count: todayWorkout.exercises?.length ?? 0,
+                    min: todayWorkout.duration ?? 45,
+                  })}
+                </p>
+                <Button asChild className="mt-4 w-full touch-target md:w-auto">
+                  <Link to={`/client/workouts/${todayWorkout.id}/session`}>
+                    <Play className="mr-2 h-4 w-4" />
+                    {t('home.todayWorkout.start')}
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              <Button asChild variant="secondary" className="mt-4 w-full touch-target md:w-auto">
+                <Link to="/client/workouts">{t('home.todayWorkout.viewPlan')}</Link>
+              </Button>
+            )}
+          </CardContent>
+        </Card>
       ) : null}
 
       <div className="contents lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
@@ -109,40 +170,6 @@ export function ClientHomePage() {
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="border-[var(--border-strong)] bg-[var(--surface)]">
-          <CardHeader className="flex-row items-start justify-between space-y-0 pb-0">
-            <div>
-              <p className="ds-label text-[var(--text-muted)]">{t('home.todayWorkout.label')}</p>
-              <CardTitle className="mt-1 text-lg">
-                {todayWorkout?.title ?? t('home.upcoming.empty')}
-              </CardTitle>
-              {todayWorkout ? (
-                <p className="ds-caption mt-1 text-[var(--text-secondary)]">
-                  {t('home.todayWorkout.meta', {
-                    count: todayWorkout.exercises?.length ?? 0,
-                    min: todayWorkout.duration ?? 45,
-                  })}
-                </p>
-              ) : null}
-            </div>
-            <Dumbbell className="h-5 w-5 text-[var(--accent)]" aria-hidden />
-          </CardHeader>
-          <CardContent className="pt-4">
-            {todayWorkout ? (
-              <Button asChild className="w-full">
-                <Link to={`/client/workouts/${todayWorkout.id}/session`}>
-                  <Play className="mr-2 h-4 w-4" />
-                  {t('home.todayWorkout.start')}
-                </Link>
-              </Button>
-            ) : (
-              <Button asChild variant="secondary" className="w-full">
-                <Link to="/client/workouts">{t('home.todayWorkout.viewPlan')}</Link>
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold">{t('home.upcoming.title')}</CardTitle>

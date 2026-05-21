@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { isTrainerProfileComplete } from '@/lib/auth/profile-complete'
+import { persistIntendedRole } from '@/lib/auth/role-session'
 import { setAuthToken } from '@/lib/wordpress/client'
 import type { TrainerProfile, User, UserRole } from '@/types'
 
@@ -27,6 +28,7 @@ export const useAuthStore = create<AuthState>()(
       sessionChecking: false,
       login: (user, token, trainerProfile = null) => {
         setAuthToken(token)
+        persistIntendedRole(user.role)
         const profile =
           user.role === 'trainer' && trainerProfile?.userId === user.id ? trainerProfile : null
         set({

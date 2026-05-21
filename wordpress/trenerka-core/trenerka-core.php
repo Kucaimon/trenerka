@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Trenerka Core
  * Description: CPTs, REST API fields, JWT auth integration for Trenerka fitness SaaS.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Trenerka
  * Text Domain: trenerka-core
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('TRENERKA_CORE_VERSION', '1.0.0');
+define('TRENERKA_CORE_VERSION', '1.0.1');
 define('TRENERKA_CORE_PATH', plugin_dir_path(__FILE__));
 
 require_once TRENERKA_CORE_PATH . 'includes/class-trenerka-cpt.php';
@@ -39,6 +39,9 @@ final class Trenerka_Core {
     }
 
     public function init(): void {
+        if (get_option('trenerka_db_version') !== '1.1.0') {
+            Trenerka_Database::install();
+        }
         Trenerka_CPT::register();
         Trenerka_Roles::register();
         Trenerka_Seeder::maybe_seed_exercises();

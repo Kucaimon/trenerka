@@ -18,6 +18,7 @@ import { getTrainerDisplayName, registerMockClientUser } from '@/lib/mock-api/us
 import type {
   CalendarEvent,
   Client,
+  ClientAttachment,
   ClientDashboard,
   ClientWorkoutDay,
   Exercise,
@@ -32,16 +33,19 @@ import type {
   AdminStats,
   AdminUser,
   RevenueReportPoint,
+  MaterialCategory,
 } from '@/types'
 
-const STORAGE_KEY = 'trenerka_mock_store_v5'
+const STORAGE_KEY = 'trenerka_mock_store_v6'
 
 interface ClientFile {
   id: string
   clientId: string
   name: string
   url: string
+  category?: MaterialCategory
   mimeType?: string
+  sizeBytes?: number
   createdAt: string
 }
 
@@ -121,6 +125,7 @@ function seed(): MockStore {
       clientId: f.clientId,
       name: f.name,
       url: `data:text/plain;charset=utf-8,${encodeURIComponent(f.name)}`,
+      category: (f.type === 'pdf' ? 'document' : f.type === 'image' ? 'other' : 'document') as MaterialCategory,
       mimeType: f.type,
       createdAt: `${f.uploadedAt}T12:00:00.000Z`,
     })),
@@ -442,6 +447,9 @@ export const mockApi = {
           name: profile?.name.split(' ')[0] ?? 'Клиент',
           trainer: getTrainerDisplayName(),
           packageBalance: profile?.packageBalance ?? 0,
+          phone: profile?.phone ?? '',
+          email: profile?.email ?? '',
+          coachNotes: profile?.notes ?? '',
         },
         currentProgram: program?.name ?? 'Не назначена',
         nextSession: next ?? null,
@@ -595,10 +603,35 @@ export const mockApi = {
     users(): AdminUser[] {
       const blocked = (id: string) => store.blockedUserIds.includes(id)
       return [
-        { id: 't1', email: 'trainer@trenerka.ru', name: getTrainerDisplayName(), role: 'trainer', blocked: blocked('t1') },
-        { id: 'cl1', email: 'client@trenerka.ru', name: 'Анна Смирнова', role: 'client', blocked: blocked('cl1') },
-        { id: 'a1', email: 'admin@trenerka.ru', name: 'Админ Trenerka', role: 'admin', blocked: blocked('a1') },
+        {
+          id: 't1',
+          email: 'trainer@trenerka.ru',
+          name: getTrainerDisplayName(),
+          role: 'trainer',
+          blocked: blocked('t1'),
+          emailVerified: true,
+        },
+        {
+          id: 'cl1',
+          email: 'client@trenerka.ru',
+          name: 'Анна Смирнова',
+          role: 'client',
+          blocked: blocked('cl1'),
+          emailVerified: true,
+        },
+        {
+          id: 'a1',
+          email: 'admin@trenerka.ru',
+          name: 'Админ Trenerka',
+          role: 'admin',
+          blocked: blocked('a1'),
+          emailVerified: true,
+        },
       ]
+    },
+    patchUserVerified(id: string, emailVerified: boolean) {
+      void id
+      void emailVerified
     },
     patchUser(id: string, blocked: boolean) {
       if (blocked) {
@@ -645,6 +678,54 @@ export const mockApi = {
       store.clientFiles.unshift(entry)
       save(store)
       return entry
+    },
+  },
+
+  attachments: {
+    list(clientId: string): ClientAttachment[] {
+      return store.clientFiles
+        .filter((f) => f.clientId === clientId)
+        .map((f) => ({
+          id: f.id,
+          clientId: f.clientId,
+          name: f.name,
+          url: f.url,
+          category: f.category ?? 'document',
+          mimeType: f.mimeType,
+          sizeBytes: f.sizeBytes,
+          createdAt: f.createdAt,
+        }))
+    },
+    add(
+      clientId: string,
+      data: { name: string; url: string; category: MaterialCategory; mimeType?: string; sizeBytes?: number },
+    ): ClientAttachment {
+      const entry: ClientFile = {
+        id: uid('file'),
+        clientId,
+        name: data.name,
+        url: data.url,
+        category: data.category,
+        mimeType: data.mimeType,
+        sizeBytes: data.sizeBytes,
+        createdAt: new Date().toISOString(),
+      }
+      store.clientFiles.unshift(entry)
+      save(store)
+      return {
+        id: entry.id,
+        clientId: entry.clientId,
+        name: entry.name,
+        url: entry.url,
+        category: entry.category ?? 'document',
+        mimeType: entry.mimeType,
+        sizeBytes: entry.sizeBytes,
+        createdAt: entry.createdAt,
+      }
+    },
+    remove(clientId: string, attachmentId: string) {
+      store.clientFiles = store.clientFiles.filter((f) => !(f.clientId === clientId && f.id === attachmentId))
+      save(store)
     },
   },
 }

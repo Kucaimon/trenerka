@@ -1,5 +1,13 @@
 import type { TrainerProfile, User, UserRole } from '@/types'
 
+/** Local mock/staging accounts only — not seeded on production WordPress. */
+const MOCK_TRAINER_EMAIL = 'trainer@trenerka.ru'
+const MOCK_TRAINER_PASSWORD = 'demo123'
+const MOCK_CLIENT_EMAIL = 'client@trenerka.ru'
+const MOCK_CLIENT_PASSWORD = 'demo123'
+const MOCK_ADMIN_EMAIL = 'admin@trenerka.ru'
+const MOCK_ADMIN_PASSWORD = 'demo123'
+
 const MOCK_USERS_KEY = 'trenerka-mock-users-v1'
 const MOCK_PROFILES_KEY = 'trenerka-trainer-profiles'
 const MOCK_PENDING_KEY = 'trenerka-pending-trainers'
@@ -34,23 +42,23 @@ const defaultMockProfiles: Record<string, TrainerProfile> = {
 }
 
 export const defaultMockUsers: Record<string, MockUserEntry> = {
-  'trainer@trenerka.ru': {
-    password: 'demo123',
-    user: { id: 't1', email: 'trainer@trenerka.ru', name: 'Алексей Тренеров', role: 'trainer' },
+  [MOCK_TRAINER_EMAIL]: {
+    password: MOCK_TRAINER_PASSWORD,
+    user: { id: 't1', email: MOCK_TRAINER_EMAIL, name: 'Алексей Тренеров', role: 'trainer' },
   },
-  'client@trenerka.ru': {
-    password: 'demo123',
+  [MOCK_CLIENT_EMAIL]: {
+    password: MOCK_CLIENT_PASSWORD,
     user: {
       id: 'cl1',
-      email: 'client@trenerka.ru',
+      email: MOCK_CLIENT_EMAIL,
       name: 'Анна Смирнова',
       role: 'client',
       clientProfileId: 'c1',
     },
   },
-  'admin@trenerka.ru': {
-    password: 'demo123',
-    user: { id: 'a1', email: 'admin@trenerka.ru', name: 'Админ Trenerka', role: 'admin' },
+  [MOCK_ADMIN_EMAIL]: {
+    password: MOCK_ADMIN_PASSWORD,
+    user: { id: 'a1', email: MOCK_ADMIN_EMAIL, name: 'Админ Trenerka', role: 'admin' },
   },
 }
 

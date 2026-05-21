@@ -660,8 +660,32 @@
   }
 
   .calendar-mobile-wrap .fc-button {
+    min-height: 44px;
+    min-width: 44px;
     padding: 0.35rem 0.5rem !important;
     font-size: 0.7rem !important;
+  }
+
+  /* Client home: prevent horizontal overflow on narrow screens */
+  .client-home-root {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  .client-home-root .ds-h2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Client chat composer: safe area + touch targets */
+  .client-chat-composer {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  .client-chat-composer .touch-target,
+  .client-chat-composer button,
+  .client-chat-composer input {
+    min-height: 44px;
   }
 }
 

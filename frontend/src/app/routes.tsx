@@ -14,6 +14,8 @@ import {
   ClientHomePage,
   ClientPaymentsPage,
   ClientProfilePage,
+  ClientNutritionPage,
+  ClientAchievementsPage,
   ClientWorkoutsPage,
   ClientsPage,
   ExerciseDetailPage,
@@ -27,6 +29,7 @@ import {
   NewsAdminPage,
   NotificationsPage,
   PrivacyPage,
+  TermsPage,
   ProfilePage,
   ProgramsPage,
   ProgressPage,
@@ -35,6 +38,7 @@ import {
   SupportPage,
   TrainerDashboardPage,
   UsersAdminPage,
+  SubscriptionsAdminPage,
   VerifyEmailPage,
   WorkoutBuilderPage,
   WorkoutSessionPage,
@@ -56,12 +60,41 @@ const devRoutes =
 export const router = createBrowserRouter([
   { path: '/', lazy: async () => ({ Component: LandingPage }) },
   { path: '/privacy', lazy: async () => ({ Component: PrivacyPage }) },
+  { path: '/terms', lazy: async () => ({ Component: TermsPage }) },
   {
     element: <AuthLayout />,
     children: [
-      { path: '/login/trainer', lazy: async () => ({ Component: () => <LoginPage role="trainer" /> }) },
-      { path: '/login/client', lazy: async () => ({ Component: () => <LoginPage role="client" /> }) },
-      { path: '/login/admin', lazy: async () => ({ Component: () => <LoginPage role="admin" /> }) },
+      {
+        path: '/login',
+        lazy: async () => {
+          const { LoginHubPage } = await import('@/features/auth/LoginHubPage')
+          return { Component: LoginHubPage }
+        },
+      },
+      {
+        path: '/login/trainer',
+        lazy: async () => ({
+          Component: () => <LoginPage role="trainer" entry="trainer" />,
+        }),
+      },
+      {
+        path: '/login/smart-fitness',
+        lazy: async () => ({
+          Component: () => <LoginPage role="trainer" entry="smart-fitness" />,
+        }),
+      },
+      {
+        path: '/login/client',
+        lazy: async () => ({
+          Component: () => <LoginPage role="client" entry="client" />,
+        }),
+      },
+      {
+        path: '/login/admin',
+        lazy: async () => ({
+          Component: () => <LoginPage role="admin" entry="admin" />,
+        }),
+      },
       {
         path: '/register/trainer',
         lazy: async () => {
@@ -122,6 +155,8 @@ export const router = createBrowserRouter([
       { path: 'progress', lazy: async () => ({ Component: ProgressPage }) },
       { path: 'payments', lazy: async () => ({ Component: ClientPaymentsPage }) },
       { path: 'chat', lazy: async () => ({ Component: ChatPage }) },
+      { path: 'nutrition', lazy: async () => ({ Component: ClientNutritionPage }) },
+      { path: 'achievements', lazy: async () => ({ Component: ClientAchievementsPage }) },
       { path: 'profile', lazy: async () => ({ Component: ClientProfilePage }) },
     ],
   },
@@ -137,6 +172,7 @@ export const router = createBrowserRouter([
       { path: 'exercises', lazy: async () => ({ Component: ExercisesAdminPage }) },
       { path: 'users', lazy: async () => ({ Component: UsersAdminPage }) },
       { path: 'news', lazy: async () => ({ Component: NewsAdminPage }) },
+      { path: 'subscriptions', lazy: async () => ({ Component: SubscriptionsAdminPage }) },
     ],
   },
   ...devRoutes,

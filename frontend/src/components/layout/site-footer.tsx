@@ -41,14 +41,26 @@ export function SiteFooter() {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-8 text-sm text-[var(--text-secondary)] sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 text-sm text-[var(--text-secondary)] sm:grid-cols-4">
             <div>
               <p className="mb-2 font-medium text-[var(--text-primary)]">{t('footer.product')}</p>
-              <Link to="/login/trainer" className="block hover:text-[var(--text-primary)]">
+              <Link to="/login/client" className="block min-h-11 py-1 leading-6 hover:text-[var(--text-primary)]">
+                {t('footer.forClients')}
+              </Link>
+              <Link to="/login/trainer" className="block min-h-11 py-1 leading-6 hover:text-[var(--text-primary)]">
                 {t('footer.forTrainers')}
               </Link>
-              <Link to="/login/client" className="block hover:text-[var(--text-primary)]">
-                {t('footer.forClients')}
+              <Link
+                to="/login/smart-fitness"
+                className="block min-h-11 py-1 leading-6 hover:text-[var(--text-primary)]"
+              >
+                {t('footer.forSmartFitness')}
+              </Link>
+            </div>
+            <div>
+              <p className="mb-2 font-medium text-[var(--text-primary)]">{t('footer.admin')}</p>
+              <Link to="/login/admin" className="block text-[var(--text-muted)] hover:text-[var(--text-primary)]">
+                {t('actions.loginAdmin')}
               </Link>
             </div>
             <div>
@@ -63,9 +75,9 @@ export function SiteFooter() {
               <Link to="/privacy" className="block hover:text-[var(--text-primary)]">
                 {t('footer.policy')}
               </Link>
-              <a href="#" className="block hover:text-[var(--text-primary)]">
+              <Link to="/terms" className="block hover:text-[var(--text-primary)]">
                 {t('footer.terms')}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

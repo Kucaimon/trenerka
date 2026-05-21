@@ -1,15 +1,14 @@
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/store/auth-store'
+import { getLoginPath as roleLoginPath, readIntendedRole } from '@/lib/auth/role-session'
 import type { UserRole } from '@/types'
 
 export function getLoginPath(role?: UserRole | null): string {
-  if (role === 'client') return '/login/client'
-  if (role === 'admin') return '/login/admin'
-  return '/login/trainer'
+  return roleLoginPath(role ?? readIntendedRole() ?? 'trainer')
 }
 
-/** Clears auth store, WP token, and persisted session. */
+/** Clears auth store, WP token, role hint, and persisted session. */
 export function performLogout(): void {
   useAuthStore.getState().logout()
 }

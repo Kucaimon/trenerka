@@ -1,17 +1,16 @@
 import { useEffect } from 'react'
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { LayoutDashboard, Dumbbell, Users, Newspaper, LogOut, Menu } from 'lucide-react'
+import { LayoutDashboard, Dumbbell, Users, Newspaper, CreditCard, LogOut, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useAuthStore } from '@/store/auth-store'
+import { useLogout } from '@/lib/auth/logout'
 import { useUiStore } from '@/store/ui-store'
 import { Button } from '@/components/ui/button'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 
 export function AdminLayout() {
   const { t } = useTranslation(['admin', 'common'])
-  const logout = useAuthStore((s) => s.logout)
-  const navigate = useNavigate()
+  const handleLogout = useLogout('admin')
   const location = useLocation()
   const drawerOpen = useUiStore((s) => s.trainerDrawerOpen)
   const setDrawerOpen = useUiStore((s) => s.setTrainerDrawerOpen)
@@ -21,6 +20,7 @@ export function AdminLayout() {
     { to: '/admin/exercises', icon: Dumbbell, label: t('nav.exercises') },
     { to: '/admin/users', icon: Users, label: t('nav.users') },
     { to: '/admin/news', icon: Newspaper, label: t('nav.news') },
+    { to: '/admin/subscriptions', icon: CreditCard, label: t('nav.subscriptions') },
   ]
 
   useEffect(() => {
@@ -70,10 +70,7 @@ export function AdminLayout() {
             variant="ghost"
             size="sm"
             className="w-full justify-start"
-            onClick={() => {
-              logout()
-              navigate('/')
-            }}
+            onClick={handleLogout}
           >
             <LogOut className="mr-2 h-4 w-4" /> {t('common:actions.logout')}
           </Button>
@@ -100,10 +97,7 @@ export function AdminLayout() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => {
-              logout()
-              navigate('/')
-            }}
+            onClick={handleLogout}
           >
             <LogOut className="mr-2 h-4 w-4" /> {t('common:actions.logout')}
           </Button>

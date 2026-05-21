@@ -13,17 +13,32 @@
     "filesTitle": "Файлы и ресурсы",
     "filesHint": "Документы тренера и обучающие материалы.",
     "paymentsLink": "Оплаты и баланс",
-    "premium": "Premium client"
+    "premium": "Premium client",
+    "changeAvatar": "Сменить фото",
+    "saveError": "Не удалось сохранить профиль",
+    "validation": {
+      "phone": "Укажите телефон"
+    },
+    "fields": {
+      "name": "Имя",
+      "phone": "Телефон"
+    }
   },
   "home": {
     "greeting": "Привет, {{name}}!",
+    "onboardingTitle": "Добро пожаловать в Trenerka Fit",
+    "onboardingProfile": "Заполните профиль — так тренер {{trainer}} сможет назначить программу.",
+    "onboardingProgram": "Программа скоро появится. Напишите тренеру в чате, если есть вопросы.",
+    "completeProfile": "Профиль",
+    "openChat": "Чат с тренером",
     "loadError": "Не удалось загрузить данные кабинета",
     "defaultName": "Клиент",
     "todayWorkout": {
       "label": "Сегодня",
       "start": "Начать тренировку",
       "viewPlan": "Открыть программу",
-      "meta": "{{count}} упражнений · {{min}} мин"
+      "meta": "{{count}} упражнений · {{min}} мин",
+      "restDay": "День отдыха — восстановление тоже часть плана"
     },
     "packageBalance": {
       "label": "Баланс занятий",
@@ -81,6 +96,8 @@
     "weekProgress": "Выполнение недели",
     "exerciseCount": "{{count}} упражнений",
     "empty": "Программа не назначена",
+    "emptyDescription": "Тренер назначит программу. Можно написать в чат.",
+    "contactTrainer": "Написать тренеру",
     "completed": "выполнено"
   },
   "session": {
@@ -181,6 +198,9 @@
     "title": "Достижения",
     "subtitle": "Мотивация клиента: серия, цели и открытые бейджи.",
     "streak": "дней подряд без пропусков",
+    "streakHint": "дней подряд с выполненными тренировками",
+    "completedTitle": "Выполнено",
+    "completedHint": "{{pct}}% программы на этой неделе",
     "unlockedCount": "{{unlocked}} из {{total}} наград открыто",
     "status": {
       "unlocked": "Открыто",
@@ -189,24 +209,12 @@
   },
   "nutrition": {
     "eyebrow": "Питание",
-    "title": "План на сегодня",
-    "subtitle": "План питания на день, калории и заметки для тренера.",
-    "calories": "Калории",
-    "goalProgress": "74% от дневной цели · 1 820 ккал",
-    "protein": "белок",
-    "proteinAmount": "128 г",
-    "water": "вода",
-    "waterAmount": "1.8 л",
-    "addMeal": "Добавить приём пищи",
-    "meals": {
-      "monday": "Понедельник",
-      "tuesday": "Вторник",
-      "oatmeal": "Овсянка с ягодами",
-      "chickenRice": "Куриная грудка с рисом",
-      "fishVeg": "Рыба с овощами",
-      "omelette": "Омлет с авокадо",
-      "turkeyBuckwheat": "Индейка с гречкой",
-      "cottageCheese": "Творог с орехами"
-    }
+    "title": "Питание",
+    "subtitle": "План питания и рекомендации от тренера Smart Fitness.",
+    "mealPlanTitle": "План питания",
+    "emptyMealPlan": "Тренер ещё не загрузил план питания. Напишите в чате.",
+    "openFile": "Открыть",
+    "coachNotesTitle": "Рекомендации тренера",
+    "emptyNotes": "Пока нет заметок — уточните у тренера в чате."
   }
 }

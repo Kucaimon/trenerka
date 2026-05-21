@@ -1,8 +1,24 @@
-import type { Client } from '@/types'
+import type { Client, OnboardingState } from '@/types'
 
-/** Pass-through helper; mock/API data should supply CRM fields. */
+/** Derive display course %: manual field or program completion. */
+export function effectiveCourseProgress(client: Client): number | undefined {
+  if (client.courseProgressPct != null && client.courseProgressPct > 0) {
+    return client.courseProgressPct
+  }
+  return client.workoutCompletionPct
+}
+
+export function needsOnboardingBadge(state?: OnboardingState): boolean {
+  return Boolean(state && ['invited', 'registered', 'profile_pending', 'program_pending'].includes(state))
+}
+
+/** Pass-through + normalized progress for CRM lists. */
 export function enrichClient(client: Client): Client {
-  return { ...client }
+  const courseProgressPct = effectiveCourseProgress(client)
+  return {
+    ...client,
+    courseProgressPct: courseProgressPct ?? client.courseProgressPct,
+  }
 }
 
 export function formatRelativeActivity(

@@ -1,4 +1,5 @@
 import { config } from '@/lib/config'
+import { getLoginPath, readIntendedRole } from '@/lib/auth/role-session'
 import { useAuthStore } from '@/store/auth-store'
 
 export class WpApiError extends Error {
@@ -53,9 +54,8 @@ export async function wpFetch<T>(
         ? body.message
         : res.statusText
     if (res.status === 401 && !config.useMockData) {
-      const role = useAuthStore.getState().user?.role
-      const loginPath =
-        role === 'client' ? '/login/client' : role === 'admin' ? '/login/admin' : '/login/trainer'
+      const role = useAuthStore.getState().user?.role ?? readIntendedRole() ?? 'trainer'
+      const loginPath = getLoginPath(role)
       useAuthStore.getState().logout()
       if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
         window.location.assign(loginPath)

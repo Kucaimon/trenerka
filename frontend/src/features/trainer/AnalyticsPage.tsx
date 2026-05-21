@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import {
   Area,
   AreaChart,
@@ -25,8 +26,10 @@ import {
   getRevenueChart,
   getSubscriptionMixChart,
   getWeekdayActivityChart,
+  downloadAnalyticsSummaryExport,
+  downloadClientProgressPdf,
 } from '@/features/api/analytics-service'
-import { useTrainerAnalytics } from '@/features/api/hooks'
+import { useClients, useTrainerAnalytics } from '@/features/api/hooks'
 import { formatRub } from '@/lib/utils'
 import { CHART } from '@/lib/chart-theme'
 import { Button } from '@/components/ui/button'
@@ -35,6 +38,10 @@ import { Activity, CalendarCheck2, FileDown, Repeat2, Wallet } from 'lucide-reac
 export function AnalyticsPage() {
   const { t } = useTranslation(['trainer', 'common'])
   const [period, setPeriod] = useState('6m')
+  const [pdfClientId, setPdfClientId] = useState('')
+  const [pdfLoading, setPdfLoading] = useState(false)
+  const [summaryLoading, setSummaryLoading] = useState(false)
+  const { data: clients = [] } = useClients()
   const { data: analytics } = useTrainerAnalytics()
   const { data: revenueData = [], isLoading: revenueLoading } = useQuery({
     queryKey: ['revenue-chart'],
@@ -78,9 +85,55 @@ export function AnalyticsPage() {
                 <SelectItem value="12m">{t('analytics.period.m12')}</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="secondary" size="sm" disabled title={t('analytics.pdfExportStage2')}>
+            <Select value={pdfClientId || undefined} onValueChange={setPdfClientId}>
+              <SelectTrigger className="w-44">
+                <SelectValue placeholder={t('analytics.pdfSelectClient')} />
+              </SelectTrigger>
+              <SelectContent>
+                {clients.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={summaryLoading}
+              onClick={async () => {
+                setSummaryLoading(true)
+                try {
+                  await downloadAnalyticsSummaryExport()
+                  toast.success(t('analytics.summaryExportDone'))
+                } catch {
+                  toast.error(t('analytics.pdfExportError'))
+                } finally {
+                  setSummaryLoading(false)
+                }
+              }}
+            >
               <FileDown className="h-4 w-4" />
-              {t('analytics.pdfExportStage2')}
+              {summaryLoading ? t('common:actions.loading') : t('analytics.summaryExport')}
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={!pdfClientId || pdfLoading}
+              onClick={async () => {
+                setPdfLoading(true)
+                try {
+                  await downloadClientProgressPdf(pdfClientId)
+                  toast.success(t('analytics.pdfExportDone'))
+                } catch {
+                  toast.error(t('analytics.pdfExportError'))
+                } finally {
+                  setPdfLoading(false)
+                }
+              }}
+            >
+              <FileDown className="h-4 w-4" />
+              {pdfLoading ? t('common:actions.loading') : t('analytics.pdfExport')}
             </Button>
           </div>
         }

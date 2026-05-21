@@ -94,7 +94,8 @@ export function WorkoutSessionPage() {
   }
 
   return (
-    <div className="session-mode space-y-5 px-4 py-4">
+    <div className="session-mode flex min-h-dvh flex-col pb-[calc(var(--tab-bar-height,0px)+var(--safe-area-bottom,0px)+5.5rem)]">
+      <div className="flex-1 space-y-5 px-4 py-4">
       <div className="flex items-center justify-between">
         <Link
           to="/client/workouts"
@@ -170,26 +171,9 @@ export function WorkoutSessionPage() {
           <div className="mt-6 rounded-xl border border-[var(--border)] bg-black/20 p-5">
             <Timer className="mx-auto h-7 w-7 text-[var(--accent)]" />
             <RestCountdown key={`${current}-${completedSets}-${exercise.rest || 60}`} seconds={exercise.rest || 60} />
-            <p className="mt-1 text-xs text-[var(--text-muted)]">{t('session.restBetweenSets')}</p>
-            <Button
-              className="mt-5 w-full"
-              disabled={completeWorkout.isPending}
-              onClick={() => {
-                if (finished) {
-                  void handleFinish()
-                  return
-                }
-                nextStep()
-              }}
-            >
-              <Check className="h-4 w-4" /> {nextButtonLabel}
-            </Button>
+            <p className="mt-1 text-center text-xs text-[var(--text-muted)]">{t('session.restBetweenSets')}</p>
           </div>
-        ) : (
-          <Button className="mt-6 w-full" onClick={completeSet}>
-            {t('session.setDone')}
-          </Button>
-        )}
+        ) : null}
       </section>
 
       <section className="space-y-2">
@@ -212,6 +196,29 @@ export function WorkoutSessionPage() {
           </div>
         ))}
       </section>
+      </div>
+
+      <div className="session-mode__actions sticky bottom-0 z-20 border-t border-[var(--border)] bg-[var(--surface)]/95 px-4 py-3 backdrop-blur-xl">
+        {rest ? (
+          <Button
+            className="touch-target h-12 w-full text-base"
+            disabled={completeWorkout.isPending}
+            onClick={() => {
+              if (finished) {
+                void handleFinish()
+                return
+              }
+              nextStep()
+            }}
+          >
+            <Check className="h-4 w-4" /> {nextButtonLabel}
+          </Button>
+        ) : (
+          <Button className="touch-target h-12 w-full text-base" onClick={completeSet}>
+            {t('session.setDone')}
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

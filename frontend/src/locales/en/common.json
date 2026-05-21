@@ -17,7 +17,10 @@
     "createAccount": "Create account",
     "startFree": "Start for free",
     "loginTrainer": "Trainer sign in",
+    "loginSmartFitness": "Smart Fitness sign in",
     "loginClient": "Client sign in",
+    "loginAdmin": "Admin sign in",
+    "chooseRole": "Choose role",
     "send": "Send",
     "back": "Back",
     "backToList": "Back to list",
@@ -55,8 +58,11 @@
   "footer": {
     "tagline": "CRM, calendar, programs, finances and client portal for fitness trainers.",
     "product": "Product",
-    "forTrainers": "For trainers",
-    "forClients": "For clients",
+    "forTrainers": "Trainer sign in",
+    "forSmartFitness": "Smart Fitness sign in",
+    "forClients": "Client sign in",
+    "chooseRole": "Choose role",
+    "admin": "Admin",
     "company": "Company",
     "about": "About",
     "contacts": "Contact",
@@ -69,6 +75,13 @@
     "social": "Social",
     "socialTelegram": "Telegram",
     "socialVk": "VK"
+  },
+  "pwa": {
+    "installTitle": "Install Trenerka",
+    "installAction": "Install app",
+    "androidHint": "Add to Home screen for fullscreen app mode with your saved login.",
+    "iosHint": "Tap Share, then “Add to Home Screen” for app-like mode.",
+    "dismiss": "Dismiss"
   },
   "skills": "Fitness Academy",
   "notFound": "Not found",

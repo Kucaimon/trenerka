@@ -2,11 +2,19 @@ import { lazy, Suspense, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
-import { Bell, CalendarPlus, Clock3, CreditCard, MessageSquare, UserPlus, Dumbbell, Loader2 } from 'lucide-react'
+import { Bell, CalendarDays, CalendarPlus, Clock3, CreditCard, MessageSquare, UserPlus, Dumbbell } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { DashboardContainer, DashboardGrid, DashboardGridItem, SaasPageHeader } from '@/components/saas'
+import {
+  DashboardContainer,
+  DashboardGrid,
+  DashboardGridItem,
+  EmptyState,
+  LoadingState,
+  SaasPageHeader,
+} from '@/components/saas'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useClients, useEvents, useNotifications, usePayments, useTrainerAnalytics } from '@/features/api/hooks'
 import { getAttendanceChart, getRevenueChart } from '@/features/api/analytics-service'
 import type { ChartPeriodId } from '@/features/trainer/TrainerDashboardCharts'
@@ -170,43 +178,53 @@ export function TrainerDashboardPage() {
         {stats.map((stat) => (
           <div key={stat.label} className="saas-metric-cell">
             <p className="saas-metric-cell__label">{stat.label}</p>
-            <p className="saas-metric-cell__value tabular-nums">{stat.value}</p>
+            {clientsLoading || analyticsLoading ? (
+              <Skeleton className="mt-1 h-7 w-16" />
+            ) : (
+              <p className="saas-metric-cell__value tabular-nums">{stat.value}</p>
+            )}
           </div>
         ))}
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-2">
-        {quickActions.map((action) => (
-          <Button key={action.to} variant="secondary" size="sm" className="gap-2" asChild>
-            <Link to={action.to}>
-              <action.icon className="h-3.5 w-3.5" strokeWidth={1.75} />
-              {action.label}
-            </Link>
-          </Button>
-        ))}
+      <div className="mb-3">
+        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+          {t('dashboard.quickActions.title')}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {quickActions.map((action) => (
+            <Button key={action.to} variant="secondary" size="sm" className="touch-target gap-2" asChild>
+              <Link to={action.to}>
+                <action.icon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                {action.label}
+              </Link>
+            </Button>
+          ))}
+        </div>
       </div>
 
-      {eventsLoading ? (
-        <div className="mb-3 flex items-center gap-2 text-sm text-[var(--text-muted)]">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          {t('common:actions.loading')}
-        </div>
-      ) : null}
-
-      {todayEvents.length > 0 ? (
-        <DashboardContainer
-          title={t('dashboard.schedule.title')}
-          description={t('dashboard.schedule.subtitle')}
-          flush
-          className="saas-dash-today"
-        >
+      <DashboardContainer
+        title={t('dashboard.todayFocus.title')}
+        description={today}
+        flush
+        className="saas-dash-today mb-3"
+        actions={
+          <Button variant="ghost" size="sm" className="h-8 text-xs" asChild>
+            <Link to="/trainer/calendar">{t('dashboard.todayFocus.cta')}</Link>
+          </Button>
+        }
+      >
+        {eventsLoading ? (
+          <LoadingState variant="skeleton" rows={2} className="px-4 py-3" />
+        ) : todayEvents.length > 0 ? (
           <div className="divide-y divide-[var(--border)]">
             {todayEvents.map((e) => (
-              <div
+              <Link
                 key={e.id}
-                className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-[var(--surface3)]"
+                to="/trainer/calendar"
+                className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--surface3)]"
               >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface3)] text-[11px] font-semibold tabular-nums text-[var(--accent)]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface3)] text-[11px] font-semibold tabular-nums text-[var(--accent)]">
                   {new Date(e.start).toLocaleTimeString(intlLocale(i18n.language), {
                     hour: '2-digit',
                     minute: '2-digit',
@@ -219,20 +237,32 @@ export function TrainerDashboardPage() {
                 <Badge variant="secondary" className="shrink-0 text-[10px]">
                   {t('dashboard.today.badge')}
                 </Badge>
-              </div>
+              </Link>
             ))}
           </div>
-        </DashboardContainer>
-      ) : null}
+        ) : (
+          <EmptyState
+            icon={CalendarDays}
+            title={t('dashboard.todayFocus.empty')}
+            description={t('dashboard.schedule.emptyToday')}
+            className="mx-3 my-3 border-none bg-transparent"
+            action={
+              <Button size="sm" asChild>
+                <Link to="/trainer/calendar">
+                  <CalendarPlus className="mr-2 h-4 w-4" />
+                  {t('dashboard.todayFocus.cta')}
+                </Link>
+              </Button>
+            }
+          />
+        )}
+      </DashboardContainer>
 
       <DashboardGrid>
         <Suspense
           fallback={
             <DashboardGridItem span={8}>
-              <div className="flex h-[200px] items-center justify-center gap-2 text-sm text-[var(--text-muted)]">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                {t('common:actions.loading')}
-              </div>
+              <LoadingState label={t('common:actions.loading')} className="h-[200px]" />
             </DashboardGridItem>
           }
         >
@@ -282,7 +312,18 @@ export function TrainerDashboardPage() {
           >
             <div className="divide-y divide-[var(--border)]">
               {activeClients.length === 0 ? (
-                <p className="px-4 py-2.5 text-sm text-[var(--text-muted)]">{t('dashboard.activeClients.empty')}</p>
+                <div className="p-3">
+                  <EmptyState
+                    icon={UserPlus}
+                    title={t('dashboard.activeClients.empty')}
+                    action={
+                      <Button size="sm" variant="secondary" asChild>
+                        <Link to="/trainer/clients">{t('dashboard.quickActions.addClient')}</Link>
+                      </Button>
+                    }
+                    className="py-8"
+                  />
+                </div>
               ) : (
                 activeClients.map((c) => (
                   <Link
@@ -327,7 +368,7 @@ export function TrainerDashboardPage() {
           >
             <div className="divide-y divide-[var(--border)]">
               {upcomingLater.length === 0 ? (
-                <p className="px-4 py-2.5 text-sm text-[var(--text-muted)]">{t('dashboard.schedule.empty')}</p>
+                <p className="px-4 py-4 text-center text-sm text-[var(--text-muted)]">{t('dashboard.schedule.empty')}</p>
               ) : (
                 upcomingLater.map((e) => (
                   <div key={e.id} className="flex gap-2.5 px-3 py-1.5 hover:bg-[var(--surface3)]">

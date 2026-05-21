@@ -32,6 +32,7 @@ export function CalendarPage() {
   const [end, setEnd] = useState('')
   const [clientId, setClientId] = useState('')
   const [eventType, setEventType] = useState<CalendarEventType>('training')
+  const [recurring, setRecurring] = useState(false)
 
   const fcLocale = i18n.language === 'ru' ? 'ru' : i18n.language.startsWith('zh') ? 'zh-cn' : i18n.language.split('-')[0]
 
@@ -39,11 +40,12 @@ export function CalendarPage() {
     () =>
       apiEvents.map((e) => ({
         id: e.id,
-        title: e.title,
+        title: e.recurring ? `${e.title} ↻` : e.title,
         start: e.start,
         end: e.end,
-        borderColor: 'transparent',
+        borderColor: e.recurring ? 'var(--accent)' : 'transparent',
         backgroundColor: e.color || 'var(--bg-muted)',
+        extendedProps: { recurring: e.recurring },
       })),
     [apiEvents],
   )
@@ -71,6 +73,7 @@ export function CalendarPage() {
     setEnd(info.endStr)
     setClientId(clients[0]?.id ?? '')
     setEventType('training')
+    setRecurring(false)
     setSelectedEvent(null)
     setCreateOpen(true)
   }
@@ -90,6 +93,7 @@ export function CalendarPage() {
         end,
         clientId: clientId || undefined,
         type: eventType,
+        recurring: recurring || undefined,
       })
       toast.success(t('calendar.toast.created'))
       setCreateOpen(false)
@@ -145,6 +149,11 @@ export function CalendarPage() {
           <p className="mt-1 text-sm text-[var(--text-muted)]">
             {formatDateTime(selectedEvent.start, i18n.language)} — {formatDateTime(selectedEvent.end, i18n.language)}
           </p>
+          {selectedEvent.recurring ? (
+            <p className="mt-2 inline-flex rounded-md border border-[var(--accent)]/40 bg-[var(--accent)]/10 px-2 py-0.5 text-xs text-[var(--accent)]">
+              {t('calendar.detail.recurringBadge')}
+            </p>
+          ) : null}
           <div className="mt-3 flex flex-wrap gap-2">
             <Button
               size="sm"
@@ -160,6 +169,7 @@ export function CalendarPage() {
             <Button
               size="sm"
               variant="secondary"
+              className="touch-target"
               onClick={async () => {
                 await copyRecurringEvent(selectedEvent.id)
                 toast.success(t('calendar.toast.copied'))
@@ -213,7 +223,16 @@ export function CalendarPage() {
                 </SelectContent>
               </Select>
             </div>
-            <Button className="w-full" onClick={submitNew} disabled={!title.trim() || saveEvent.isPending}>
+            <label className="flex min-h-11 cursor-pointer items-center gap-3 rounded-lg border border-[var(--border)] px-3 py-2.5">
+              <input
+                type="checkbox"
+                checked={recurring}
+                onChange={(e) => setRecurring(e.target.checked)}
+                className="h-4 w-4 shrink-0 accent-[var(--accent)]"
+              />
+              <span className="text-sm text-[var(--text-secondary)]">{t('calendar.create.recurring')}</span>
+            </label>
+            <Button className="touch-target w-full" onClick={submitNew} disabled={!title.trim() || saveEvent.isPending}>
               {t('common:actions.create')}
             </Button>
           </div>

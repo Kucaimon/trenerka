@@ -4,7 +4,8 @@ export const extensions = {
     ru: {
       status: { active: 'Активен', pause: 'Пауза', archive: 'Архив' },
       actions: {
-        loginTrainer: 'Вход для тренеров',
+        loginTrainer: 'Вход тренера',
+        loginSmartFitness: 'Вход Smart Fitness',
         loginClient: 'Вход для клиентов',
         send: 'Отправить',
         back: 'Назад',
@@ -76,6 +77,7 @@ export const extensions = {
       status: { active: 'Active', pause: 'Pause', archive: 'Archive' },
       actions: {
         loginTrainer: 'Trainer sign in',
+        loginSmartFitness: 'Smart Fitness sign in',
         loginClient: 'Client sign in',
         send: 'Send',
         back: 'Back',

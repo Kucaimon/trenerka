@@ -49,8 +49,10 @@ export function LandingPage() {
       <SiteHeader />
       <main className="pt-[54px]">
         <HeroSection />
+        <ProblemsSection />
         <WorkflowSection />
         <BenefitsSection />
+        <TestimonialsSection />
         <TrainerExperienceSection />
         <ClientExperienceSection />
         <PricingSection />
@@ -86,17 +88,40 @@ function HeroSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.3 }}
-              className="mt-5 flex flex-wrap items-center gap-4"
+              className="mt-5 flex flex-col gap-3"
             >
-              <Button size="default" className="h-9 px-4 text-sm font-semibold" asChild>
-                <Link to="/register/trainer">{t('hero.ctaPrimary')}</Link>
-              </Button>
-              <Link
-                to="/login/trainer"
-                className="text-sm font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
-              >
-                {t('hero.ctaSecondary')} →
-              </Link>
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                <Button size="default" className="touch-target h-11 flex-1 px-4 text-sm font-semibold sm:flex-none sm:h-9" asChild>
+                  <Link to="/login/client">{t('hero.entryClient')}</Link>
+                </Button>
+                <Button
+                  size="default"
+                  variant="secondary"
+                  className="touch-target h-11 flex-1 px-4 text-sm font-semibold sm:flex-none sm:h-9"
+                  asChild
+                >
+                  <Link to="/login/trainer">{t('hero.entryTrainer')}</Link>
+                </Button>
+                <Button
+                  size="default"
+                  variant="outline"
+                  className="touch-target h-11 flex-1 border-[var(--accent)]/35 px-4 text-sm font-semibold text-[var(--accent)] sm:flex-none sm:h-9"
+                  asChild
+                >
+                  <Link to="/login/smart-fitness">{t('hero.entrySmartFitness')}</Link>
+                </Button>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button size="default" className="h-9 px-4 text-sm font-semibold" asChild>
+                  <Link to="/register/trainer">{t('hero.ctaPrimary')}</Link>
+                </Button>
+                <Link
+                  to="/login"
+                  className="text-sm font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
+                >
+                  {t('hero.ctaSecondary')} →
+                </Link>
+              </div>
             </motion.div>
             <p className="mt-2.5 text-xs text-[var(--text-muted)]">{t('hero.note')}</p>
           </motion.div>
@@ -153,6 +178,64 @@ function HeroProductMock() {
         </div>
       </motion.div>
     </motion.div>
+  )
+}
+
+function ProblemsSection() {
+  const { t } = useTranslation('landing')
+  const items = t('problems.items', { returnObjects: true }) as Array<{ title: string; text: string }>
+
+  return (
+    <section className="concept-landing-section border-b border-[var(--border)]">
+      <motion.div {...fade} className="concept-landing-inner">
+        <SectionIntro eyebrow={t('problems.eyebrow')} title={t('problems.title')} text={t('problems.text')} />
+        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {items.map((item) => (
+            <div key={item.title} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4">
+              <p className="text-sm font-semibold">{item.title}</p>
+              <p className="mt-2 text-xs leading-relaxed text-[var(--text-secondary)]">{item.text}</p>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    </section>
+  )
+}
+
+function TestimonialsSection() {
+  const { t } = useTranslation('landing')
+  const items = t('testimonials.items', { returnObjects: true }) as Array<{
+    quote: string
+    author: string
+    role: string
+  }>
+
+  return (
+    <section className="concept-landing-section border-y border-[var(--border)] bg-[var(--graphite)]">
+      <motion.div {...fade} className="concept-landing-inner">
+        <SectionIntro
+          eyebrow={t('testimonials.eyebrow')}
+          title={t('testimonials.title')}
+          text={t('testimonials.betaLabel')}
+        />
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {items.map((item) => (
+            <figure key={item.author} className="rounded-lg border border-[var(--border)] bg-[var(--surface)] p-5">
+              <Badge variant="secondary" className="mb-3 text-[10px]">
+                {t('testimonials.betaLabel')}
+              </Badge>
+              <blockquote className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                «{item.quote}»
+              </blockquote>
+              <figcaption className="mt-4 text-xs">
+                <p className="font-semibold text-[var(--text-primary)]">{item.author}</p>
+                <p className="text-[var(--text-muted)]">{item.role}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </motion.div>
+    </section>
   )
 }
 
@@ -470,7 +553,7 @@ function CtaSection() {
             <Link to="/register/trainer">{t('cta.create')}</Link>
           </Button>
           <Button size="default" variant="outline" className="h-9 px-4 text-sm" asChild>
-            <Link to="/login/trainer">{t('cta.login')}</Link>
+            <Link to="/login">{t('cta.login')}</Link>
           </Button>
         </div>
       </motion.div>

@@ -10,7 +10,11 @@ import { saveClientProgress } from './client-cabinet-service'
 import * as calendarApi from './calendar-service'
 import * as paymentsApi from './payments-service'
 import * as messagesApi from './messages-service'
-import { getUnreadCountsByClient } from './messages-service'
+import { getUnreadCountsByClient, isGroupThread } from './messages-service'
+
+function messageThreadKey(clientId: string, thread?: 'group'): string {
+  return isGroupThread(clientId) || thread === 'group' ? 'group' : clientId || 'self'
+}
 import * as notificationsApi from './notifications-service'
 import * as clientApi from './client-cabinet-service'
 import * as analyticsApi from './analytics-service'
@@ -33,6 +37,8 @@ export const queryKeys = {
   clientWorkouts: ['client', 'workouts'] as const,
   clientProgress: ['client', 'progress'] as const,
   clientPayments: ['client', 'payments'] as const,
+  clientAttachments: ['client', 'attachments'] as const,
+  clientProfile: ['client', 'profile'] as const,
   trainerAnalytics: ['analytics', 'trainer'] as const,
   adminStats: ['admin', 'stats'] as const,
   adminUsers: ['admin', 'users'] as const,
@@ -140,12 +146,13 @@ export function usePayments() {
   return useQuery({ queryKey: queryKeys.payments, queryFn: paymentsApi.getPayments })
 }
 
-export function useMessages(clientId: string, options?: { enabled?: boolean }) {
-  const threadKey = clientId || 'self'
+export function useMessages(clientId: string, options?: { enabled?: boolean; thread?: 'group' }) {
+  const group = isGroupThread(clientId) || options?.thread === 'group'
+  const threadKey = messageThreadKey(clientId, options?.thread)
   return useQuery({
     queryKey: queryKeys.messages(threadKey),
-    queryFn: () => messagesApi.getMessages(clientId),
-    enabled: options?.enabled ?? !!clientId,
+    queryFn: () => messagesApi.getMessages(clientId, { thread: group ? 'group' : options?.thread }),
+    enabled: options?.enabled ?? (group || !!clientId),
   })
 }
 
@@ -161,7 +168,7 @@ export function useSendMessage() {
   return useMutation({
     mutationFn: messagesApi.sendMessage,
     onSuccess: (_, vars) => {
-      const threadKey = vars.clientId || 'self'
+      const threadKey = messageThreadKey(vars.clientId, vars.thread)
       qc.invalidateQueries({ queryKey: queryKeys.messages(threadKey) })
       qc.invalidateQueries({ queryKey: queryKeys.messageUnreadCounts })
       qc.invalidateQueries({ queryKey: queryKeys.trainerAnalytics })
@@ -187,6 +194,25 @@ export function useClientProgress() {
 
 export function useClientPayments() {
   return useQuery({ queryKey: queryKeys.clientPayments, queryFn: clientApi.getClientPayments })
+}
+
+export function useClientAttachments() {
+  return useQuery({ queryKey: queryKeys.clientAttachments, queryFn: clientApi.getClientAttachments })
+}
+
+export function useClientProfile() {
+  return useQuery({ queryKey: queryKeys.clientProfile, queryFn: clientApi.getClientProfile })
+}
+
+export function useUpdateClientProfile() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: clientApi.updateClientProfile,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.clientProfile })
+      qc.invalidateQueries({ queryKey: queryKeys.clientDashboard })
+    },
+  })
 }
 
 export function useTrainerAnalytics() {
@@ -314,6 +340,15 @@ export function useSetUserBlocked() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: ({ id, blocked }: { id: string; blocked: boolean }) => adminApi.setUserBlocked(id, blocked),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminUsers }),
+  })
+}
+
+export function useSetUserEmailVerified() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, emailVerified }: { id: string; emailVerified: boolean }) =>
+      adminApi.setUserEmailVerified(id, emailVerified),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.adminUsers }),
   })
 }

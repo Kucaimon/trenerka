@@ -17,13 +17,19 @@
   },
   "home": {
     "greeting": "Hi, {{name}}!",
+    "onboardingTitle": "Welcome to Trenerka Fit",
+    "onboardingProfile": "Complete your profile so {{trainer}} can assign your program.",
+    "onboardingProgram": "Your program will appear here soon. Message your trainer in chat if you have questions.",
+    "completeProfile": "Profile",
+    "openChat": "Message trainer",
     "loadError": "Could not load your dashboard",
     "defaultName": "Client",
     "todayWorkout": {
       "label": "Today",
       "start": "Start workout",
       "viewPlan": "View program",
-      "meta": "{{count}} exercises · {{min}} min"
+      "meta": "{{count}} exercises · {{min}} min",
+      "restDay": "Rest day — recovery is part of the plan"
     },
     "packageBalance": {
       "label": "Session balance",
@@ -81,6 +87,8 @@
     "weekProgress": "Weekly completion",
     "exerciseCount": "{{count}} exercises",
     "empty": "No program assigned",
+    "emptyDescription": "Your coach will assign a program. You can message them in chat.",
+    "contactTrainer": "Message coach",
     "completed": "completed"
   },
   "session": {

@@ -25,10 +25,25 @@ export const messageTemplates: string[] = new Proxy([] as string[], {
   },
 })
 
-export async function getMessages(clientId: string): Promise<Message[]> {
+const GROUP_THREAD_ID = '0'
+
+export function isGroupThread(clientId: string): boolean {
+  return clientId === GROUP_THREAD_ID || clientId === 'group'
+}
+
+export async function getMessages(clientId: string, options?: { thread?: 'group' }): Promise<Message[]> {
   await apiDelay()
-  if (config.useMockData) return mockApi.messages.list(clientId)
-  return wpFetch<Message[]>(`${wpEndpoints.messages}?clientId=${clientId}`)
+  const group = isGroupThread(clientId) || options?.thread === 'group'
+  const threadKey = group ? GROUP_THREAD_ID : clientId
+  if (config.useMockData) return mockApi.messages.list(threadKey)
+  const params = new URLSearchParams()
+  if (group) {
+    params.set('thread', 'group')
+    params.set('clientId', GROUP_THREAD_ID)
+  } else {
+    params.set('clientId', clientId)
+  }
+  return wpFetch<Message[]>(`${wpEndpoints.messages}?${params}`)
 }
 
 export async function sendMessage(data: {
@@ -36,10 +51,15 @@ export async function sendMessage(data: {
   sender: 'trainer' | 'client'
   text: string
   attachmentUrl?: string
+  thread?: 'group'
 }): Promise<Message> {
   await apiDelay()
-  if (config.useMockData) return mockApi.messages.send(data)
-  return wpFetch<Message>(wpEndpoints.messages, { method: 'POST', body: JSON.stringify(data) })
+  const group = isGroupThread(data.clientId) || data.thread === 'group'
+  const payload = group
+    ? { ...data, clientId: GROUP_THREAD_ID, thread: 'group' as const }
+    : data
+  if (config.useMockData) return mockApi.messages.send(payload)
+  return wpFetch<Message>(wpEndpoints.messages, { method: 'POST', body: JSON.stringify(payload) })
 }
 
 export async function getUnreadCountsByClient(): Promise<Record<string, number>> {
@@ -49,6 +69,7 @@ export async function getUnreadCountsByClient(): Promise<Record<string, number>>
     for (const c of clients) {
       counts[c.id] = mockApi.messages.list(c.id).filter((m) => m.sender === 'client' && !m.read).length
     }
+    counts[GROUP_THREAD_ID] = mockApi.messages.list(GROUP_THREAD_ID).filter((m) => m.sender === 'client' && !m.read).length
     return counts
   }
   return wpFetch<Record<string, number>>(wpEndpoints.messageUnreadCounts)

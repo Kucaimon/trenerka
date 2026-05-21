@@ -51,6 +51,22 @@ export function exportPaymentsCsv(payments: Payment[], clientNames: Map<string, 
   a.click()
 }
 
+export async function exportPaymentsXlsx(payments: Payment[], clientNames: Map<string, string>): Promise<void> {
+  const header = i18n.t('common:export.paymentsHeader').split(',')
+  const rows = [
+    header,
+    ...payments.map((p) => [
+      clientNames.get(p.clientId) ?? p.clientId,
+      p.amount,
+      p.date,
+      p.method,
+      p.note ?? '',
+    ]),
+  ]
+  const { downloadXlsx } = await import('@/lib/export/xlsx')
+  await downloadXlsx('payments.xlsx', rows, 'Payments')
+}
+
 export function getPaymentProviderConfig(): PaymentProviderConfig {
   return {
     provider: config.useMockData ? 'mock' : 'stripe',

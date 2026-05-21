@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, Dumbbell, MessageCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/shared/progress-bar'
 import { useClientDashboard, useClientWorkouts } from '@/features/api/hooks'
 import { weekCompletionPercent } from '@/lib/client-workouts'
 import { MobileCard, MobileListItem, MobileListStagger } from '@/components/mobile'
+import { EmptyState, LoadingState } from '@/components/saas'
+import { Button } from '@/components/ui/button'
 
 export function ClientWorkoutsPage() {
   const { t } = useTranslation(['client', 'common'])
@@ -38,15 +40,27 @@ export function ClientWorkoutsPage() {
       </MobileListItem>
 
       {isLoading ? (
-        <p className="text-sm text-[var(--text-muted)]">{t('common:actions.loading')}</p>
+        <LoadingState label={t('common:actions.loading')} className="py-8" />
       ) : workouts.length === 0 ? (
-        <p className="text-sm text-[var(--text-muted)]">{t('workouts.empty')}</p>
+        <EmptyState
+          icon={Dumbbell}
+          title={t('workouts.empty')}
+          description={t('workouts.emptyDescription')}
+          action={
+            <Button variant="secondary" size="sm" className="touch-target" asChild>
+              <Link to="/client/chat">
+                <MessageCircle className="mr-2 h-4 w-4" />
+                {t('workouts.contactTrainer')}
+              </Link>
+            </Button>
+          }
+        />
       ) : (
         workouts.map((workout) => (
           <MobileListItem key={workout.id}>
             <Link
               to={`/client/workouts/${workout.id}/session`}
-              className="mobile-card flex items-center justify-between transition-colors hover:bg-white/[0.04]"
+              className="mobile-card touch-target flex items-center justify-between transition-colors hover:bg-white/[0.04]"
             >
               <div>
                 <div className="flex items-center gap-2">

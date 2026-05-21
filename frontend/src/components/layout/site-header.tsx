@@ -3,14 +3,8 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Drawer } from 'vaul'
 import { motion } from 'framer-motion'
-import { ChevronDown, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { LogoLink } from '@/components/shared/LogoLink'
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher'
 import { cn } from '@/lib/utils'
@@ -61,7 +55,14 @@ export function SiteHeader() {
 
         <div className="concept-nav-actions hidden shrink-0 items-center gap-1 lg:flex">
           <LanguageSwitcher variant="ghost" compact className="border-transparent px-2" />
-          <LoginDropdown />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="concept-nav-login h-8 px-2.5 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            asChild
+          >
+            <Link to="/login">{t('actions.login')}</Link>
+          </Button>
           <Button size="sm" className="concept-nav-cta h-8 px-3 text-xs font-semibold" asChild>
             <Link to="/register/trainer">{t('actions.startFree')}</Link>
           </Button>
@@ -134,19 +135,17 @@ export function SiteHeader() {
 
               <motion.div className="concept-nav-drawer__account">
                 <p className="concept-nav-drawer__account-label">{t('nav.account')}</p>
-                <Link
-                  to="/login/trainer"
-                  className="concept-nav-drawer__link"
-                  onClick={closeMenu}
-                >
+                <Link to="/login" className="concept-nav-drawer__link" onClick={closeMenu}>
+                  {t('actions.login')}
+                </Link>
+                <Link to="/login/client" className="concept-nav-drawer__link" onClick={closeMenu}>
+                  {t('actions.loginClient')}
+                </Link>
+                <Link to="/login/trainer" className="concept-nav-drawer__link" onClick={closeMenu}>
                   {t('actions.loginTrainer')}
                 </Link>
-                <Link
-                  to="/login/client"
-                  className="concept-nav-drawer__link"
-                  onClick={closeMenu}
-                >
-                  {t('actions.loginClient')}
+                <Link to="/login/smart-fitness" className="concept-nav-drawer__link" onClick={closeMenu}>
+                  {t('actions.loginSmartFitness')}
                 </Link>
               </motion.div>
             </div>
@@ -165,30 +164,3 @@ export function SiteHeader() {
   )
 }
 
-function LoginDropdown() {
-  const { t } = useTranslation('common')
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="concept-nav-login h-8 gap-1 px-2.5 text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)]"
-        >
-          {t('actions.login')}
-          <ChevronDown className="h-3.5 w-3.5 opacity-50" aria-hidden />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[11rem] border-[var(--border)] bg-[var(--surface)]">
-        <DropdownMenuItem asChild className="cursor-pointer text-[var(--text-secondary)] focus:text-[var(--text-primary)]">
-          <Link to="/login/trainer">{t('actions.loginTrainer')}</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild className="cursor-pointer text-[var(--text-secondary)] focus:text-[var(--text-primary)]">
-          <Link to="/login/client">{t('actions.loginClient')}</Link>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}

@@ -10,6 +10,7 @@ export function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">{t('dashboard.title')}</h1>
+      <p className="text-sm text-[var(--text-secondary)]">{t('dashboard.platformNote')}</p>
       {isLoading ? (
         <p className="text-sm text-[var(--text-muted)]">{t('common:actions.loading')}</p>
       ) : (

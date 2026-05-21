@@ -80,3 +80,24 @@ export async function downloadClientProgressPdf(clientId: string): Promise<void>
   a.download = res.filename
   a.click()
 }
+
+export async function downloadAnalyticsSummaryExport(): Promise<void> {
+  await apiDelay()
+  if (config.useMockData) {
+    const blob = new Blob(['Mock analytics summary'], { type: 'text/plain' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = 'analytics-summary.txt'
+    a.click()
+    return
+  }
+  const res = await wpFetch<{ filename: string; content: string; mime: string }>(
+    wpEndpoints.analytics.summaryExport,
+  )
+  const bytes = atob(res.content)
+  const blob = new Blob([bytes], { type: res.mime })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = res.filename
+  a.click()
+}

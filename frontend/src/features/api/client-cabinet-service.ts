@@ -6,11 +6,20 @@ import { emptyClientDashboard } from '@/lib/empty-client-dashboard'
 import { wpFetch } from '@/lib/wordpress/client'
 import { wpEndpoints } from '@/lib/wordpress/endpoints'
 import type {
+  ClientAttachment,
   ClientDashboard,
   ClientWorkoutDay,
   Payment,
   ProgressMeasurement,
 } from '@/types'
+
+export interface ClientSelfProfile {
+  clientProfileId: string
+  name: string
+  email: string
+  phone: string
+  avatarUrl?: string
+}
 
 function resolveClientId(): string | null {
   const id = getClientProfileIdFromStore()
@@ -72,6 +81,50 @@ export async function completeClientWorkout(workoutId: string): Promise<void> {
     return
   }
   await wpFetch(`/trenerka/v1/client/workouts/${workoutId}/complete`, { method: 'POST' })
+}
+
+export async function getClientProfile(): Promise<ClientSelfProfile> {
+  await apiDelay()
+  if (config.useMockData) {
+    const clientId = resolveClientId()
+    const client = mockApi.clients.list().find((c) => c.id === clientId)
+    return {
+      clientProfileId: clientId ?? 'c1',
+      name: client?.name ?? 'Клиент',
+      email: client?.email ?? '',
+      phone: client?.phone ?? '',
+    }
+  }
+  return wpFetch<ClientSelfProfile>(wpEndpoints.client.profile)
+}
+
+export async function updateClientProfile(data: {
+  name?: string
+  phone?: string
+  avatarUrl?: string
+}): Promise<ClientSelfProfile> {
+  await apiDelay(300)
+  if (config.useMockData) {
+    const clientId = resolveClientId()
+    if (clientId) {
+      mockApi.clients.update(clientId, { name: data.name, phone: data.phone })
+    }
+    return getClientProfile()
+  }
+  return wpFetch<ClientSelfProfile>(wpEndpoints.client.profile, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function getClientAttachments(): Promise<ClientAttachment[]> {
+  await apiDelay()
+  const clientId = resolveClientId()
+  if (config.useMockData) {
+    if (!clientId) return []
+    return mockApi.attachments.list(clientId)
+  }
+  return wpFetch<ClientAttachment[]>(wpEndpoints.client.attachments)
 }
 
 export async function getClientPayments(): Promise<Payment[]> {
